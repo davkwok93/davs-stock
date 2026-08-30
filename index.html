@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dav's Stock</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">Dav's Stock</div>
+    <nav>
+      <button class="nav-item active" data-view="dashboard">Dashboard</button>
+      <button class="nav-item" data-view="history">History</button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <!-- DASHBOARD VIEW -->
+    <section id="view-dashboard" class="view">
+      <header class="page-head">
+        <h1>Dashboard</h1>
+        <div class="today" id="today">—</div>
+        <div class="asof" id="asof">—</div>
+      </header>
+
+      <div class="section-block">
+        <div class="tier-row">
+          <h2 class="tier-title mega">Mega <span class="tier-sub">≥ $200B</span></h2>
+          <div class="filters dash-filters">
+            <button class="chip active" data-f="both">Both</button>
+            <button class="chip" data-f="g200">+200%</button>
+            <button class="chip" data-f="y100">+100%</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table id="mega-table" class="grid"></table></div>
+      </div>
+
+      <div class="section-block">
+        <div class="tier-row">
+          <h2 class="tier-title large">Large <span class="tier-sub">$10B – $200B</span></h2>
+          <div class="filters dash-filters">
+            <button class="chip active" data-f="both">Both</button>
+            <button class="chip" data-f="g200">+200%</button>
+            <button class="chip" data-f="y100">+100%</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table id="large-table" class="grid"></table></div>
+      </div>
+    </section>
+
+    <!-- HISTORY VIEW -->
+    <section id="view-history" class="view hidden">
+      <header class="page-head">
+        <h1>Signal History</h1>
+        <div class="filters" id="hist-filters">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="mega">Mega</button>
+          <button class="chip" data-filter="large">Large</button>
+          <span class="count" id="hist-count"></span>
+        </div>
+      </header>
+      <div class="table-wrap"><table id="hist-table" class="grid"></table></div>
+    </section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

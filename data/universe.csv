@@ -1,0 +1,986 @@
+ticker,name,market_cap,tier,last_checked
+NVDA,NVIDIA Corporation Common Stock,5242955000000.0,mega,2026-08-30
+AAPL,Apple Inc. Common Stock,4665759346000.0,mega,2026-08-30
+GOOGL,Alphabet Inc. Class A Common Stock,4238795700000.0,mega,2026-08-30
+MSFT,Microsoft Corporation Common Stock,3813240375993.0,mega,2026-08-30
+AMZN,Amazon.com Inc. Common Stock,2873797524988.0,mega,2026-08-30
+TSM,Taiwan Semiconductor Manufacturing Company Ltd.,2165469527518.0,mega,2026-08-30
+SPCX,Space Exploration Technologies Corp. Class A Common Stock,1920554259938.0,mega,2026-08-30
+AVGO,Broadcom Inc. Common Stock,1754548001220.0,mega,2026-08-30
+META,Meta Platforms Inc. Class A Common Stock,1472509548175.0,mega,2026-08-30
+TSLA,Tesla Inc. Common Stock,1377404653658.0,mega,2026-08-30
+SKHY,SK hynix Inc. American Depositary Shares,1173765001200.0,mega,2026-08-30
+BRK-B,Berkshire Hathaway Inc.,1114187242355.0,mega,2026-08-30
+LLY,Eli Lilly and Company Common Stock,1105727422120.0,mega,2026-08-30
+MU,Micron Technology Inc. Common Stock,1053565694842.0,mega,2026-08-30
+JPM,JP Morgan Chase & Co. Common Stock,950620547056.0,mega,2026-08-30
+WMT,Walmart Inc. Common Stock,820398380089.0,mega,2026-08-30
+AMD,Advanced Micro Devices Inc. Common Stock,760047730054.0,mega,2026-08-30
+V,Visa Inc.,681825793860.0,mega,2026-08-30
+ASML,ASML Holding N.V. New York Registry Shares,653730026666.0,mega,2026-08-30
+JNJ,Johnson & Johnson Common Stock,645949219940.0,mega,2026-08-30
+XOM,ExxonMobil Holdings Corporation Common Stock,644377723252.0,mega,2026-08-30
+MA,Mastercard Incorporated Common Stock,521488717282.0,mega,2026-08-30
+INTC,Intel Corporation Common Stock,472855169149.0,mega,2026-08-30
+ABBV,AbbVie Inc. Common Stock,451463123972.0,mega,2026-08-30
+PLTR,Palantir Technologies Inc. Class A Common Stock,447478542789.0,mega,2026-08-30
+BAC,Bank of America Corporation Common Stock,435788078107.0,mega,2026-08-30
+ORCL,Oracle Corporation Common Stock,434519050350.0,mega,2026-08-30
+CSCO,Cisco Systems Inc. Common Stock (DE),433281912723.0,mega,2026-08-30
+COST,Costco Wholesale Corporation Common Stock,419295904818.0,mega,2026-08-30
+CVX,Chevron Corporation Common Stock,398829189370.0,mega,2026-08-30
+KO,Coca-Cola Company (The) Common Stock,385766565127.0,mega,2026-08-30
+LRCX,Lam Research Corporation Common Stock,377773809900.0,mega,2026-08-30
+CAT,Caterpillar Inc. Common Stock,367854829922.0,mega,2026-08-30
+AMAT,Applied Materials Inc. Common Stock,366380131510.0,mega,2026-08-30
+MRK,Merck & Company Inc. Common Stock (new),366004912497.0,mega,2026-08-30
+HSBC,HSBC Holdings plc. Common Stock,355802872871.0,mega,2026-08-30
+GE,GE Aerospace Common Stock,355448165704.0,mega,2026-08-30
+UNH,UnitedHealth Group Incorporated Common Stock (DE),352709895129.0,mega,2026-08-30
+NFLX,Netflix Inc. Common Stock,340277150323.0,mega,2026-08-30
+MS,Morgan Stanley Common Stock,337310522533.0,mega,2026-08-30
+PG,Procter & Gamble Company (The) Common Stock,334206985367.0,mega,2026-08-30
+HD,Home Depot Inc. (The) Common Stock,329427137609.0,mega,2026-08-30
+PANW,Palo Alto Networks Inc. Common Stock,302845850000.0,mega,2026-08-30
+GS,Goldman Sachs Group Inc. (The) Common Stock,301068324158.0,mega,2026-08-30
+PM,Philip Morris International Inc Common Stock,299082332810.0,mega,2026-08-30
+DELL,Dell Technologies Inc. Class C Common Stock ,295692789814.0,mega,2026-08-30
+NVS,Novartis AG Common Stock,293492809747.0,mega,2026-08-30
+BABA,Alibaba Group Holding Limited American Depositary Shares each representing eight Ordinary share,288033587540.0,mega,2026-08-30
+RTX,RTX Corporation Common Stock,285333876666.0,mega,2026-08-30
+RY,Royal Bank Of Canada Common Stock,283834215324.0,mega,2026-08-30
+SAP,SAP  SE ADS,272162827557.0,mega,2026-08-30
+MUFG,Mitsubishi UFJ Financial Group Inc. Common Stock,271770580068.0,mega,2026-08-30
+WFC,Wells Fargo & Company Common Stock,262150502438.0,mega,2026-08-30
+SHEL,Shell PLC American Depositary Shares (each representing two (2) Ordinary Shares) ,258634025860.0,mega,2026-08-30
+ARM,Arm Holdings plc American Depositary Shares,254362407991.0,mega,2026-08-30
+TM,Toyota Motor Corporation Common Stock,253483908953.0,mega,2026-08-30
+AZN,AstraZeneca PLC Ordinary Shares,252303098886.0,mega,2026-08-30
+ANET,Arista Networks Inc. Common Stock,246418071726.0,mega,2026-08-30
+GEV,GE Vernova Inc. Common Stock,242877582521.0,mega,2026-08-30
+BHP,BHP Group Limited American Depositary Shares (Each representing two Ordinary Shares),241747210413.0,mega,2026-08-30
+TXN,Texas Instruments Incorporated Common Stock,236202381507.0,mega,2026-08-30
+AMGN,Amgen Inc. Common Stock,233780091602.0,mega,2026-08-30
+TMO,Thermo Fisher Scientific Inc Common Stock,230049366403.0,mega,2026-08-30
+KLAC,KLA Corporation Common Stock,229351222288.0,mega,2026-08-30
+LIN,Linde plc Ordinary Shares,225654399590.0,mega,2026-08-30
+AXP,American Express Company Common Stock,225013236356.0,mega,2026-08-30
+C,Citigroup Inc. Common Stock,222931348461.0,mega,2026-08-30
+CRWD,CrowdStrike Holdings Inc. Class A Common Stock,222387826752.0,mega,2026-08-30
+IBM,International Business Machines Corporation Common Stock,221957440940.0,mega,2026-08-30
+SNDK,Sandisk Corporation Common Stock,217429288105.0,mega,2026-08-30
+SAN,Banco Santander S.A. Sponsored ADR (Spain),215492317094.0,mega,2026-08-30
+CRM,Salesforce Inc. Common Stock,209664000000.0,mega,2026-08-30
+VZ,Verizon Communications Inc. Common Stock,208154237620.0,mega,2026-08-30
+NVO,Novo Nordisk A/S Common Stock,201957911017.0,mega,2026-08-30
+TD,Toronto Dominion Bank (The) Common Stock,200355925000.0,mega,2026-08-30
+SHOP,Shopify Inc. Class A Subordinate Voting Shares,198129505723.0,large,2026-08-30
+ABT,Abbott Laboratories Common Stock,194616209301.0,large,2026-08-30
+TMUS,T-Mobile US Inc. Common Stock,194550450450.0,large,2026-08-30
+APH,Amphenol Corporation Common Stock,194490810507.0,large,2026-08-30
+PEP,PepsiCo Inc. Common Stock,192545252087.0,large,2026-08-30
+SCHW,Charles Schwab Corporation (The) Common Stock,190503622254.0,large,2026-08-30
+MRVL,Marvell Technology Inc. Common Stock,189708522550.0,large,2026-08-30
+TTE,TotalEnergies SE Ordinary Shares,188403766775.0,large,2026-08-30
+STX,Seagate Technology Holdings PLC Ordinary Shares (Ireland),188060555256.0,large,2026-08-30
+MCD,McDonald's Corporation Common Stock,187525005715.0,large,2026-08-30
+DIS,Walt Disney Company (The) Common Stock,186654854106.0,large,2026-08-30
+UNP,Union Pacific Corporation Common Stock,182624748840.0,large,2026-08-30
+GILD,Gilead Sciences Inc. Common Stock,180636666980.0,large,2026-08-30
+BLK,BlackRock Inc. Common Stock,180342154720.0,large,2026-08-30
+T,AT&T Inc.,178230550757.0,large,2026-08-30
+ADI,Analog Devices Inc. Common Stock,175306093928.0,large,2026-08-30
+SCCO,Southern Copper Corporation Common Stock,175042791919.0,large,2026-08-30
+QCOM,QUALCOMM Incorporated Common Stock,172437907489.0,large,2026-08-30
+WELL,Welltower Inc. Common Stock,171587750485.0,large,2026-08-30
+NEE,NextEra Energy Inc. Common Stock,170716456625.0,large,2026-08-30
+UBS,UBS Group AG Registered Ordinary Shares,170378595719.0,large,2026-08-30
+DE,Deere & Company Common Stock,170149657100.0,large,2026-08-30
+BA,Boeing Company (The) Common Stock,165835437596.0,large,2026-08-30
+WDC,Western Digital Corporation Common Stock,165650536721.0,large,2026-08-30
+BBVA,Banco Bilbao Vizcaya Argentaria S.A. Common Stock,165560092300.0,large,2026-08-30
+UBER,Uber Technologies Inc. Common Stock,160994588737.0,large,2026-08-30
+PFE,Pfizer Inc. Common Stock,159362873548.0,large,2026-08-30
+BUD,Anheuser-Busch Inbev SA Sponsored ADR (Belgium),158027021617.0,large,2026-08-30
+COP,ConocoPhillips Common Stock,156594340388.0,large,2026-08-30
+ETN,Eaton Corporation PLC Ordinary Shares,156439752000.0,large,2026-08-30
+BKNG,Booking Holdings Inc. Common Stock,154506372215.0,large,2026-08-30
+DHR,Danaher Corporation Common Stock,151894196688.0,large,2026-08-30
+NOW,ServiceNow Inc. Common Stock,149630140000.0,large,2026-08-30
+TJX,TJX Companies Inc. (The) Common Stock,149267664744.0,large,2026-08-30
+SONY,Sony Group Corporation American Depositary Shares ,146805493987.0,large,2026-08-30
+UL,Unilever PLC American Depositary Shares (each representing One Ordinary Share),142191305422.0,large,2026-08-30
+TBB,AT&T Inc. 5.350% Global Notes due 2066,138860486022.0,large,2026-08-30
+MNST,Monster Beverage Corporation,137701886213.0,large,2026-08-30
+VRTX,Vertex Pharmaceuticals Incorporated Common Stock,137297247922.0,large,2026-08-30
+BMY,Bristol-Myers Squibb Company Common Stock,136003941796.0,large,2026-08-30
+NEM,Newmont Corporation,134851536843.0,large,2026-08-30
+PLD,Prologis Inc. Common Stock,133394293200.0,large,2026-08-30
+MFG,Mizuho Financial Group Inc. Sponosred ADR (Japan),132459945201.0,large,2026-08-30
+COF,Capital One Financial Corporation Common Stock,132310274580.0,large,2026-08-30
+ISRG,Intuitive Surgical Inc. Common Stock,131631396959.0,large,2026-08-30
+CB,Chubb Limited  Common Stock,131141088071.0,large,2026-08-30
+SPGI,S&P Global Inc. Common Stock,130563972000.0,large,2026-08-30
+LMT,Lockheed Martin Corporation Common Stock,130131366079.0,large,2026-08-30
+RIO,Rio Tinto Plc Common Stock,129748785727.0,large,2026-08-30
+GLW,Corning Incorporated Common Stock,128329633552.0,large,2026-08-30
+PGR,Progressive Corporation (The) Common Stock,127111123793.0,large,2026-08-30
+SYK,Stryker Corporation Common Stock,126843770582.0,large,2026-08-30
+ACN,Accenture plc Class A Ordinary Shares (Ireland),126566610918.0,large,2026-08-30
+PH,Parker-Hannifin Corporation Common Stock,125419752604.0,large,2026-08-30
+SBUX,Starbucks Corporation Common Stock,122949000000.0,large,2026-08-30
+PDD,PDD Holdings Inc. American Depositary Shares,121970842829.0,large,2026-08-30
+FTNT,Fortinet Inc. Common Stock,121796466398.0,large,2026-08-30
+BTI,British American Tobacco  Industries p.l.c. Common Stock ADR,121682562802.0,large,2026-08-30
+BMO,Bank Of Montreal Common Stock,119811579960.0,large,2026-08-30
+PBR,Petroleo Brasileiro S.A. Petrobras ADS,119414109040.0,large,2026-08-30
+CVS,CVS Health Corporation Common Stock,119020982539.0,large,2026-08-30
+HDB,HDFC Bank Limited Common Stock,118426313670.0,large,2026-08-30
+SMFG,Sumitomo Mitsui Financial Group Inc Unsponsored American Depositary Shares (Japan),118230188682.0,large,2026-08-30
+MDT,Medtronic plc. Ordinary Shares,116772653949.0,large,2026-08-30
+LOW,Lowe's Companies Inc. Common Stock,116655099880.0,large,2026-08-30
+ADBE,Adobe Inc. Common Stock,115879200000.0,large,2026-08-30
+MO,Altria Group Inc.,114627920520.0,large,2026-08-30
+ADP,Automatic Data Processing Inc. Common Stock,114205091633.0,large,2026-08-30
+SNOW,Snowflake Inc. Common Stock,113684800000.0,large,2026-08-30
+ABNB,Airbnb Inc. Class A Common Stock,113427971741.0,large,2026-08-30
+BNS,Bank Nova Scotia Halifax Pfd 3 Ordinary Shares,113342884190.0,large,2026-08-30
+SPOT,Spotify Technology S.A. Ordinary Shares,112695366858.0,large,2026-08-30
+BP,BP p.l.c. Common Stock,110345766402.0,large,2026-08-30
+BNY,The Bank of New York Mellon Corporation Common Stock,110256923075.0,large,2026-08-30
+FCX,Freeport-McMoRan Inc. Common Stock,109783539633.0,large,2026-08-30
+ENB,Enbridge Inc Common Stock,109616614530.0,large,2026-08-30
+SNY,Sanofi ADS,109309444885.0,large,2026-08-30
+IBN,ICICI Bank Limited Common Stock,106972081796.0,large,2026-08-30
+BX,Blackstone Inc. Common Stock,106881509982.0,large,2026-08-30
+NET,Cloudflare Inc. Class A Common Stock,106766941746.0,large,2026-08-30
+APP,Applovin Corporation Class A Common Stock,106338701760.0,large,2026-08-30
+HWM,Howmet Aerospace Inc. Common Stock,105622550525.0,large,2026-08-30
+AEM,Agnico Eagle Mines Limited Common Stock,104684455838.0,large,2026-08-30
+CM,Canadian Imperial Bank of Commerce Common Stock,104589939303.0,large,2026-08-30
+MCK,McKesson Corporation Common Stock,104160664401.0,large,2026-08-30
+MPC,Marathon Petroleum Corporation Common Stock,103576597337.0,large,2026-08-30
+EQNR,Equinor ASA,103486217932.0,large,2026-08-30
+EQIX,Equinix Inc. Common Stock REIT,103053695575.0,large,2026-08-30
+GSK,GSK plc American Depositary Shares (Each representing two Ordinary Shares),102917007704.0,large,2026-08-30
+CME,CME Group Inc. Class A Common Stock,102767753365.0,large,2026-08-30
+GD,General Dynamics Corporation Common Stock,102627755207.0,large,2026-08-30
+DASH,DoorDash Inc. Class A Common Stock,102578953605.0,large,2026-08-30
+ING,ING Group N.V. Common Stock,102281904125.0,large,2026-08-30
+SO,Southern Company (The) Common Stock,101519531750.0,large,2026-08-30
+VLO,Valero Energy Corporation Common Stock,101454120158.0,large,2026-08-30
+CNQ,Canadian Natural Resources Limited Common Stock,101352471600.0,large,2026-08-30
+BN,Brookfield Corporation Class A Limited Voting Shares,101289483654.0,large,2026-08-30
+MELI,MercadoLibre Inc. Common Stock,99682586933.0,large,2026-08-30
+VRT,Vertiv Holdings LLC Class A Common Stock,98972759515.0,large,2026-08-30
+TT,Trane Technologies plc,98781605546.0,large,2026-08-30
+RACE,Ferrari N.V. Common Shares,98383034328.0,large,2026-08-30
+CEG,Constellation Energy Corporation Common Stock ,98054567138.0,large,2026-08-30
+INTU,Intuit Inc. Common Stock,97942658220.0,large,2026-08-30
+KKR,KKR & Co. Inc. Common Stock,97555037117.0,large,2026-08-30
+PSX,Phillips 66 Common Stock,97365093713.0,large,2026-08-30
+USB,U.S. Bancorp Common Stock,97331473832.0,large,2026-08-30
+PNC,PNC Financial Services Group Inc. (The) Common Stock,96632135021.0,large,2026-08-30
+CMCSA,Comcast Corporation Class A Common Stock,96026105665.0,large,2026-08-30
+CSX,CSX Corporation Common Stock,94994913744.0,large,2026-08-30
+DUK,Duke Energy Corporation (Holding Company) Common Stock,93759188708.0,large,2026-08-30
+CDNS,Cadence Design Systems Inc. Common Stock,93741023270.0,large,2026-08-30
+HOOD,Robinhood Markets Inc. Class A Common Stock,93738317783.0,large,2026-08-30
+BCS,Barclays PLC Common Stock,93379408747.0,large,2026-08-30
+MRSH,Marsh Common Stock,91929978668.0,large,2026-08-30
+MAR,Marriott International Class A Common Stock,91549828391.0,large,2026-08-30
+ICE,Intercontinental Exchange Inc. Common Stock,91131167075.0,large,2026-08-30
+HCA,HCA Healthcare Inc. Common Stock,90458656730.0,large,2026-08-30
+WMB,Williams Companies Inc. (The) Common Stock,90184137711.0,large,2026-08-30
+MMM,3M Company Common Stock,89911046180.0,large,2026-08-30
+UPS,United Parcel Service Inc. Common Stock,89612824032.0,large,2026-08-30
+MCO,Moody's Corporation Common Stock,89189340000.0,large,2026-08-30
+PWR,Quanta Services Inc. Common Stock,88795657803.0,large,2026-08-30
+WM,Waste Management Inc. Common Stock,87801437317.0,large,2026-08-30
+LYG,Lloyds Banking Group Plc American Depositary Shares,87740402371.0,large,2026-08-30
+EMR,Emerson Electric Company Common Stock,86559404000.0,large,2026-08-30
+ELV,Elevance Health Inc. Common Stock,85539754055.0,large,2026-08-30
+DDOG,Datadog Inc. Class A Common Stock,85093599188.0,large,2026-08-30
+SLB,SLB Limited Common Shares,85085931433.0,large,2026-08-30
+SNPS,Synopsys Inc. Common Stock,84820295886.0,large,2026-08-30
+JCI,Johnson Controls International plc Ordinary Share,84555451797.0,large,2026-08-30
+EPD,Enterprise Products Partners L.P. Common Stock,84262799134.0,large,2026-08-30
+ASX,ASE Technology Holding Co. Ltd. American Depositary Shares (each representing Two Common Shares) ,84132236324.0,large,2026-08-30
+CP,Canadian Pacific Kansas City Limited Common Shares,83979877986.0,large,2026-08-30
+SHW,Sherwin-Williams Company (The) Common Stock,83717575954.0,large,2026-08-30
+BAM,Brookfield Asset Management Inc Class A Limited Voting Shares,83247993378.0,large,2026-08-30
+E,ENI S.p.A. Common Stock,83090332835.0,large,2026-08-30
+ITUB,Itau Unibanco Banco Holding SA American Depositary Shares (Each repstg 500 Preferred shares),82698933975.0,large,2026-08-30
+AMT,American Tower Corporation (REIT) Common Stock,82116139259.0,large,2026-08-30
+REGN,Regeneron Pharmaceuticals Inc. Common Stock,81765821920.0,large,2026-08-30
+CTAS,Cintas Corporation Common Stock,81706620965.0,large,2026-08-30
+CVNA,Carvana Co. Class A Common Stock,81478337531.0,large,2026-08-30
+MSI,Motorola Solutions Inc. Common Stock,80429980968.0,large,2026-08-30
+ECL,Ecolab Inc. Common Stock,80384226910.0,large,2026-08-30
+LITE,Lumentum Holdings Inc. Common Stock,80281500000.0,large,2026-08-30
+ITW,Illinois Tool Works Inc. Common Stock,79772480000.0,large,2026-08-30
+APO,Apollo Global Management Inc. (New) Common Stock,79746948191.0,large,2026-08-30
+MDLZ,Mondelez International Inc. Class A Common Stock,79590570435.0,large,2026-08-30
+NGG,National Grid Transco PLC National Grid PLC (NEW) American Depositary Shares,78739717325.0,large,2026-08-30
+NTES,NetEase Inc. American Depositary Shares,78336606170.0,large,2026-08-30
+NSC,Norfolk Southern Corporation Common Stock,78316447498.0,large,2026-08-30
+FDX,FedEx Corporation Common Stock,78309513533.0,large,2026-08-30
+CMI,Cummins Inc. Common Stock,77759785482.0,large,2026-08-30
+NOC,Northrop Grumman Corporation Common Stock,77505325095.0,large,2026-08-30
+TRV,The Travelers Companies Inc. Common Stock,77151900638.0,large,2026-08-30
+SU,Suncor Energy  Inc. Common Stock,76528865513.0,large,2026-08-30
+CNI,Canadian National Railway Company Common Stock,76122641000.0,large,2026-08-30
+DB,Deutsche Bank AG Common Stock,75933304000.0,large,2026-08-30
+GM,General Motors Company Common Stock,75697744442.0,large,2026-08-30
+NWG,NatWest Group plc American Depositary Shares (each representing two (2) Ordinary Shares),75606513756.0,large,2026-08-30
+AON,Aon plc Class A Ordinary Shares (Ireland),75389379244.0,large,2026-08-30
+EOG,EOG Resources Inc. Common Stock,75191257380.0,large,2026-08-30
+B,Barrick Mining Corporation Common Shares,75134623727.0,large,2026-08-30
+RCL,Royal Caribbean Cruises Ltd. Common Stock,74728786790.0,large,2026-08-30
+TGT,Target Corporation Common Stock,74114905656.0,large,2026-08-30
+CI,The Cigna Group Common Stock,73691386736.0,large,2026-08-30
+ET,Energy Transfer LP Common Units ,73376714497.0,large,2026-08-30
+ROST,Ross Stores Inc. Common Stock,73314514920.0,large,2026-08-30
+SE,Sea Limited American Depositary Shares each representing one Class A Ordinary Share,73106152546.0,large,2026-08-30
+HLT,Hilton Worldwide Holdings Inc. Common Stock ,72437141284.0,large,2026-08-30
+CL,Colgate-Palmolive Company Common Stock,72343434232.0,large,2026-08-30
+WBD,Warner Bros. Discovery Inc. Series A Common Stock ,72232934344.0,large,2026-08-30
+ORLY,O'Reilly Automotive Inc. Common Stock,71593030092.0,large,2026-08-30
+MFC,Manulife Financial Corporation Common Stock,71361758379.0,large,2026-08-30
+KMI,Kinder Morgan Inc. Common Stock,70277873929.0,large,2026-08-30
+AMX,America Movil S.A.B. de C.V. American Depositary Shares (each representing the right to receive twenty (20) Series B Shares,69766005000.0,large,2026-08-30
+WPM,Wheaton Precious Metals Corp Common Shares (Canada),69636347893.0,large,2026-08-30
+NU,Nu Holdings Ltd. Class A Ordinary Shares,69436132938.0,large,2026-08-30
+SPG,Simon Property Group Inc. Common Stock,69421213058.0,large,2026-08-30
+HPE,Hewlett Packard Enterprise Company Common Stock,69269086184.0,large,2026-08-30
+HON,Honeywell International Inc. Common Stock,68912266374.0,large,2026-08-30
+DLR,Digital Realty Trust Inc. Common Stock,68630609563.0,large,2026-08-30
+APD,Air Products and Chemicals Inc. Common Stock,68607184938.0,large,2026-08-30
+AJG,Arthur J. Gallagher & Co. Common Stock,68575628000.0,large,2026-08-30
+RSG,Republic Services Inc. Common Stock,68012964544.0,large,2026-08-30
+BSX,Boston Scientific Corporation Common Stock,67881910998.0,large,2026-08-30
+RELX,RELX PLC PLC American Depositary Shares (Each representing One Ordinary Share),66648137667.0,large,2026-08-30
+AEP,American Electric Power Company Inc. Common Stock,66585240123.0,large,2026-08-30
+PCAR,PACCAR Inc. Common Stock,65974583209.0,large,2026-08-30
+ALL,Allstate Corporation (The) Common Stock,65889724611.0,large,2026-08-30
+TDG,Transdigm Group Incorporated Common Stock,65556300354.0,large,2026-08-30
+VALE,VALE S.A.  American Depositary Shares Each Representing one common share,64170800726.0,large,2026-08-30
+CRH,CRH PLC Ordinary Shares,64162877952.0,large,2026-08-30
+URI,United Rentals Inc. Common Stock,64125324292.0,large,2026-08-30
+BRKRP,Bruker Corporation 6.375% Mandatory Convertible Preferred Stock Series A,64039667701.0,large,2026-08-30
+ARGX,argenx SE American Depositary Shares,63503367630.0,large,2026-08-30
+IMO,Imperial Oil Limited Common Stock,63113722430.0,large,2026-08-30
+BE,Bloom Energy Corporation Class A Common Stock,62077528716.0,large,2026-08-30
+BKR,Baker Hughes Company Class A Common Stock,61952788771.0,large,2026-08-30
+TRP,TC Energy Corporation Common Stock,61860000000.0,large,2026-08-30
+MPWR,Monolithic Power Systems Inc. Common Stock,61736385180.0,large,2026-08-30
+TRGP,Targa Resources Inc. Common Stock,61717536464.0,large,2026-08-30
+TFC,Truist Financial Corporation Common Stock,61606608661.0,large,2026-08-30
+GWW,W.W. Grainger Inc. Common Stock,61527960535.0,large,2026-08-30
+COR,Cencora Inc. Common Stock,61452071945.0,large,2026-08-30
+MET,MetLife Inc. Common Stock,61329878225.0,large,2026-08-30
+MPLX,MPLX LP Common Units Representing Limited Partner Interests,60071101372.0,large,2026-08-30
+OKE,ONEOK Inc. Common Stock,59733829645.0,large,2026-08-30
+CVE,Cenovus Energy Inc Common Stock,59212500000.0,large,2026-08-30
+OXY,Occidental Petroleum Corporation Common Stock,59078568626.0,large,2026-08-30
+NKE,Nike Inc. Common Stock,58746548639.0,large,2026-08-30
+TEL,TE Connectivity plc Ordinary Shares,58672750786.0,large,2026-08-30
+O,Realty Income Corporation Common Stock,58646593685.0,large,2026-08-30
+NOK,Nokia Corporation Sponsored American Depositary Shares,58628267296.0,large,2026-08-30
+AFL,AFLAC Incorporated Common Stock,58416521083.0,large,2026-08-30
+BMNP,BitMine Immersion Technologies Inc. 9.5% Series A Perpetual Preferred Stock,58325960036.0,large,2026-08-30
+LNG,Cheniere Energy Inc. Common Stock,58310788828.0,large,2026-08-30
+D,Dominion Energy Inc. Common Stock,57652925957.0,large,2026-08-30
+AU,AngloGold Ashanti PLC Ordinary Shares,57248022087.0,large,2026-08-30
+FAST,Fastenal Company Common Stock,57122429184.0,large,2026-08-30
+TAK,Takeda Pharmaceutical Company Limited American Depositary Shares (each representing 1/2 of a share of Common Stock),56971998282.0,large,2026-08-30
+NBIS,Nebius Group N.V. Class A Ordinary Shares,56866674501.0,large,2026-08-30
+NUE,Nucor Corporation Common Stock,56832356838.0,large,2026-08-30
+MT,Arcelor Mittal NY Registry Shares NEW,56620149675.0,large,2026-08-30
+NXPI,NXP Semiconductors N.V. Common Stock,56378866023.0,large,2026-08-30
+CTVA,Corteva Inc. Common Stock ,55977744400.0,large,2026-08-30
+NDAQ,Nasdaq Inc. Common Stock,55512042813.0,large,2026-08-30
+TER,Teradyne Inc. Common Stock,55496276028.0,large,2026-08-30
+FANG,Diamondback Energy Inc. Common Stock,55352413858.0,large,2026-08-30
+SRE,DBA Sempra Common Stock,55130338340.0,large,2026-08-30
+MRNA,Moderna Inc. Common Stock,55090560323.0,large,2026-08-30
+PSA,Public Storage Common Stock,55058981720.0,large,2026-08-30
+GRMN,Garmin Ltd. Common Stock (Switzerland),54999614742.0,large,2026-08-30
+ADSK,Autodesk Inc. Common Stock,54999260000.0,large,2026-08-30
+SOMN,Southern Company (The) 2025 Series A Corporate Units,54941335256.0,large,2026-08-30
+KEYS,Keysight Technologies Inc. Common Stock,54681390899.0,large,2026-08-30
+COHR,Coherent Corp. Common Stock,54676363083.0,large,2026-08-30
+CAH,Cardinal Health Inc. Common Stock,54550637002.0,large,2026-08-30
+F,Ford Motor Company Common Stock,54364401043.0,large,2026-08-30
+AME,AMETEK Inc.,54162968895.0,large,2026-08-30
+CIEN,Ciena Corporation Common Stock,53569287802.0,large,2026-08-30
+FIX,Comfort Systems USA Inc. Common Stock,53450683282.0,large,2026-08-30
+STT,State Street Corporation Common Stock,53108092227.0,large,2026-08-30
+DAL,Delta Air Lines Inc. Common Stock,52655876012.0,large,2026-08-30
+DVN,Devon Energy Corporation Common Stock,52085000000.0,large,2026-08-30
+EW,Edwards Lifesciences Corporation Common Stock,51997044000.0,large,2026-08-30
+DEO,Diageo plc Common Stock,51758526454.0,large,2026-08-30
+BDX,Becton Dickinson and Company Common Stock,51622746336.0,large,2026-08-30
+VMRK,Vivmark Residential Common Shares of Beneficial Interest,51612750000.0,large,2026-08-30
+HONA,Honeywell Aerospace Inc. Common Stock ,51463613958.0,large,2026-08-30
+FNV,Franco-Nevada Corporation,51335293270.0,large,2026-08-30
+HBANL,Huntington Bancshares Incorporated Depositary Shares Each Representing a 1/40th Interest in a Share of 6.875% Series J Non-Cumulative Perpetual Preferred Stock,51015474357.0,large,2026-08-30
+WDAY,Workday Inc. Class A Common Stock,50565840000.0,large,2026-08-30
+AMP,Ameriprise Financial Inc. Common Stock,50281237023.0,large,2026-08-30
+ALAB,Astera Labs Inc. Common Stock,50218733055.0,large,2026-08-30
+XYZ,Block Inc. Class A Common Stock,50208438150.0,large,2026-08-30
+UMC,United Microelectronics Corporation (NEW) Common Stock,49823922814.0,large,2026-08-30
+CCEP,Coca-Cola Europacific Partners plc Ordinary Shares,49529483440.0,large,2026-08-30
+FITB,Fifth Third Bancorp Common Stock,49461920441.0,large,2026-08-30
+WAB,Westinghouse Air Brake Technologies Corporation Common Stock,49360817988.0,large,2026-08-30
+ETR,Entergy Corporation Common Stock,49346280914.0,large,2026-08-30
+LHX,L3Harris Technologies Inc. Common Stock,48940925377.0,large,2026-08-30
+MSTR,Strategy Inc Common Stock Class A,48915780360.0,large,2026-08-30
+INFY,Infosys Limited American Depositary Shares,48879139097.0,large,2026-08-30
+AXON,Axon Enterprise Inc. Common Stock,48801752313.0,large,2026-08-30
+CARR,Carrier Global Corporation Common Stock ,48462070101.0,large,2026-08-30
+AZO,AutoZone Inc. Common Stock,48355048496.0,large,2026-08-30
+TEAM,Atlassian Corporation Class A Common Stock,48201427458.0,large,2026-08-30
+CMG,Chipotle Mexican Grill Inc. Common Stock,48123846540.0,large,2026-08-30
+ROK,Rockwell Automation Inc. Common Stock,47943495390.0,large,2026-08-30
+XEL,Xcel Energy Inc. Common Stock,47753292694.0,large,2026-08-30
+COIN,Coinbase Global Inc. Class A Common Stock,47131827925.0,large,2026-08-30
+VTR,Ventas Inc. Common Stock,47093605220.0,large,2026-08-30
+ARES,Ares Management Corporation Class A Common Stock,47074413449.0,large,2026-08-30
+NTRA,Natera Inc. Common Stock,47028476904.0,large,2026-08-30
+HEI,Heico Corporation Common Stock,47025930873.0,large,2026-08-30
+EBAY,eBay Inc. Common Stock,47000900000.0,large,2026-08-30
+CRWV,CoreWeave Inc. Class A Common Stock,46455927986.0,large,2026-08-30
+MDLN,Medline Inc. Class A Common Stock,46382880318.0,large,2026-08-30
+HUM,Humana Inc. Common Stock,46295761946.0,large,2026-08-30
+TRI,Thomson Reuters Corporation Common Shares,46016670000.0,large,2026-08-30
+VST,Vistra Corp. Common Stock,46012228883.0,large,2026-08-30
+PYPL,PayPal Holdings Inc. Common Stock,45904030499.0,large,2026-08-30
+EXC,Exelon Corporation Common Stock,45346916770.0,large,2026-08-30
+PAYX,Paychex Inc. Common Stock,45185950534.0,large,2026-08-30
+VEEV,Veeva Systems Inc. Class A Common Stock,45155447750.0,large,2026-08-30
+ABEV,Ambev S.A. American Depositary Shares (Each representing 1 Common Share),45078286842.0,large,2026-08-30
+HLN,Haleon plc American Depositary Shares (Each representing two Ordinary Shares),45022213382.0,large,2026-08-30
+RVMD,Revolution Medicines Inc. Common Stock,44556254574.0,large,2026-08-30
+KB,KB Financial Group Inc,44522251564.0,large,2026-08-30
+PCG,Pacific Gas & Electric Co. Common Stock,44489834234.0,large,2026-08-30
+FERG,Ferguson Enterprises Inc. Common Stock,44202011307.0,large,2026-08-30
+STM,STMicroelectronics N.V. Common Stock,44073882322.0,large,2026-08-30
+TTWO,Take-Two Interactive Software Inc. Common Stock,44013326478.0,large,2026-08-30
+SLF,Sun Life Financial Inc. Common Stock,43858671963.0,large,2026-08-30
+IX,ORIX Corporation American Depositary Shares,43840158336.0,large,2026-08-30
+WDS,Woodside Energy Group Limited American Depositary Shares each representing one Ordinary Share,43839369298.0,large,2026-08-30
+KDP,Keurig Dr Pepper Inc. Common Stock,43791381903.0,large,2026-08-30
+CRDO,Credo Technology Group Holding Ltd Ordinary Shares,43741793512.0,large,2026-08-30
+IDXX,IDEXX Laboratories Inc. Common Stock,43722731569.0,large,2026-08-30
+CBRE,CBRE Group Inc Common Stock Class A,43673746444.0,large,2026-08-30
+CCJ,Cameco Corporation Common Stock,43557653130.0,large,2026-08-30
+A,Agilent Technologies Inc. Common Stock,43449330265.0,large,2026-08-30
+IBKR,Interactive Brokers Group Inc. Class A Common Stock,43423011909.0,large,2026-08-30
+BSBR,Banco Santander Brasil SA American Depositary Shares each representing one unit,43407661141.0,large,2026-08-30
+IQV,IQVIA Holdings Inc. Common Stock,43084050000.0,large,2026-08-30
+LYV,Live Nation Entertainment Inc. Common Stock,42802890669.0,large,2026-08-30
+CBRS,Cerebras Systems Inc. Class A Common Stock,42542968462.0,large,2026-08-30
+TEVA,Teva Pharmaceutical Industries Limited American Depositary Shares,42463389301.0,large,2026-08-30
+WCN,Waste Connections Inc. Common Shares,42349488896.0,large,2026-08-30
+FER,Ferrovial N.V. Ordinary Shares,42253753775.0,large,2026-08-30
+ROP,Roper Technologies Inc. Common Stock,42151552499.0,large,2026-08-30
+HBANM,Huntington Bancshares Incorporated Depositary Shares each representing a 1/1000th interest in a share of Huntington Series I Preferred Stock,42012505892.0,large,2026-08-30
+YUM,Yum! Brands Inc.,41988560938.0,large,2026-08-30
+ONC,BeOne Medicines Ltd. American Depositary Shares,41697889352.0,large,2026-08-30
+MSCI,MSCI Inc. Common Stock,41494252000.0,large,2026-08-30
+HMC,Honda Motor Company Ltd. Common Stock,41339204294.0,large,2026-08-30
+PRU,Prudential Financial Inc. Common Stock,41327550000.0,large,2026-08-30
+DHI,D.R. Horton Inc. Common Stock,41225169743.0,large,2026-08-30
+ODFL,Old Dominion Freight Line Inc. Common Stock,41187245828.0,large,2026-08-30
+GFI,Gold Fields Limited American Depositary Shares,41135314392.0,large,2026-08-30
+FMX,Fomento Economico Mexicano S.A.B. de C.V. Common Stock,40922657936.0,large,2026-08-30
+FLEX,Flex Ltd. Ordinary Shares,40819029069.0,large,2026-08-30
+WAT,Waters Corporation Common Stock,40742509151.0,large,2026-08-30
+SMCIP,Super Micro Computer Inc. Depositary Shares representing a 1/20th Interest in a Share of 7% Series A Mandatory Convertible Preferred Stock,40608136628.0,large,2026-08-30
+AIG,American International Group Inc. New Common Stock,40226171491.0,large,2026-08-30
+BTSGU,BrightSpring Health Services Inc. Tangible Equity Unit,40006170888.0,large,2026-08-30
+ED,Consolidated Edison Inc. Common Stock,39752879761.0,large,2026-08-30
+MCHP,Microchip Technology Incorporated Common Stock,39601623835.0,large,2026-08-30
+VIK,Viking Holdings Ltd Ordinary Shares,39452064452.0,large,2026-08-30
+ADM,Archer-Daniels-Midland Company Common Stock,39298984398.0,large,2026-08-30
+SYY,Sysco Corporation Common Stock,39257127551.0,large,2026-08-30
+STRF,Strategy Inc 10.00% Series A Perpetual Strife Preferred Stock,39056547589.0,large,2026-08-30
+RKT,Rocket Companies Inc. Class A Common Stock,38991716137.0,large,2026-08-30
+HBANZ,Huntington Bancshares Incorporated Depositary Shares Each Representing a 1/1000th Interest in a Share of 5.50% Series L Non-Cumulative Perpetual Preferred Stock,38731352214.0,large,2026-08-30
+JD,JD.com Inc. American Depositary Shares,38626560000.0,large,2026-08-30
+RKLB,Rocket Lab Corporation Common Stock,38534822594.0,large,2026-08-30
+VOD,Vodafone Group Plc American Depositary Shares,38109449442.0,large,2026-08-30
+EXPE,Expedia Group Inc. Common Stock,37719526331.0,large,2026-08-30
+SHG,Shinhan Financial Group Co Ltd American Depositary Shares,37568892673.0,large,2026-08-30
+HIG,The Hartford Insurance Group Inc. Common Stock,37529315877.0,large,2026-08-30
+EL,Estee Lauder Companies Inc. (The) Common Stock,37406353842.0,large,2026-08-30
+STRC,Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock,37396692345.0,large,2026-08-30
+KGC,Kinross Gold Corporation Common Stock,37339507000.0,large,2026-08-30
+KVUE,Kenvue Inc. Common Stock,36821227362.0,large,2026-08-30
+NTAP,NetApp Inc. Common Stock,36699732240.0,large,2026-08-30
+TWLO,Twilio Inc. Class A Common Stock,36517115812.0,large,2026-08-30
+PEG,Public Service Enterprise Group Incorporated Common Stock,36479361996.0,large,2026-08-30
+KMB,Kimberly-Clark Corporation Common Stock,36434033613.0,large,2026-08-30
+BBD,Banco Bradesco Sa American Depositary Shares,36351881248.0,large,2026-08-30
+UI,Ubiquiti Inc. Common Stock,36277685152.0,large,2026-08-30
+ALC,Alcon Inc. Ordinary Shares,35983397000.0,large,2026-08-30
+HSY,The Hershey Company Common Stock,35975738886.0,large,2026-08-30
+MDB,MongoDB Inc. Class A Common Stock,35922507237.0,large,2026-08-30
+UAL,United Airlines Holdings Inc. Common Stock,35898965183.0,large,2026-08-30
+VMC,Vulcan Materials Company (Holding Company) Common Stock,35570659643.0,large,2026-08-30
+QSR,Restaurant Brands International Inc. Common Shares,35569865966.0,large,2026-08-30
+VG,Venture Global Inc. Class A common stock,35451316627.0,large,2026-08-30
+NTR,Nutrien Ltd. Common Shares,35429043748.0,large,2026-08-30
+KR,Kroger Company (The) Common Stock,35362001117.0,large,2026-08-30
+PUK,Prudential Public Limited Company Common Stock,35326178650.0,large,2026-08-30
+RPRX,Royalty Pharma plc Class A Ordinary Shares ,34988823263.0,large,2026-08-30
+IRM,Iron Mountain Incorporated (Delaware)Common Stock REIT,34950310129.0,large,2026-08-30
+TKO,TKO Group Holdings Inc. Class A Common Stock,34946759808.0,large,2026-08-30
+BAP,Credicorp Ltd. Common Stock,34770445583.0,large,2026-08-30
+MCHPP,Microchip Technology Incorporated Depositary Shares Each Representing a 1/20th Interest in a Share of 7.50% Series A Mandatory Convertible Preferred Stock,34725405789.0,large,2026-08-30
+CBOE,Cboe Global Markets Inc. Common Stock,34714130938.0,large,2026-08-30
+PPLC,PPL Corporation Corporate Units,34677266273.0,large,2026-08-30
+RMD,ResMed Inc. Common Stock,34668156701.0,large,2026-08-30
+WEC,WEC Energy Group Inc. Common Stock,34611721462.0,large,2026-08-30
+RJF,Raymond James Financial Inc. Common Stock,34501996485.0,large,2026-08-30
+CLS,Celestica Inc. Common Stock,34342467061.0,large,2026-08-30
+DXCM,DexCom Inc. Common Stock,34271904677.0,large,2026-08-30
+MTB,M&T Bank Corporation Common Stock,34268534810.0,large,2026-08-30
+HBAN,Huntington Bancshares Incorporated Common Stock,34185418856.0,large,2026-08-30
+NTRS,Northern Trust Corporation Common Stock,34174286424.0,large,2026-08-30
+EQT,EQT Corporation Common Stock,34134408120.0,large,2026-08-30
+TECK,Teck Resources Ltd Ordinary Shares,33944899832.0,large,2026-08-30
+EC,Ecopetrol S.A. American Depositary Shares,33921273128.0,large,2026-08-30
+CCL,Carnival Corporation Ltd. Common Shares,33912512186.0,large,2026-08-30
+BBDO,Banco Bradesco Sa American Depositary Shares (each representing one Common Share),33891138517.0,large,2026-08-30
+ACGL,Arch Capital Group Ltd. Common Stock,33727086814.0,large,2026-08-30
+STLD,Steel Dynamics Inc.,33634085771.0,large,2026-08-30
+ERIC,Ericsson American Depositary Shares,33544949763.0,large,2026-08-30
+CQP,Cheniere Energy Partners LP Common Units,33356416383.0,large,2026-08-30
+CHT,Chunghwa Telecom Co. Ltd.,33349262675.0,large,2026-08-30
+BIDU,Baidu Inc. ADS,33045338242.0,large,2026-08-30
+ESLT,Elbit Systems Ltd. Ordinary Shares,32959950638.0,large,2026-08-30
+HBANP,Huntington Bancshares Incorporated Depositary Shares 4.500% Series H Non-Cumulative Perpetual Preferred Stock,32811738816.0,large,2026-08-30
+EME,EMCOR Group Inc. Common Stock,32648825423.0,large,2026-08-30
+ILMN,Illumina Inc. Common Stock,32554090000.0,large,2026-08-30
+GEHC,GE HealthCare Technologies Inc. Common Stock ,32397196425.0,large,2026-08-30
+CCI,Crown Castle Inc. Common Stock,32394177125.0,large,2026-08-30
+BIIB,Biogen Inc. Common Stock,32284248563.0,large,2026-08-30
+CNC,Centene Corporation Common Stock,31986176250.0,large,2026-08-30
+ZTS,Zoetis Inc. Class A Common Stock,31958713379.0,large,2026-08-30
+WTW,Willis Towers Watson Public Limited Company Ordinary Shares,31924728344.0,large,2026-08-30
+MLM,Martin Marietta Materials Inc. Common Stock,31897963801.0,large,2026-08-30
+ALNY,Alnylam Pharmaceuticals Inc. Common Stock,31726141878.0,large,2026-08-30
+JBL,Jabil Inc. Common Stock,31588067979.0,large,2026-08-30
+P,Everpure Inc. Class A common stock,31046620649.0,large,2026-08-30
+AGNCN,AGNC Investment Corp. Depositary Shares Each Representing a 1/1000th Interest in a Share of 7.00% Series C Fixed-To-Floating Rate Cumulative Redeemable Preferred Stock,30680259848.0,large,2026-08-30
+CPRT,Copart Inc. (DE) Common Stock,30542520791.0,large,2026-08-30
+IR,Ingersoll Rand Inc. Common Stock,30488995131.0,large,2026-08-30
+KHC,The Kraft Heinz Company Common Stock,30475670581.0,large,2026-08-30
+AGNCO,AGNC Investment Corp. Depositary Shares each representing a 1/1000th interest in a share of 6.50% Series E Fixed-to-Floating Cumulative Redeemable Preferred Stock,30431308744.0,large,2026-08-30
+AGNCZ,AGNC Investment Corp. Depositary Shares Each Representing a 1/1000th Interest in a Share of 8.75% Series H Fixed-Rate Cumulative Redeemable Preferred Stock,30371916124.0,large,2026-08-30
+EXR,Extra Space Storage Inc Common Stock,30192532534.0,large,2026-08-30
+AGNCP,AGNC Investment Corp. Depositary Shares Each Representing a 1/1000th Interest in a Share of 6.125% Series F Fixed-to-Floating Rate Cumulative Redeemable Preferred Stock,30146793197.0,large,2026-08-30
+HAL,Halliburton Company Common Stock,30142656678.0,large,2026-08-30
+AGNCL,AGNC Investment Corp. Depositary Shares Each Representing a 1/1000th Interest in a Share of 7.75% Series G Fixed-Rate Reset Cumulative Redeemable Preferred Stock,30101744902.0,large,2026-08-30
+BSP,Bending Spoons S.p.A. Ordinary Shares,30002094687.0,large,2026-08-30
+SUNB,Sunbelt Rentals Holdings Inc. Common Stock,29994474749.0,large,2026-08-30
+NMR,Nomura Holdings Inc ADR American Depositary Shares,29883773407.0,large,2026-08-30
+AGNCM,AGNC Investment Corp. Depositary Shares rep 6.875% Series D Fixed-to-Floating Cumulative Redeemable Preferred Stock,29826713207.0,large,2026-08-30
+ZS,Zscaler Inc. Common Stock,29791745791.0,large,2026-08-30
+FTI,TechnipFMC plc Ordinary Share,29741747186.0,large,2026-08-30
+CPNG,Coupang Inc. Class A Common Stock,29694893317.0,large,2026-08-30
+RYAAY,Ryanair Holdings plc American Depositary Shares,29537502577.0,large,2026-08-30
+RDDT,Reddit Inc. Class A Common Stock,29436666030.0,large,2026-08-30
+AEE,Ameren Corporation Common Stock,29378605796.0,large,2026-08-30
+CFG,Citizens Financial Group Inc. Common Stock,29360233891.0,large,2026-08-30
+LPLA,LPL Financial Holdings Inc. Common Stock,29188979480.0,large,2026-08-30
+LVS,Las Vegas Sands Corp. Common Stock,29172461327.0,large,2026-08-30
+SYF,Synchrony Financial Common Stock,29039091621.0,large,2026-08-30
+OKTA,Okta Inc. Class A Common Stock,28891998284.0,large,2026-08-30
+CTSH,Cognizant Technology Solutions Corporation Class A Common Stock,28846447144.0,large,2026-08-30
+TDY,Teledyne Technologies Incorporated Common Stock,28831374379.0,large,2026-08-30
+ZM,Zoom Communications Inc. Class A Common Stock,28720270674.0,large,2026-08-30
+FOXA,Fox Corporation Class A Common Stock,28712463195.0,large,2026-08-30
+ATI,ATI Inc. Common Stock,28699269921.0,large,2026-08-30
+TS,Tenaris S.A. American Depositary Shares,28574434364.0,large,2026-08-30
+TCOM,Trip.com Group Limited American Depositary Shares,28557131818.0,large,2026-08-30
+VICI,VICI Properties Inc. Common Stock,28484876529.0,large,2026-08-30
+FISV,Fiserv Inc. Common Stock,28279354223.0,large,2026-08-30
+DTE,DTE Energy Company Common Stock,28270845054.0,large,2026-08-30
+ON,ON Semiconductor Corporation Common Stock,28268424490.0,large,2026-08-30
+ATO,Atmos Energy Corporation Common Stock,28161942357.0,large,2026-08-30
+MTD,Mettler-Toledo International Inc. Common Stock,28022730686.0,large,2026-08-30
+CASY,Casey's General Stores Inc. Common Stock,27956102380.0,large,2026-08-30
+FTS,Fortis Inc. Common Shares,27925794000.0,large,2026-08-30
+PBA,Pembina Pipeline Corp. Ordinary Shares (Canada),27920455550.0,large,2026-08-30
+HPQ,HP Inc. Common Stock,27911232499.0,large,2026-08-30
+STRD,Strategy Inc 10.00% Series A Perpetual Stride Preferred Stock,27683465360.0,large,2026-08-30
+WSM,Williams-Sonoma Inc. Common Stock (DE),27681050780.0,large,2026-08-30
+STRK,Strategy Inc 8.00% Series A Perpetual Strike Preferred Stock,27560513119.0,large,2026-08-30
+RBLX,Roblox Corporation Class A Common Stock,27524905007.0,large,2026-08-30
+AWK,American Water Works Company Inc. Common Stock,27484219179.0,large,2026-08-30
+OTIS,Otis Worldwide Corporation Common Stock ,27309218380.0,large,2026-08-30
+LH,Labcorp Holdings Inc. Common Stock,27177421000.0,large,2026-08-30
+DG,Dollar General Corporation Common Stock,27107893050.0,large,2026-08-30
+EIX,Edison International Common Stock,27002396906.0,large,2026-08-30
+SN,SharkNinja Inc. Ordinary Shares,26938866889.0,large,2026-08-30
+DGX,Quest Diagnostics Incorporated Common Stock,26794236874.0,large,2026-08-30
+CPAY,Corpay Inc. Common Stock,26781237240.0,large,2026-08-30
+DOV,Dover Corporation Common Stock,26758267103.0,large,2026-08-30
+ES,Eversource Energy (D/B/A) Common Stock,26683639573.0,large,2026-08-30
+FE,FirstEnergy Corp. Common Stock,26548000080.0,large,2026-08-30
+CINF,Cincinnati Financial Corporation Common Stock,26393619399.0,large,2026-08-30
+VRSN,VeriSign Inc. Common Stock,26361279000.0,large,2026-08-30
+PHG,Koninklijke Philips N.V. NY Registry Shares,26262681509.0,large,2026-08-30
+AFRM,Affirm Holdings Inc. Class A Common Stock,26041712414.0,large,2026-08-30
+XYL,Xylem Inc. Common Stock New,25989417044.0,large,2026-08-30
+INSM,Insmed Incorporated Common Stock,25886943366.0,large,2026-08-30
+CNP,CenterPoint Energy Inc (Holding Co) Common Stock,25848184101.0,large,2026-08-30
+RF,Regions Financial Corporation Common Stock,25839021917.0,large,2026-08-30
+PPL,PPL Corporation Common Stock,25737033562.0,large,2026-08-30
+FOX,Fox Corporation Class B Common Stock,25732947137.0,large,2026-08-30
+BNTX,BioNTech SE American Depositary Share,25641685659.0,large,2026-08-30
+FWONK,Liberty Media Corporation Series C Liberty Formula One Common Stock,25522123773.0,large,2026-08-30
+TW,Tradeweb Markets Inc. Class A Common Stock,25478656884.0,large,2026-08-30
+WRB,W.R. Berkley Corporation Common Stock,25406812085.0,large,2026-08-30
+PPG,PPG Industries Inc. Common Stock,25391106000.0,large,2026-08-30
+SW,Smurfit WestRock plc Ordinary Shares,25329211227.0,large,2026-08-30
+ECHO,EchoStar  Corporation Common Stock,25226213083.0,large,2026-08-30
+INCY,Incyte Corp. Common Stock,25209518670.0,large,2026-08-30
+Q,Qnity Electronics Inc. Common Stock,25159419381.0,large,2026-08-30
+TPL,Texas Pacific Land Corporation Common Stock,25132994992.0,large,2026-08-30
+ROIV,Roivant Sciences Ltd. Common Shares,25071831851.0,large,2026-08-30
+TPR,Tapestry Inc. Common Stock,25021661672.0,large,2026-08-30
+VRSK,Verisk Analytics Inc. Common Stock,24960018421.0,large,2026-08-30
+FICO,Fair Isaac Corporation Common Stock,24914383807.0,large,2026-08-30
+GFS,GlobalFoundries Inc. Ordinary Shares,24905236379.0,large,2026-08-30
+EXPD,Expeditors International of Washington Inc. Common Stock,24824309083.0,large,2026-08-30
+FCNCA,First Citizens BancShares Inc. Class A Common Stock,24777895798.0,large,2026-08-30
+DLTR,Dollar Tree Inc. Common Stock,24648312657.0,large,2026-08-30
+DRI,Darden Restaurants Inc. Common Stock,24598632455.0,large,2026-08-30
+IHG,Intercontinental Hotels Group American Depositary Shares (Each representing one Ordinary Share),24582968495.0,large,2026-08-30
+BRO,Brown & Brown Inc. Common Stock,24530285272.0,large,2026-08-30
+JBHT,J.B. Hunt Transport Services Inc. Common Stock,24514616527.0,large,2026-08-30
+AMRZ,Amrize Ltd Ordinary Shares,24431168517.0,large,2026-08-30
+GPN,Global Payments Inc. Common Stock,24297260570.0,large,2026-08-30
+HUBB,Hubbell Inc Common Stock,24285019586.0,large,2026-08-30
+OMC,Omnicom Group Inc. Common Stock,24219261967.0,large,2026-08-30
+SYM,Symbotic Inc. Class A Common Stock,24116468107.0,large,2026-08-30
+PHM,PulteGroup Inc. Common Stock,24097024017.0,large,2026-08-30
+NVT,nVent Electric plc Ordinary Shares ,24032666783.0,large,2026-08-30
+VLTO,Veralto Corp Common Stock ,24028271985.0,large,2026-08-30
+CHD,Church & Dwight Company Inc. Common Stock,24019267623.0,large,2026-08-30
+SMCI,Super Micro Computer Inc. Common Stock,23984544539.0,large,2026-08-30
+IOT,Samsara Inc. Class A Common Stock,23984346975.0,large,2026-08-30
+PFG,Principal Financial Group Inc Common Stock,23853398054.0,large,2026-08-30
+WST,West Pharmaceutical Services Inc. Common Stock,23749708402.0,large,2026-08-30
+TROW,T. Rowe Price Group Inc. Common Stock,23729255154.0,large,2026-08-30
+CRS,Carpenter Technology Corporation Common Stock,23611187599.0,large,2026-08-30
+TSEM,Tower Semiconductor Ltd. Ordinary Shares,23511578310.0,large,2026-08-30
+FWONA,Liberty Media Corporation Series A Liberty Formula One Common Stock,23421186669.0,large,2026-08-30
+ROKU,Roku Inc. Class A Common Stock,23401960937.0,large,2026-08-30
+KEY,KeyCorp Common Stock,23380786618.0,large,2026-08-30
+NRG,NRG Energy Inc. Common Stock,23358588871.0,large,2026-08-30
+SOFI,SoFi Technologies Inc. Common Stock  ,23325760051.0,large,2026-08-30
+RIVN,Rivian Automotive Inc. Class A Common Stock,23267120324.0,large,2026-08-30
+USFD,US Foods Holding Corp. Common Stock,23205796656.0,large,2026-08-30
+CIB,Grupo Cibest S.A. American Depositary Shares each representing four Preferred Shares,23172648482.0,large,2026-08-30
+EFX,Equifax Inc. Common Stock,22833189538.0,large,2026-08-30
+STE,STERIS plc (Ireland) Ordinary Shares,22793575716.0,large,2026-08-30
+AER,AerCap Holdings N.V. Ordinary Shares,22776890287.0,large,2026-08-30
+EXE,Expand Energy Corporation Common Stock,22724411928.0,large,2026-08-30
+BNJ,Brookfield Finance Inc. 4.50% Perpetual Subordinated Notes,22647110399.0,large,2026-08-30
+ASTS,AST SpaceMobile Inc. Class A Common Stock,22591173027.0,large,2026-08-30
+MKL,Markel Group Inc. Common Stock,22533492715.0,large,2026-08-30
+SQM,Sociedad Quimica y Minera S.A. Common Stock,22459700843.0,large,2026-08-30
+IFF,International Flavors & Fragrances Inc. Common Stock,22440439246.0,large,2026-08-30
+BNH,Brookfield Finance Inc. 4.625% Subordinated Notes due October 16 2080,22436018824.0,large,2026-08-30
+L,Loews Corporation Common Stock,22429809438.0,large,2026-08-30
+FFIV,F5 Inc. Common Stock,22324700232.0,large,2026-08-30
+STZ,Constellation Brands Inc. Common Stock,22319033539.0,large,2026-08-30
+RGLD,Royal Gold Inc. Common Stock,22270717212.0,large,2026-08-30
+ULTA,Ulta Beauty Inc. Common Stock,22246968443.0,large,2026-08-30
+GIS,General Mills Inc. Common Stock,22213854562.0,large,2026-08-30
+BG,Bunge Limited Common Shares,22185916324.0,large,2026-08-30
+CRCL,Circle Internet Group Inc. Class A Common Stock,22122744270.0,large,2026-08-30
+UTHR,United Therapeutics Corporation Common Stock,22108436098.0,large,2026-08-30
+XPO,XPO Inc. Common Stock,22077823840.0,large,2026-08-30
+DOW,Dow Inc. Common Stock ,22038615093.0,large,2026-08-30
+CW,Curtiss-Wright Corporation Common Stock,22026594368.0,large,2026-08-30
+SOJC,Southern Company (The) Series 2017B 5.25% Junior Subordinated Notes due December 1 2077,22022949088.0,large,2026-08-30
+FSLR,First Solar Inc. Common Stock,21973272854.0,large,2026-08-30
+PAAS,Pan American Silver Corp. Common Stock,21920853660.0,large,2026-08-30
+ARXS,Arxis Inc. Class A Common Stock,21904880194.0,large,2026-08-30
+BCE,BCE Inc. Common Stock,21877055667.0,large,2026-08-30
+CDE,Coeur Mining Inc. Common Stock,21720266508.0,large,2026-08-30
+GH,Guardant Health Inc. Common Stock,21672681455.0,large,2026-08-30
+BEP,Brookfield Renewable Partners L.P. Limited Partnership Units,21582708717.0,large,2026-08-30
+AMCR,Amcor plc Ordinary Shares,21577673352.0,large,2026-08-30
+THC,Tenet Healthcare Corporation Common Stock,21482469200.0,large,2026-08-30
+PKG,Packaging Corporation of America Common Stock,21418340097.0,large,2026-08-30
+CMS,CMS Energy Corporation Common Stock,21389096447.0,large,2026-08-30
+FIS,Fidelity National Information Services Inc. Common Stock,21370853200.0,large,2026-08-30
+RL,Ralph Lauren Corporation Common Stock,21094495896.0,large,2026-08-30
+BCH,Banco De Chile ADS,21026705452.0,large,2026-08-30
+BR,Broadridge Financial Solutions Inc. Common Stock,20938962985.0,large,2026-08-30
+IP,International Paper Company Common Stock,20817392572.0,large,2026-08-30
+LEN,Lennar Corporation Class A Common Stock,20796477609.0,large,2026-08-30
+BPYPM,Brookfield Property Partners L.P. 6.25% Class A Cumulative Redeemable Preferred Units Series 1,20711523833.0,large,2026-08-30
+BEKE,KE Holdings Inc American Depositary Shares (each representing three Class A Ordinary Shares),20698667224.0,large,2026-08-30
+ENTG,Entegris Inc. Common Stock,20615776000.0,large,2026-08-30
+LYB,LyondellBasell Industries NV Ordinary Shares Class A (Netherlands),20567826404.0,large,2026-08-30
+TPG,TPG Inc. Class A Common Stock,20396275801.0,large,2026-08-30
+TOST,Toast Inc. Class A Common Stock,20316700000.0,large,2026-08-30
+SNX,TD SYNNEX Corporation Common Stock,20307124245.0,large,2026-08-30
+BPYPP,Brookfield Property Partners L.P. 6.50% Class A Cumulative Redeemable Perpetual Preferred Units,20277969208.0,large,2026-08-30
+SNA,Snap-On Incorporated Common Stock,20269790811.0,large,2026-08-30
+MTSI,MACOM Technology Solutions Holdings Inc. Common Stock,20258916866.0,large,2026-08-30
+SBAC,SBA Communications Corporation Class A Common Stock,20257524605.0,large,2026-08-30
+SOJD,Southern Company (The) Series 2020A 4.95% Junior Subordinated Notes due January 30 2080,20196870393.0,large,2026-08-30
+AQNB,Algonquin Power & Utilities Corp. 6.20% Fixed-to-Floating Subordinated Notes Series 2019-A due July 1 2079,20183697026.0,large,2026-08-30
+WWD,Woodward Inc. Common Stock,20182451734.0,large,2026-08-30
+KSPI,Joint Stock Company Kaspi.kz American Depository Shares,20124253995.0,large,2026-08-30
+FTAI,FTAI Aviation Ltd. Common Stock,20025828603.0,large,2026-08-30
+WES,Western Midstream Partners LP Common Units Representing Limited Partner Interests,19956332842.0,large,2026-08-30
+FDXF,FedEx Freight Holding Company Inc. Common Stock,19953194849.0,large,2026-08-30
+RS,Reliance Inc. Common Stock,19788234972.0,large,2026-08-30
+RCI,Rogers Communication Inc. Common Stock,19766806332.0,large,2026-08-30
+YPF,YPF Sociedad Anonima American Depositary Shares,19744302209.0,large,2026-08-30
+SSNC,SS&C Technologies Holdings Inc. Common Stock,19574919766.0,large,2026-08-30
+PKX,POSCO HOLDINGS INC. American Depositary Shares (Each representing 1/4th of a share of Common Stock),19504841432.0,large,2026-08-30
+TSN,Tyson Foods Inc. Common Stock,19489803765.0,large,2026-08-30
+NI,NiSource Inc Common Stock,19455753257.0,large,2026-08-30
+LUV,Southwest Airlines Company Common Stock,19392213088.0,large,2026-08-30
+MTZ,MasTec Inc. Common Stock,19353492468.0,large,2026-08-30
+ZBH,Zimmer Biomet Holdings Inc. Common Stock,19247340197.0,large,2026-08-30
+RBRK,Rubrik Inc. Class A Common Stock,19152348066.0,large,2026-08-30
+BPYPO,Brookfield Property Partners L.P. 6.375% Class A Cumulative Redeemable Perpetual Preferred Units Series 2,19076403531.0,large,2026-08-30
+U,Unity Software Inc. Common Stock,19060251688.0,large,2026-08-30
+CF,CF Industries Holdings Inc. Common Stock,19036823373.0,large,2026-08-30
+PR,Permian Resources Corporation Class A Common Stock,19012544558.0,large,2026-08-30
+GPC,Genuine Parts Company Common Stock,18957095323.0,large,2026-08-30
+NWS,News Corporation Class B Common Stock,18855684434.0,large,2026-08-30
+VTRS,Viatris Inc. Common Stock,18767974718.0,large,2026-08-30
+OWL,Blue Owl Capital Inc. Class A Common Stock,18740288520.0,large,2026-08-30
+NTNX,Nutanix Inc. Class A Common Stock,18695366402.0,large,2026-08-30
+EVRG,Evergy Inc. Common Stock,18595242422.0,large,2026-08-30
+GEN,Gen Digital Inc. Common Stock,18568169733.0,large,2026-08-30
+DD,DuPont de Nemours Inc. Common Stock,18498186716.0,large,2026-08-30
+CDW,CDW Corporation Common Stock,18463823646.0,large,2026-08-30
+OVV,Ovintiv Inc. (DE),18259593000.0,large,2026-08-30
+ESS,Essex Property Trust Inc. Common Stock,18254164729.0,large,2026-08-30
+VIV,Telefonica Brasil S.A. American Depositary Shares (Each representing One Common Share),18198978175.0,large,2026-08-30
+ITT,ITT Inc. Common Stock ,18147306000.0,large,2026-08-30
+TSCO,Tractor Supply Company Common Stock,18090513557.0,large,2026-08-30
+NDSN,Nordson Corporation Common Stock,18079457210.0,large,2026-08-30
+FTV,Fortive Corporation Common Stock ,18027397834.0,large,2026-08-30
+WIT,Wipro Limited Common Stock,18024460631.0,large,2026-08-30
+PAA,Plains All American Pipeline L.P. Common Units representing Limited Partner Interests,17977833401.0,large,2026-08-30
+WF,Woori Financial Group Inc. American Depositary Shares (each representing three (3) shares of Common Stock),17869026241.0,large,2026-08-30
+FLUT,Flutter Entertainment plc Ordinary Shares,17829933783.0,large,2026-08-30
+J,Jacobs Solutions Inc. Common Stock,17787528100.0,large,2026-08-30
+EWBC,East West Bancorp Inc. Common Stock,17734814641.0,large,2026-08-30
+DINO,HF Sinclair Corporation Common Stock,17726827584.0,large,2026-08-30
+LDOS,Leidos Holdings Inc. Common Stock,17651734118.0,large,2026-08-30
+LNT,Alliant Energy Corporation Common Stock,17639138073.0,large,2026-08-30
+BEN,Franklin Templeton Inc. Common Stock,17604864932.0,large,2026-08-30
+CHTR,Charter Communications Inc. Class A Common Stock New,17601394321.0,large,2026-08-30
+CHRW,C.H. Robinson Worldwide Inc. Common Stock,17573260691.0,large,2026-08-30
+AEG,Aegon Ltd. New York Registry Shares,17543255187.0,large,2026-08-30
+SOJE,Southern Company (The) Series 2020C 4.20% Junior Subordinated Notes due October 15 2060,17523997449.0,large,2026-08-30
+ROL,Rollins Inc. Common Stock,17504069798.0,large,2026-08-30
+CG,The Carlyle Group Inc. Common Stock,17492377054.0,large,2026-08-30
+MGA,Magna International Inc. Common Stock,17482823228.0,large,2026-08-30
+BIP,Brookfield Infrastructure Partners LP Limited Partnership Units,17438692097.0,large,2026-08-30
+FUTU,Futu Holdings Limited American Depositary Shares,17417229331.0,large,2026-08-30
+ONON,On Holding AG Class A Ordinary Shares,17408986370.0,large,2026-08-30
+JLL,Jones Lang LaSalle Incorporated Common Stock,17391371811.0,large,2026-08-30
+BPYPN,Brookfield Property Partners L.P. 5.750% Class A Cumulative Redeemable Perpetual Preferred Units Series 3,17379346853.0,large,2026-08-30
+BBY,Best Buy Co. Inc. Common Stock,17375641867.0,large,2026-08-30
+JHX,James Hardie Industries plc. Ordinary Shares,17375038066.0,large,2026-08-30
+NLY,Annaly Capital Management Inc. Common Stock,17365580744.0,large,2026-08-30
+GIB,CGI Inc. Common Stock,17338294247.0,large,2026-08-30
+AS,Amer Sports Inc. Ordinary Shares,17315572366.0,large,2026-08-30
+MKSI,MKS Inc. Common Stock,17293866634.0,large,2026-08-30
+DUKB,Duke Energy Corporation 5.625% Junior Subordinated Debentures due 2078,17285997619.0,large,2026-08-30
+INVH,Invitation Homes Inc. Common Stock,17269823128.0,large,2026-08-30
+BURL,Burlington Stores Inc. Common Stock,17180075128.0,large,2026-08-30
+SBS,Companhia de saneamento Basico Do Estado De Sao Paulo - Sabesp American Depositary Shares (Each repstg 250 Common Shares),17164480702.0,large,2026-08-30
+APG,APi Group Corporation Common Stock,17152442188.0,large,2026-08-30
+GWRE,Guidewire Software Inc. Common Stock,17138322529.0,large,2026-08-30
+PTC,PTC Inc. Common Stock,17051758916.0,large,2026-08-30
+NVR,NVR Inc. Common Stock,17045164072.0,large,2026-08-30
+WY,Weyerhaeuser Company Common Stock,17038199040.0,large,2026-08-30
+IEX,IDEX Corporation Common Stock,16976217651.0,large,2026-08-30
+BALL,Ball Corporation Common Stock,16880133076.0,large,2026-08-30
+PS,Pershing Square Inc. Common Stock,16868000000.0,large,2026-08-30
+ZBRA,Zebra Technologies Corporation Class A Common Stock,16863884757.0,large,2026-08-30
+SITM,SiTime Corporation Common Stock,16775428143.0,large,2026-08-30
+MEDP,Medpace Holdings Inc. Common Stock,16765135576.0,large,2026-08-30
+NWSA,News Corporation Class A Common Stock,16756400199.0,large,2026-08-30
+BSAC,Banco Santander - Chile ADS,16554992239.0,large,2026-08-30
+ZTO,ZTO Express (Cayman) Inc. American Depositary Shares each representing one Class A ordinary share.,16552864900.0,large,2026-08-30
+CX,Cemex S.A.B. de C.V. Sponsored ADR,16478008170.0,large,2026-08-30
+TRU,TransUnion Common Stock,16414372000.0,large,2026-08-30
+CLH,Clean Harbors Inc. Common Stock,16401525826.0,large,2026-08-30
+WCC,WESCO International Inc. Common Stock,16394706743.0,large,2026-08-30
+ASND,Ascendis Pharma A/S Ordinary Share,16281063836.0,large,2026-08-30
+LSCC,Lattice Semiconductor Corporation Common Stock,16248263117.0,large,2026-08-30
+H,Hyatt Hotels Corporation Class A Common Stock,16232277776.0,large,2026-08-30
+ALB,Albemarle Corporation Common Stock,16209174630.0,large,2026-08-30
+RBA,RB Global Inc. Common Stock,16084614000.0,large,2026-08-30
+WPC,W. P. Carey Inc. REIT,16063368138.0,large,2026-08-30
+RGA,Reinsurance Group of America Incorporated Common Stock,16034170824.0,large,2026-08-30
+WSE,Wise Group plc Class A Ordinary Shares,16032723175.0,large,2026-08-30
+GFL,GFL Environmental Inc. Subordinate voting shares no par value,16016452090.0,large,2026-08-30
+KIM,Kimco Realty Corporation (HC) Common Stock,15951371290.0,large,2026-08-30
+PFGC,Performance Food Group Company Common Stock,15887206277.0,large,2026-08-30
+JAZZ,Jazz Pharmaceuticals plc Common Stock (Ireland),15874210660.0,large,2026-08-30
+VNOM,Viper Energy Inc. Class A Common Stock,15869230373.0,large,2026-08-30
+RBC,RBC Bearings Incorporated Common Stock,15849251232.0,large,2026-08-30
+STLA,Stellantis N.V. Common Shares,15704358922.0,large,2026-08-30
+NBIX,Neurocrine Biosciences Inc. Common Stock,15660072825.0,large,2026-08-30
+TIGO,Millicom International Cellular S.A. Common Stock,15644962612.0,large,2026-08-30
+INIO,INNIO N.V. Ordinary Shares,15622500000.0,large,2026-08-30
+LECO,Lincoln Electric Holdings Inc. Common Shares,15528417641.0,large,2026-08-30
+SOLV,Solventum Corporation Common Stock,15510786186.0,large,2026-08-30
+DT,Dynatrace Inc. Common Stock,15510744210.0,large,2026-08-30
+TYL,Tyler Technologies Inc. Common Stock,15477502436.0,large,2026-08-30
+AKAM,Akamai Technologies Inc. Common Stock,15445223969.0,large,2026-08-30
+AGI,Alamos Gold Inc. Class A Common Shares,15433728854.0,large,2026-08-30
+YUMC,Yum China Holdings Inc. Common Stock,15417465283.0,large,2026-08-30
+TU,Telus Corporation Ordinary Shares,15365630000.0,large,2026-08-30
+FIG,Figma Inc. Class A Common Stock,15361344367.0,large,2026-08-30
+ARMK,Aramark Common Stock,15337705060.0,large,2026-08-30
+EMA,Emera Incorporated Common Shares,15329280000.0,large,2026-08-30
+SUN,Sunoco LP Common Units representing limited partner interests,15290158555.0,large,2026-08-30
+PNFP,Pinnacle Financial Partners Inc. Common stock,15275976778.0,large,2026-08-30
+LAMR,Lamar Advertising Company Class A Common Stock,15271041480.0,large,2026-08-30
+HST,Host Hotels & Resorts Inc. Common Stock,15264571610.0,large,2026-08-30
+SKM,SK Telecom Co. Ltd. Common Stock,15090037200.0,large,2026-08-30
+MAA,Mid-America Apartment Communities Inc. Common Stock,15037605847.0,large,2026-08-30
+ULS,UL Solutions Inc. Class A Common Stock,15027281016.0,large,2026-08-30
+KEP,Korea Electric Power Corporation Common Stock,14996280839.0,large,2026-08-30
+BBIO,BridgeBio Pharma Inc. Common Stock,14974340508.0,large,2026-08-30
+SUI,Sun Communities Inc. Common Stock,14971773634.0,large,2026-08-30
+IONQ,IonQ Inc. Common Stock,14935290709.0,large,2026-08-30
+APA,APA Corporation Common Stock,14903953235.0,large,2026-08-30
+MKC,McCormick & Company Incorporated Common Stock,14875556372.0,large,2026-08-30
+FN,Fabrinet Ordinary Shares,14848534247.0,large,2026-08-30
+GRAB,Grab Holdings Limited Class A Ordinary Shares,14802739237.0,large,2026-08-30
+SWK,Stanley Black & Decker Inc. Common Stock,14769427490.0,large,2026-08-30
+UNM,Unum Group Common Stock,14730447554.0,large,2026-08-30
+HTHT,H World Group Limited American Depositary Shares,14705789025.0,large,2026-08-30
+WMG,Warner Music Group Corp. Class A Common Stock,14662766825.0,large,2026-08-30
+APOS,Apollo Global Management Inc. 7.625% Fixed-Rate Resettable Junior Subordinated Notes due 2053,14580077338.0,large,2026-08-30
+JBS,JBS N.V. Class A Common Shares,14553927651.0,large,2026-08-30
+CRBG,Corebridge Financial Inc. Common Stock,14536641942.0,large,2026-08-30
+IVZ,Invesco Ltd Common Stock,14507682771.0,large,2026-08-30
+LTM,LATAM Airlines Group S.A. American Depositary Shares (each representing two thousand (2000) shares of Common Stock),14507566836.0,large,2026-08-30
+EG,Everest Group Ltd. Common Stock,14478599786.0,large,2026-08-30
+CNH,CNH Industrial N.V. Common Shares,14456639189.0,large,2026-08-30
+DOC,Healthpeak Properties Inc. Common Stock,14452491370.0,large,2026-08-30
+MAS,Masco Corporation Common Stock,14443979248.0,large,2026-08-30
+TLK,PT Telekomunikasi Indonesia Tbk,14443271180.0,large,2026-08-30
+STRL,Sterling Infrastructure Inc. Common Stock,14392509489.0,large,2026-08-30
+KKRS,KKR Group Finance Co. IX LLC 4.625% Subordinated Notes due 2061,14389098684.0,large,2026-08-30
+RVTY,Revvity Inc. Common Stock,14372328449.0,large,2026-08-30
+VLYPN,Valley National Bancorp 8.250% Fixed-Rate Reset Non-Cumulative Perpetual Preferred Stock Series C,14364972850.0,large,2026-08-30
+BMNR,BitMine Immersion Technologies Inc. Common Stock,14356788177.0,large,2026-08-30
+ARCC,Ares Capital Corporation Common Stock,14324555758.0,large,2026-08-30
+TXT,Textron Inc. Common Stock,14281793588.0,large,2026-08-30
+PAG,Penske Automotive Group Inc. Common Stock,14249500070.0,large,2026-08-30
+TRMB,Trimble Inc. Common Stock,14226302526.0,large,2026-08-30
+W,Wayfair Inc. Class A Common Stock,14211806943.0,large,2026-08-30
+TLN,Talen Energy Corporation Common Stock,14187651661.0,large,2026-08-30
+CSL,Carlisle Companies Incorporated Common Stock,14159279838.0,large,2026-08-30
+SJM,The J.M. Smucker Company Common Stock,14136980038.0,large,2026-08-30
+CHKP,Check Point Software Technologies Ltd. Ordinary Shares,14122559695.0,large,2026-08-30
+SLMBP,SLM Corporation Floating Rate Non-Cumulative Preferred Stock Series B,14096021850.0,large,2026-08-30
+AIZ,Assurant Inc. Common Stock,14089334044.0,large,2026-08-30
+QXO,QXO Inc. Common Stock,14026874386.0,large,2026-08-30
+LOGI,Logitech International S.A. Ordinary Shares,14026729003.0,large,2026-08-30
+BWXT,BWX Technologies Inc. Common Stock,14004419643.0,large,2026-08-30
+BNT,Brookfield Wealth Solutions Ltd. Class A Exchangeable Limited Voting Shares,13983651177.0,large,2026-08-30
+OHI,Omega Healthcare Investors Inc. Common Stock,13935567870.0,large,2026-08-30
+VLYPP,Valley National Bancorp 6.25% Fixed-to-Floating Rate Non-Cumulative Perpetual Preferred Stock Series A,13925651695.0,large,2026-08-30
+CRL,Charles River Laboratories International Inc. Common Stock,13915881188.0,large,2026-08-30
+MLI,Mueller Industries Inc. Common Stock,13890191166.0,large,2026-08-30
+CACI,CACI International Inc. Class A Common Stock,13882930400.0,large,2026-08-30
+COO,The Cooper Companies Inc. Common Stock,13880329937.0,large,2026-08-30
+REG,Regency Centers Corporation Common Stock,13829263709.0,large,2026-08-30
+VLYPO,Valley National Bancorp 5.50% Fixed-to-Floating Rate Non-Cumulative Perpetual Preferred Stock Series B,13826459057.0,large,2026-08-30
+RNR,RenaissanceRe Holdings Ltd. Common Stock,13742873091.0,large,2026-08-30
+EQH,Equitable Holdings Inc. Common Stock,13706364881.0,large,2026-08-30
+HL,Hecla Mining Company Common Stock,13690640624.0,large,2026-08-30
+TOL,Toll Brothers Inc. Common Stock,13667329620.0,large,2026-08-30
+RPM,RPM International Inc. Common Stock,13623621590.0,large,2026-08-30
+LII,Lennox International Inc. Common Stock,13595823938.0,large,2026-08-30
+SGI,Somnigroup International Inc. Common Stock,13541226656.0,large,2026-08-30
+BAX,Baxter International Inc. Common Stock,13509105454.0,large,2026-08-30
+EXEL,Exelixis Inc. Common Stock,13491713129.0,large,2026-08-30
+TME,Tencent Music Entertainment Group American Depositary Shares each representing two Class A Ordinary Shares,13472622520.0,large,2026-08-30
+AVY,Avery Dennison Corporation Common Stock,13471342241.0,large,2026-08-30
+SEIC,SEI Investments Company Common Stock,13397741287.0,large,2026-08-30
+ALLE,Allegion plc Ordinary Shares,13391593059.0,large,2026-08-30
+FIVE,Five Below Inc. Common Stock,13375392453.0,large,2026-08-30
+CNA,CNA Financial Corporation Common Stock,13343331760.0,large,2026-08-30
+UHAL,U-Haul Holding Company Common Stock,13333449822.0,large,2026-08-30
+HAS,Hasbro Inc. Common Stock,13290620125.0,large,2026-08-30
+ONTO,Onto Innovation Inc. Common Stock,13288815345.0,large,2026-08-30
+AA,Alcoa Corporation Common Stock ,13279923272.0,large,2026-08-30
+GL,Globe Life Inc. Common Stock,13278815947.0,large,2026-08-30
+CET,Central Securities Corporation Common Stock,13261770834.0,large,2026-08-30
+DTM,DT Midstream Inc. Common Stock ,13214041291.0,large,2026-08-30
+COKE,Coca-Cola Consolidated Inc. Common Stock,13212346716.0,large,2026-08-30
+MAIR,Madison Air Solutions Corporation Class A Common Stock,13210356374.0,large,2026-08-30
+QNT,Quantinuum Inc. Class A Common Stock,13144342449.0,large,2026-08-30
+PINS,Pinterest Inc. Class A Common Stock,13132799096.0,large,2026-08-30
+EMBJ,Embraer S.A. Common Stock,13107363949.0,large,2026-08-30
+LULU,lululemon athletica inc. Common Stock,13100389585.0,large,2026-08-30
+DOCN,DigitalOcean Holdings Inc. Common Stock,13076021756.0,large,2026-08-30
+TXRH,Texas Roadhouse Inc. Common Stock,13061887865.0,large,2026-08-30
+CSGP,CoStar Group Inc. Common Stock,13055466285.0,large,2026-08-30
+BWA,BorgWarner Inc. Common Stock,13052976628.0,large,2026-08-30
+MANH,Manhattan Associates Inc. Common Stock,13018334148.0,large,2026-08-30
+ICLR,ICON plc Ordinary Shares,13017976597.0,large,2026-08-30
+HBM,Hudbay Minerals Inc. Ordinary Shares (Canada),13009000020.0,large,2026-08-30
+HUBS,HubSpot Inc. Common Stock,12999121277.0,large,2026-08-30
+NXT,Nextpower Inc. Common Stock,12963770189.0,large,2026-08-30
+AHR,American Healthcare REIT Inc. Common Stock,12948774156.0,large,2026-08-30
+SREA,DBA Sempra 5.750% Junior Subordinated Notes due 2079,12947833144.0,large,2026-08-30
+AGNC,AGNC Investment Corp. Common Stock,12921747772.0,large,2026-08-30
+FMS,Fresenius Medical Care AG American Depositary Shares (Each representing 1/2 of an Ordinary Share),12903146487.0,large,2026-08-30
+CCK,Crown Holdings Inc.,12881594923.0,large,2026-08-30
+HMY,Harmony Gold Mining Company Limited,12841351057.0,large,2026-08-30
+GGG,Graco Inc. Common Stock,12841318705.0,large,2026-08-30
+ALLY,Ally Financial Inc. Common Stock,12831143051.0,large,2026-08-30
+WSO,Watsco Inc. Common Stock,12819531807.0,large,2026-08-30
+FNF,Fidelity National Financial Inc. Common Stock,12752568924.0,large,2026-08-30
+PEN,Penumbra Inc. Common Stock,12670789269.0,large,2026-08-30
+IREN,IREN Limited Ordinary Shares,12669073993.0,large,2026-08-30
+CHYM,Chime Financial Inc. Class A Common Stock,12569025685.0,large,2026-08-30
+DKNG,DraftKings Inc. Class A Common Stock,12540429252.0,large,2026-08-30
+IT,Gartner Inc. Common Stock,12528125349.0,large,2026-08-30
+BMRN,BioMarin Pharmaceutical Inc. Common Stock,12517447126.0,large,2026-08-30
+TTMI,TTM Technologies Inc. Common Stock,12499642714.0,large,2026-08-30
+CLX,Clorox Company (The) Common Stock,12399055943.0,large,2026-08-30
+GLPI,Gaming and Leisure Properties Inc. Common Stock,12381557030.0,large,2026-08-30
+GDDY,GoDaddy Inc. Class A Common Stock,12373480681.0,large,2026-08-30
+ELS,Equity Lifestyle Properties Inc. Common Stock,12369678815.0,large,2026-08-30
+MICC,The Magnum Ice Cream Company N.V. Ordinary Shares,12355401533.0,large,2026-08-30
+PAC,Grupo Aeroportuario Del Pacifico S.A. B. de C.V. Grupo Aeroportuario Del Pacifico S.A. de C.V. (each representing 10 Series B shares),12350197759.0,large,2026-08-30
+MDGL,Madrigal Pharmaceuticals Inc. Common Stock,12332058294.0,large,2026-08-30
+CORT,Corcept Therapeutics Incorporated Common Stock,12310245450.0,large,2026-08-30
+SNN,Smith & Nephew SNATS Inc. Common Stock,12308252430.0,large,2026-08-30
+SF,Stifel Financial Corporation Common Stock,12274930957.0,large,2026-08-30
+SMTC,Semtech Corporation Common Stock,12241522362.0,large,2026-08-30
+WTS,Watts Water Technologies Inc. Class A Common Stock,12229546537.0,large,2026-08-30
+DOCU,DocuSign Inc. Common Stock,12220454912.0,large,2026-08-30
+PSKY,Paramount Skydance Corporation Class B Common Stock,12206770076.0,large,2026-08-30
+FROG,JFrog Ltd. Ordinary Shares,12174771448.0,large,2026-08-30
+BEPC,Brookfield Renewable Corporation Brookfield Renewable Corporation Class A Subordinate Voting Shares,12169656496.0,large,2026-08-30
+DKS,Dick's Sporting Goods Inc Common Stock,12090897723.0,large,2026-08-30
+JKHY,Jack Henry & Associates Inc. Common Stock,12059448889.0,large,2026-08-30
+AMH,American Homes 4 Rent Common Shares of Beneficial Interest,12046895322.0,large,2026-08-30
+ELAN,Elanco Animal Health Incorporated Common Stock,12045882321.0,large,2026-08-30
+ERIE,Erie Indemnity Company Class A Common Stock,12027633307.0,large,2026-08-30
+ARWR,Arrowhead Pharmaceuticals Inc. Common Stock,11993916793.0,large,2026-08-30
+DECK,Deckers Outdoor Corporation Common Stock,11971712562.0,large,2026-08-30
+CR,Crane Company Common Stock,11964673692.0,large,2026-08-30
+HALO,Halozyme Therapeutics Inc. Common Stock,11957014300.0,large,2026-08-30
+UDR,UDR Inc. Common Stock,11925327921.0,large,2026-08-30
+EHC,Encompass Health Corporation Common Stock,11922261456.0,large,2026-08-30
+AFG,American Financial Group Inc. Common Stock,11909180947.0,large,2026-08-30
+AMKR,Amkor Technology Inc. Common Stock,11895904359.0,large,2026-08-30
+HRL,Hormel Foods Corporation Common Stock,11870293666.0,large,2026-08-30
+RTO,Rentokil Initial plc American Depositary Shares (each representing five (5) Ordinary Shares),11868532000.0,large,2026-08-30
+PNW,Pinnacle West Capital Corporation Common Stock,11833697928.0,large,2026-08-30
+AIT,Applied Industrial Technologies Inc. Common Stock,11825105380.0,large,2026-08-30
+AR,Antero Resources Corporation Common Stock,11821029550.0,large,2026-08-30
+IAG,Iamgold Corporation Ordinary Shares,11756890000.0,large,2026-08-30
+CART,Maplebear Inc. Common Stock,11700013386.0,large,2026-08-30
+BTSG,BrightSpring Health Services Inc. Common Stock,11699712570.0,large,2026-08-30
+AUR,Aurora Innovation Inc. Class A Common Stock,11684225212.0,large,2026-08-30
+FHN,First Horizon Corporation Common Stock,11678606945.0,large,2026-08-30
+WTRG,Essential Utilities Inc. Common Stock,11663300666.0,large,2026-08-30
+HII,Huntington Ingalls Industries Inc. Common Stock,11593226778.0,large,2026-08-30
+DPZ,Domino's Pizza Inc Common Stock,11578607250.0,large,2026-08-30
+TEM,Tempus AI Inc. Class A Common Stock,11555041774.0,large,2026-08-30
+DVA,DaVita Inc. Common Stock,11527384000.0,large,2026-08-30
+BJ,BJ's Wholesale Club Holdings Inc. Common Stock,11444111095.0,large,2026-08-30
+SCI,Service Corporation International Common Stock,11388599353.0,large,2026-08-30
+TECH,Bio-Techne Corp Common Stock,11345799519.0,large,2026-08-30
+OC,Owens Corning Inc Common Stock New,11314237998.0,large,2026-08-30
+BSY,Bentley Systems Incorporated Class B Common Stock,11268064760.0,large,2026-08-30
+SUZ,Suzano S.A. American Depositary Shares (each representing One Ordinary Share),11250646774.0,large,2026-08-30
+SAIL,SailPoint Inc. Common Stock,11247238831.0,large,2026-08-30
+RYAN,Ryan Specialty Holdings Inc. Class A Common Stock,11222594618.0,large,2026-08-30
+ALGN,Align Technology Inc. Common Stock,11194459878.0,large,2026-08-30
+EVR,Evercore Inc. Class A Common Stock,11156985976.0,large,2026-08-30
+FRHC,Freedom Holding Corp. Common Stock,11153273400.0,large,2026-08-30
+GMED,Globus Medical Inc. Class A Common Stock,11139711005.0,large,2026-08-30
+LI,Li Auto Inc. American Depositary Shares,11119058048.0,large,2026-08-30
+BIPJ,Brookfield Infrastructure Corporation 7.250% Subordinated Notes due 2084,11095322527.0,large,2026-08-30
+NVMI,Nova Ltd. Ordinary Shares,11094164206.0,large,2026-08-30
+BXP,BXP Inc. Common Stock,11067739062.0,large,2026-08-30
+XPEV,XPeng Inc. American depositary shares each representing two Class A ordinary shares,11020711829.0,large,2026-08-30
+FDS,FactSet Research Systems Inc. Common Stock,10989041476.0,large,2026-08-30
+UMBF,UMB Financial Corporation Common Stock,10981235088.0,large,2026-08-30
+TFII,TFI International Inc. Common Shares,10956753033.0,large,2026-08-30
+SMMT,Summit Therapeutics Inc. Common Stock ,10953102035.0,large,2026-08-30
+NIO,NIO Inc. American depositary shares each  representing one Class A ordinary share,10949764886.0,large,2026-08-30
+KNX,Knight-Swift Transportation Holdings Inc.,10943713440.0,large,2026-08-30
+NYT,New York Times Company (The) Common Stock,10939875074.0,large,2026-08-30
+AEIS,Advanced Energy Industries Inc. Common Stock,10926561586.0,large,2026-08-30
+MGM,MGM Resorts International Common Stock,10921902486.0,large,2026-08-30
+GNRC,Generac Holdlings Inc. Common Stock,10845369152.0,large,2026-08-30
+BPOP,Popular Inc. Common Stock,10826400545.0,large,2026-08-30
+ENLT,Enlight Renewable Energy Ltd. Ordinary Shares,10812492412.0,large,2026-08-30
+TX,Ternium S.A. Ternium S.A. American Depositary Shares (each representing ten shares USD1.00 par value),10765513062.0,large,2026-08-30
+EGP,EastGroup Properties Inc. Common Stock,10754663400.0,large,2026-08-30
+PAYC,Paycom Software Inc. Common Stock,10750933280.0,large,2026-08-30
+CPT,Camden Property Trust Common Stock,10692359873.0,large,2026-08-30
+DCI,Donaldson Company Inc. Common Stock,10651066936.0,large,2026-08-30
+PSO,Pearson Plc Common Stock,10636481253.0,large,2026-08-30
+GKOS,Glaukos Corporation Common Stock,10609440748.0,large,2026-08-30
+GSAT,Globalstar Inc. Common Stock,10593102766.0,large,2026-08-30
+AM,Antero Midstream Corporation Common Stock,10580483460.0,large,2026-08-30
+AES,The AES Corporation Common Stock,10508951020.0,large,2026-08-30
+RRX,Regal Rexnord Corporation Common Stock,10483557622.0,large,2026-08-30
+MOH,Molina Healthcare Inc Common Stock,10440000000.0,large,2026-08-30
+ALSN,Allison Transmission Holdings Inc. Common Stock,10431257760.0,large,2026-08-30
+AXSM,Axsome Therapeutics Inc. Common Stock,10424830398.0,large,2026-08-30
+KRYS,Krystal Biotech Inc. Common Stock,10402806901.0,large,2026-08-30
+SANM,Sanmina Corporation Common Stock,10398423038.0,large,2026-08-30
+ESTC,Elastic N.V. Ordinary Shares,10385807653.0,large,2026-08-30
+ARW,Arrow Electronics Inc. Common Stock,10380633858.0,large,2026-08-30
+BIO,Bio-Rad Laboratories Inc. Class A Common Stock,10366390448.0,large,2026-08-30
+PAYP,PayPay Corporation American Depository Shares,10346747103.0,large,2026-08-30
+WMS,Advanced Drainage Systems Inc. Common Stock,10329777801.0,large,2026-08-30
+WTFC,Wintrust Financial Corporation Common Stock,10318919653.0,large,2026-08-30
+VIRT,Virtu Financial Inc. Class A Common Stock,10303743071.0,large,2026-08-30
+LFUS,Littelfuse Inc. Common Stock,10297033015.0,large,2026-08-30
+DRS,Leonardo DRS Inc. Common Stock,10285998988.0,large,2026-08-30
+JEF,Jefferies Financial Group Inc. Common Stock,10285799412.0,large,2026-08-30
+SSB,SouthState Bank Corporation Common Stock,10277361113.0,large,2026-08-30
+EQX,Equinox Gold Corp. Common Shares,10250488681.0,large,2026-08-30
+AG,First Majestic Silver Corp. Ordinary Shares (Canada),10232736511.0,large,2026-08-30
+APGE,Apogee Therapeutics Inc. Common Stock,10215573593.0,large,2026-08-30
+FLS,Flowserve Corporation Common Stock,10210969617.0,large,2026-08-30
+CGNX,Cognex Corporation Common Stock,10170813487.0,large,2026-08-30
+RDY,Dr. Reddy's Laboratories Ltd Common Stock,10166121895.0,large,2026-08-30
+ORI,Old Republic International Corporation Common Stock,10157083029.0,large,2026-08-30
+DAR,Darling Ingredients Inc. Common Stock,10149883557.0,large,2026-08-30
+IONS,Ionis Pharmaceuticals Inc. Common Stock,10145552858.0,large,2026-08-30
+FRT,Federal Realty Investment Trust Common Stock,10144306278.0,large,2026-08-30
+UHS,Universal Health Services Inc. Common Stock,10117042165.0,large,2026-08-30
+SOLS,Solstice Advanced Materials Inc. Common Stock ,10091573353.0,large,2026-08-30
+ENSG,The Ensign Group Inc. Common Stock,10081695433.0,large,2026-08-30
+PODD,Insulet Corporation Common Stock,10065374901.0,large,2026-08-30
+CFR,Cullen/Frost Bankers Inc. Common Stock,10048837047.0,large,2026-08-30
+AYI,Acuity Inc. Common Stock,10033197933.0,large,2026-08-30
+CYTK,Cytokinetics Incorporated Common Stock,10022198204.0,large,2026-08-30
+KLAR,Klarna Group plc Ordinary Shares,10020151886.0,large,2026-08-30
