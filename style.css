@@ -108,3 +108,28 @@ td.ticker .ext { font-size: 10px; opacity: .6; margin-left: 4px; }
 .chip:hover { color: var(--text); }
 .chip.active { background: var(--accent); color: #04121f; border-color: var(--accent); font-weight: 600; }
 .empty { padding: 26px; text-align: center; color: var(--muted); font-style: italic; }
+
+/* ---- phone / narrow screens ---- */
+@media (max-width: 760px) {
+  .app { flex-direction: column; }
+  .sidebar {
+    width: 100%; height: auto; position: sticky; top: 0; z-index: 5;
+    flex-direction: row; align-items: center; gap: 10px;
+    border-right: none; border-bottom: 1px solid var(--line);
+    padding: 10px 14px;
+  }
+  .brand { font-size: 17px; margin: 0 auto 0 0; }
+  nav { flex-direction: row; gap: 6px; }
+  .nav-item { padding: 7px 13px; }
+
+  .content { padding: 16px 14px; }
+  h1 { font-size: 22px; }
+  .today { font-size: 17px; }
+  .asof { font-size: 12.5px; }
+  .section-block { margin-bottom: 26px; }
+
+  /* keep columns readable and let the table scroll sideways instead of cramming */
+  .table-wrap { -webkit-overflow-scrolling: touch; }
+  table.grid { min-width: 620px; }
+  table.grid th, table.grid td { padding: 8px 10px; font-size: 13px; }
+}
