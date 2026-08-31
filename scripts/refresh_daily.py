@@ -152,22 +152,26 @@ def build_home(panel, name, tier):
 
 
 def build_history(panel, tier):
-    """Every signal event from DISPLAY_START onward."""
+    """Every volume event >= +100% from DISPLAY_START onward (the +100-200%
+    band plus the >=200% signals). The page filters by band."""
     events = []
     for t, g in panel.groupby("ticker", sort=False):
         g = g.sort_values("date").reset_index(drop=True)
-        # signals in the 180 trading days BEFORE each day
+        # true signals (>=200%) in the 180 trading days BEFORE each day
         before = g["signal"].rolling(SIG_WINDOW, min_periods=1).sum().shift(1)
         for i, r in g.iterrows():
-            if not r["signal"] or r["date"] < DISPLAY_START:
+            if r["date"] < DISPLAY_START or pd.isna(r["avg20"]) or r["avg20"] <= 0:
+                continue
+            vp = (r["volume"] / r["avg20"] - 1) * 100
+            if vp < 100:
                 continue
             events.append({
                 "date": r["date"],
                 "ticker": t,
                 "tier": tier.get(t, ""),
-                "avg20": None if pd.isna(r["avg20"]) else round(float(r["avg20"])),
+                "avg20": round(float(r["avg20"])),
                 "volume": None if pd.isna(r["volume"]) else int(r["volume"]),
-                "vpct": round(float(r["volume"] / r["avg20"] - 1) * 100, 1),
+                "vpct": round(float(vp), 1),
                 "market_cap": None if pd.isna(r["market_cap"]) else float(r["market_cap"]),
                 "sig180_before": int(0 if pd.isna(before.iloc[i]) else before.iloc[i]),
             })

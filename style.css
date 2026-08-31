@@ -100,7 +100,9 @@ td.ticker .ext { font-size: 10px; opacity: .6; margin-left: 4px; }
 .pill.large { background: rgba(86,197,150,0.15); color: var(--large); }
 
 /* filter chips */
-.filters { display: flex; align-items: center; gap: 8px; }
+.filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.chip-group { display: flex; gap: 8px; }
+.filter-sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
 .chip {
   background: var(--panel-2); border: 1px solid var(--line); color: var(--muted);
   padding: 5px 14px; border-radius: 20px; cursor: pointer; font-size: 13px;

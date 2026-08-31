@@ -114,11 +114,16 @@ function renderDash(f) {
 }
 
 let HIST_ROWS = [];
-function renderHistory(filter) {
-  const rows = filter === "all" ? HIST_ROWS : HIST_ROWS.filter(r => r.tier === filter);
+let histTier = "all", histBand = "both";
+function renderHistory() {
+  const tierPass = histTier === "all" ? (() => true) : (r => r.tier === histTier);
+  const bandPass = histBand === "g200" ? (r => r.vpct >= 200)
+                 : histBand === "y100" ? (r => r.vpct >= 100 && r.vpct < 200)
+                 : (r => r.vpct >= 100);
+  const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r));
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
-    { key: "date", dir: -1 }, "No signal events.");
+    { key: "date", dir: -1 }, "No events.");
 }
 
 async function boot() {
@@ -147,12 +152,20 @@ async function boot() {
     renderDash(f);
   });
 
-  // history
+  // history — two synced filter groups: tier (all/mega/large) and band (both/200/100)
   HIST_ROWS = hist.rows;
-  renderHistory("all");
-  document.querySelectorAll("#hist-filters .chip").forEach(c => c.onclick = () => {
-    document.querySelectorAll("#hist-filters .chip").forEach(x => x.classList.toggle("active", x === c));
-    renderHistory(c.dataset.filter);
+  renderHistory();
+  const tierChips = document.querySelectorAll("#hist-tier .chip");
+  tierChips.forEach(c => c.onclick = () => {
+    histTier = c.dataset.filter;
+    tierChips.forEach(x => x.classList.toggle("active", x === c));
+    renderHistory();
+  });
+  const bandChips = document.querySelectorAll("#hist-band .chip");
+  bandChips.forEach(c => c.onclick = () => {
+    histBand = c.dataset.f;
+    bandChips.forEach(x => x.classList.toggle("active", x === c));
+    renderHistory();
   });
 }
 boot().catch(e => {

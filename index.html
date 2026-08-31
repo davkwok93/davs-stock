@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <div class="app">
@@ -54,10 +54,18 @@
     <section id="view-history" class="view hidden">
       <header class="page-head">
         <h1>Signal History</h1>
-        <div class="filters" id="hist-filters">
-          <button class="chip active" data-filter="all">All</button>
-          <button class="chip" data-filter="mega">Mega</button>
-          <button class="chip" data-filter="large">Large</button>
+        <div class="filters">
+          <div class="chip-group" id="hist-tier">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="mega">Mega</button>
+            <button class="chip" data-filter="large">Large</button>
+          </div>
+          <span class="filter-sep"></span>
+          <div class="chip-group" id="hist-band">
+            <button class="chip active" data-f="both">Both</button>
+            <button class="chip" data-f="g200">+200%</button>
+            <button class="chip" data-f="y100">+100%</button>
+          </div>
           <span class="count" id="hist-count"></span>
         </div>
       </header>
@@ -65,6 +73,6 @@
     </section>
   </main>
 </div>
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
