@@ -75,7 +75,11 @@ thead th.sortable:hover { color: var(--text); }
 thead th .arrow { font-size: 9px; margin-left: 5px; color: var(--muted); opacity: .4; }
 thead th.sortable.active .arrow { color: var(--accent); opacity: 1; }
 tbody tr { border-top: 1px solid var(--line); }
+tbody tr[data-rk] { cursor: pointer; }
 tbody tr:hover { background: var(--panel-2); }
+/* the single "you-are-here" highlighted row */
+tbody tr.row-current td { background: rgba(79,156,249,0.20); }
+tbody tr.row-current td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 
 /* ticker + yahoo link */
 td.ticker a { color: var(--accent); text-decoration: none; font-weight: 600; }

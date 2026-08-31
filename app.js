@@ -24,9 +24,14 @@ function tickerLink(t, url) {
 function tickerCell(r) { return tickerLink(r.ticker, r.yahoo_url); }
 function histTickerCell(r) { return tickerLink(r.ticker, "https://finance.yahoo.com/quote/" + r.ticker); }
 
+// ---------- single "you-are-here" row highlight ----------
+// One highlighted row across the whole app; clicking any row moves it here.
+let selectedRowKey = null;
+
 // ---------- generic sortable table ----------
 // columns: {key,label,group,sepLeft,sortable,cell(row),sortVal(row),tdClass}
-function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit) {
+// rowKey(row) -> unique string; enables the click-to-highlight "current row".
+function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey) {
   let sortKey = initialSort.key, sortDir = initialSort.dir; // dir: -1 desc, 1 asc
 
   function headHTML() {
@@ -43,13 +48,15 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit) {
     if (!sorted.length)
       return `<tbody><tr><td colspan="${columns.length}" class="empty">${emptyMsg}</td></tr></tbody>`;
     const shown = (limit && sorted.length > limit) ? sorted.slice(0, limit) : sorted;
-    let body = "<tbody>" + shown.map(r =>
-      "<tr>" + columns.map(c => {
+    let body = "<tbody>" + shown.map(r => {
+      const rk = rowKey ? rowKey(r) : null;
+      const trAttr = rk ? ` data-rk="${rk}"${rk === selectedRowKey ? ' class="row-current"' : ""}` : "";
+      return `<tr${trAttr}>` + columns.map(c => {
         const cls = [c.group ? "g-" + c.group : "", c.sepLeft ? "sep-left" : "", c.tdClass || ""]
           .filter(Boolean).join(" ");
         return `<td${cls ? ` class="${cls}"` : ""}>${c.cell(r)}</td>`;
-      }).join("") + "</tr>"
-    ).join("");
+      }).join("") + "</tr>";
+    }).join("");
     if (limit && sorted.length > limit)
       body += `<tr><td colspan="${columns.length}" class="empty">`
             + `Showing first ${limit} of ${sorted.length} — narrow with the filters above.</td></tr>`;
@@ -73,6 +80,14 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit) {
       render();
     });
   }
+  // click anywhere on a data row -> make it the single highlighted "current" row
+  if (rowKey) tableEl.onclick = e => {
+    const tr = e.target.closest("tr[data-rk]");
+    if (!tr || !tableEl.contains(tr)) return;
+    selectedRowKey = tr.dataset.rk;
+    document.querySelectorAll("tr.row-current").forEach(x => x.classList.remove("row-current"));
+    tr.classList.add("row-current");
+  };
   render();
 }
 
@@ -114,8 +129,9 @@ function renderDash(f) {
   const mega = rows.filter(r => r.tier === "mega");
   const large = rows.filter(r => r.tier === "large");
   const empty = "Nothing to show at last close.";
-  makeTable(document.getElementById("mega-table"), DASH_COLS, mega, { key: "vpct", dir: -1 }, empty);
-  makeTable(document.getElementById("large-table"), DASH_COLS, large, { key: "vpct", dir: -1 }, empty);
+  const dashKey = r => "d#" + r.ticker;
+  makeTable(document.getElementById("mega-table"), DASH_COLS, mega, { key: "vpct", dir: -1 }, empty, null, dashKey);
+  makeTable(document.getElementById("large-table"), DASH_COLS, large, { key: "vpct", dir: -1 }, empty, null, dashKey);
 }
 
 let HIST_ROWS = [];
@@ -128,7 +144,7 @@ function renderHistory() {
   const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r));
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
-    { key: "date", dir: -1 }, "No events.", 400);
+    { key: "date", dir: -1 }, "No events.", 400, r => r.date + "#" + r.ticker);
 }
 
 async function boot() {
