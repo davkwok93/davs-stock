@@ -35,7 +35,8 @@ def fetch_screener() -> pd.DataFrame:
     rows = r.json()["data"]["rows"]
     df = pd.DataFrame(rows)
     df["market_cap"] = pd.to_numeric(df["marketCap"], errors="coerce")
-    df = df[["symbol", "name", "market_cap"]].dropna(subset=["market_cap"])
+    df["sector"] = df.get("sector", "").fillna("").astype(str).str.strip()
+    df = df[["symbol", "name", "market_cap", "sector"]].dropna(subset=["market_cap"])
     df = df[df["market_cap"] > 0]
     # Yahoo-friendly tickers (BRK/B -> BRK-B)
     df["symbol"] = df["symbol"].str.strip().str.replace("/", "-", regex=False)
@@ -50,7 +51,7 @@ def main():
     members = members.rename(columns={"symbol": "ticker"})
     members["tier"] = members["market_cap"].map(tier_of)
     members["last_checked"] = dt.date.today().isoformat()
-    members = members[["ticker", "name", "market_cap", "tier", "last_checked"]]
+    members = members[["ticker", "name", "market_cap", "tier", "sector", "last_checked"]]
     members.to_csv(UNIVERSE_CSV, index=False)
 
     n_mega = (members["tier"] == "mega").sum()

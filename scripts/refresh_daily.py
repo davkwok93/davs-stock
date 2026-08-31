@@ -33,7 +33,8 @@ def load_universe():
     cap_now = dict(zip(uni["ticker"], uni["market_cap"]))
     name = dict(zip(uni["ticker"], uni["name"]))
     tier = dict(zip(uni["ticker"], uni["tier"]))
-    return uni["ticker"].astype(str).tolist(), cap_now, name, tier
+    sector = dict(zip(uni["ticker"], uni.get("sector", "").fillna("") if "sector" in uni else []))
+    return uni["ticker"].astype(str).tolist(), cap_now, name, tier, sector
 
 
 def download_long(tickers, start, end):
@@ -122,7 +123,7 @@ def save_panel(panel):
     print(f"Saved {len(out)} rows -> {STOCK_CSV.name}")
 
 
-def build_home(panel, name, tier):
+def build_home(panel, name, tier, sector):
     """Latest-day snapshot per ticker."""
     disp = panel[panel["date"] >= DISPLAY_START]
     global_date = disp["date"].max()
@@ -137,6 +138,7 @@ def build_home(panel, name, tier):
             "ticker": t,
             "name": name.get(t, ""),
             "tier": tier.get(t, ""),
+            "sector": sector.get(t, ""),
             "date": last["date"],
             "volume": None if pd.isna(last["volume"]) else int(last["volume"]),
             "avg20": None if pd.isna(last["avg20"]) else round(float(last["avg20"])),
@@ -151,7 +153,7 @@ def build_home(panel, name, tier):
     print(f"home.json: {len(rows)} names, as of {global_date}")
 
 
-def build_history(panel, tier):
+def build_history(panel, tier, sector):
     """Every volume event >= +100% from DISPLAY_START onward (the +100-200%
     band plus the >=200% signals). The page filters by band."""
     events = []
@@ -169,6 +171,7 @@ def build_history(panel, tier):
                 "date": r["date"],
                 "ticker": t,
                 "tier": tier.get(t, ""),
+                "sector": sector.get(t, ""),
                 "avg20": round(float(r["avg20"])),
                 "volume": None if pd.isna(r["volume"]) else int(r["volume"]),
                 "vpct": round(float(vp), 1),
@@ -183,13 +186,13 @@ def build_history(panel, tier):
 
 
 def main():
-    tickers, cap_now, name, tier = load_universe()
+    tickers, cap_now, name, tier, sector = load_universe()
     print(f"Universe: {len(tickers)} tickers")
     panel = upsert_panel(tickers)
     panel = enrich(panel, cap_now)
     save_panel(panel)
-    build_home(panel, name, tier)
-    build_history(panel, tier)
+    build_home(panel, name, tier, sector)
+    build_history(panel, tier, sector)
     print("DONE.")
 
 

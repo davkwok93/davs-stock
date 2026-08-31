@@ -86,6 +86,7 @@ td.ticker a { color: var(--accent); text-decoration: none; font-weight: 600; }
 td.ticker a:visited { color: var(--visited); }
 td.ticker a:hover { text-decoration: underline; }
 td.ticker .ext { font-size: 10px; opacity: .6; margin-left: 4px; }
+td.sector-cell { text-align: left; color: var(--muted); font-size: 12.5px; }
 
 /* column-group shading + separators (the "boxes") */
 .g-vol { background: var(--grp-vol); }
