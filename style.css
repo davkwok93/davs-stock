@@ -8,6 +8,7 @@
   --text: #e6edf3;
   --muted: #8b98a9;
   --accent: #4f9cf9;
+  --visited: #a98fd6;   /* ticker links you've already clicked */
   --mega: #f5a623;
   --large: #56c596;
   --green: #4ad991;   /* >= +200% */
@@ -78,6 +79,7 @@ tbody tr:hover { background: var(--panel-2); }
 
 /* ticker + yahoo link */
 td.ticker a { color: var(--accent); text-decoration: none; font-weight: 600; }
+td.ticker a:visited { color: var(--visited); }
 td.ticker a:hover { text-decoration: underline; }
 td.ticker .ext { font-size: 10px; opacity: .6; margin-left: 4px; }
 
