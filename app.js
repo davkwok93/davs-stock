@@ -127,8 +127,11 @@ async function boot() {
     fetch("data/history.json").then(r => r.json()),
   ]);
 
-  // header rows: today's date, then the latest market close
-  const today = home.generated.slice(0, 10);
+  // header rows: today's ACTUAL date (live from the viewer's clock),
+  // then the latest market close (the date the data is from)
+  const n = new Date();
+  const pad = x => String(x).padStart(2, "0");
+  const today = `${n.getFullYear()}-${pad(n.getMonth() + 1)}-${pad(n.getDate())}`;
   document.getElementById("today").textContent =
     `Today ${fmtDate(today)} (${weekday(today)})`;
   document.getElementById("asof").textContent =
