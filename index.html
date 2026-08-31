@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 <div class="app">
@@ -66,6 +66,14 @@
             <button class="chip" data-f="g200">+200%</button>
             <button class="chip" data-f="y100">+100%</button>
           </div>
+          <span class="filter-sep"></span>
+          <div class="chip-group" id="hist-range">
+            <button class="chip" data-days="30">1M</button>
+            <button class="chip active" data-days="90">3M</button>
+            <button class="chip" data-days="180">6M</button>
+            <button class="chip" data-days="365">1Y</button>
+            <button class="chip" data-days="0">All</button>
+          </div>
           <span class="count" id="hist-count"></span>
         </div>
       </header>
@@ -73,6 +81,6 @@
     </section>
   </main>
 </div>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

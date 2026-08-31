@@ -135,13 +135,20 @@ function renderDash(f) {
 }
 
 let HIST_ROWS = [];
-let histTier = "all", histBand = "both";
+let histTier = "all", histBand = "both", histRange = 90;  // range in days; 0 = all
+function isoDaysAgo(days) {
+  const t = new Date();
+  t.setDate(t.getDate() - days);
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+}
 function renderHistory() {
   const tierPass = histTier === "all" ? (() => true) : (r => r.tier === histTier);
   const bandPass = histBand === "g200" ? (r => r.vpct >= 200)
                  : histBand === "y100" ? (r => r.vpct >= 100 && r.vpct < 200)
                  : (r => r.vpct >= 100);
-  const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r));
+  const cutoff = histRange > 0 ? isoDaysAgo(histRange) : null;
+  const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
+  const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r));
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
     { key: "date", dir: -1 }, "No events.", 400, r => r.date + "#" + r.ticker);
@@ -186,6 +193,12 @@ async function boot() {
   bandChips.forEach(c => c.onclick = () => {
     histBand = c.dataset.f;
     bandChips.forEach(x => x.classList.toggle("active", x === c));
+    renderHistory();
+  });
+  const rangeChips = document.querySelectorAll("#hist-range .chip");
+  rangeChips.forEach(c => c.onclick = () => {
+    histRange = +c.dataset.days;
+    rangeChips.forEach(x => x.classList.toggle("active", x === c));
     renderHistory();
   });
 }
