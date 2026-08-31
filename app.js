@@ -26,7 +26,7 @@ function histTickerCell(r) { return tickerLink(r.ticker, "https://finance.yahoo.
 
 // ---------- generic sortable table ----------
 // columns: {key,label,group,sepLeft,sortable,cell(row),sortVal(row),tdClass}
-function makeTable(tableEl, columns, rows, initialSort, emptyMsg) {
+function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit) {
   let sortKey = initialSort.key, sortDir = initialSort.dir; // dir: -1 desc, 1 asc
 
   function headHTML() {
@@ -42,13 +42,18 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg) {
   function bodyHTML(sorted) {
     if (!sorted.length)
       return `<tbody><tr><td colspan="${columns.length}" class="empty">${emptyMsg}</td></tr></tbody>`;
-    return "<tbody>" + sorted.map(r =>
+    const shown = (limit && sorted.length > limit) ? sorted.slice(0, limit) : sorted;
+    let body = "<tbody>" + shown.map(r =>
       "<tr>" + columns.map(c => {
         const cls = [c.group ? "g-" + c.group : "", c.sepLeft ? "sep-left" : "", c.tdClass || ""]
           .filter(Boolean).join(" ");
         return `<td${cls ? ` class="${cls}"` : ""}>${c.cell(r)}</td>`;
       }).join("") + "</tr>"
-    ).join("") + "</tbody>";
+    ).join("");
+    if (limit && sorted.length > limit)
+      body += `<tr><td colspan="${columns.length}" class="empty">`
+            + `Showing first ${limit} of ${sorted.length} — narrow with the filters above.</td></tr>`;
+    return body + "</tbody>";
   }
   function sortRows() {
     const val = columns.find(c => c.key === sortKey).sortVal;
@@ -123,7 +128,7 @@ function renderHistory() {
   const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r));
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
-    { key: "date", dir: -1 }, "No events.");
+    { key: "date", dir: -1 }, "No events.", 400);
 }
 
 async function boot() {
