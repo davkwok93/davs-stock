@@ -99,8 +99,9 @@ td.sector-cell { text-align: left; color: var(--muted); font-size: 12.5px; }
 .rm-btn:hover { color: var(--hot); }
 
 /* favorites page section headings */
-.tier-title.star { color: #ffc84a; }
-.tier-title.fav { color: var(--accent); }
+.tier-title.star { color: #ffc84a; font-size: 20px; }
+.tier-title.fav { color: var(--accent); font-size: 20px; }
+@media (max-width: 760px) { .tier-title.star, .tier-title.fav { font-size: 17px; } }
 
 /* sync bar */
 .sync-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }

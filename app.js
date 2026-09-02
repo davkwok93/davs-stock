@@ -238,9 +238,11 @@ function rerenderCurrent() {
 function favRow(t) {
   return HOME_MAP[t] || { ticker: t, sector: "", avg20: null, volume: null, vpct: null, market_cap: null, sig180: 0 };
 }
+let favTier = "all";
 function renderFavorites() {
-  const starred = [...FAV.star].map(favRow);
-  const plain = [...FAV.fav].filter(t => !FAV.star.has(t)).map(favRow);
+  const tp = favTier === "all" ? (() => true) : (r => r.tier === favTier);
+  const starred = [...FAV.star].map(favRow).filter(tp);
+  const plain = [...FAV.fav].filter(t => !FAV.star.has(t)).map(favRow).filter(tp);
   const key = r => "d#" + r.ticker;
   document.getElementById("star-count").textContent = starred.length ? `${starred.length}` : "";
   document.getElementById("fav-count").textContent = plain.length ? `${plain.length}` : "";
@@ -339,6 +341,12 @@ async function boot() {
   // favorites: load local cache first (instant), then pull the one shared list
   loadLocal();
   setStatus("syncing");
+  const favChips = document.querySelectorAll("#fav-filters .chip");
+  favChips.forEach(c => c.onclick = () => {
+    favTier = c.dataset.filter;
+    favChips.forEach(x => x.classList.toggle("active", x === c));
+    renderFavorites();
+  });
   rerenderCurrent();
   try {
     const remote = await cloudGet(SHARED_CODE);

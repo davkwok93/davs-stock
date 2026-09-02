@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 <div class="app">
@@ -85,15 +85,18 @@
     <section id="view-favorites" class="view hidden">
       <header class="page-head">
         <h1>Favorites</h1>
-        <div class="sync-bar">
-          <span class="sync-status s-syncing" id="sync-status">Syncing…</span>
-        </div>
-        <div class="sync-help">Shared list — the same favorites show on every device.</div>
       </header>
 
+      <div class="filters" id="fav-filters">
+        <div class="chip-group">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="mega">Mega</button>
+          <button class="chip" data-filter="large">Large</button>
+        </div>
+      </div>
+
       <div class="section-block">
-        <h2 class="tier-title star">★ Star <span class="tier-sub">the ones you care about most</span>
-          <span class="count" id="star-count"></span></h2>
+        <h2 class="tier-title star">★ Star <span class="count" id="star-count"></span></h2>
         <div class="table-wrap"><table id="star-table" class="grid"></table></div>
       </div>
 
@@ -104,6 +107,6 @@
     </section>
   </main>
 </div>
-<script src="app.js?v=11"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>
