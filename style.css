@@ -88,6 +88,39 @@ td.ticker a:hover { text-decoration: underline; }
 td.ticker .ext { font-size: 10px; opacity: .6; margin-left: 4px; }
 td.sector-cell { text-align: left; color: var(--muted); font-size: 12.5px; }
 
+/* favorite / star / remove buttons in the ticker cell */
+.fav-btn, .star-btn, .rm-btn {
+  background: none; border: none; cursor: pointer; font-size: 14px; line-height: 1;
+  padding: 2px 5px; margin-right: 4px; border-radius: 5px; color: var(--muted); vertical-align: middle;
+}
+.fav-btn:hover, .star-btn:hover, .rm-btn:hover { background: var(--panel-2); color: var(--text); }
+.fav-btn.on { color: var(--green); font-weight: 700; }
+.star-btn.on { color: #ffc84a; }
+.rm-btn:hover { color: var(--hot); }
+
+/* favorites page section headings */
+.tier-title.star { color: #ffc84a; }
+.tier-title.fav { color: var(--accent); }
+
+/* sync bar */
+.sync-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.sync-status { font-size: 12.5px; padding: 4px 10px; border-radius: 20px; background: var(--panel-2); border: 1px solid var(--line); }
+.sync-status.s-synced { color: var(--green); border-color: rgba(74,217,145,0.4); }
+.sync-status.s-syncing { color: var(--warm); }
+.sync-status.s-error { color: var(--hot); border-color: rgba(255,92,92,0.4); }
+.sync-status.s-local { color: var(--muted); }
+.sync-input {
+  background: var(--bg); border: 1px solid var(--line); color: var(--text);
+  padding: 6px 10px; border-radius: 8px; font-size: 13px; width: 130px; font-family: inherit;
+}
+.sync-input:focus { outline: none; border-color: var(--accent); }
+.sync-btn {
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+  padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px;
+}
+.sync-btn:hover { border-color: var(--accent); color: var(--accent); }
+.sync-help { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
 /* column-group shading + separators (the "boxes") */
 .g-vol { background: var(--grp-vol); }
 .g-cap { background: var(--grp-cap); }

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
 <div class="app">
@@ -13,6 +13,7 @@
     <nav>
       <button class="nav-item active" data-view="dashboard">Dashboard</button>
       <button class="nav-item" data-view="history">History</button>
+      <button class="nav-item" data-view="favorites">Favorites</button>
     </nav>
   </aside>
 
@@ -79,8 +80,33 @@
       </header>
       <div class="table-wrap"><table id="hist-table" class="grid"></table></div>
     </section>
+
+    <!-- FAVORITES VIEW -->
+    <section id="view-favorites" class="view hidden">
+      <header class="page-head">
+        <h1>Favorites</h1>
+        <div class="sync-bar">
+          <span class="sync-status s-local" id="sync-status">This device only</span>
+          <input id="sync-input" class="sync-input" placeholder="sync code" autocomplete="off" spellcheck="false">
+          <button class="sync-btn" id="sync-connect">Connect</button>
+          <button class="sync-btn" id="sync-new">New code</button>
+        </div>
+        <div class="sync-help">Enter the same sync code on your other devices to share this list.</div>
+      </header>
+
+      <div class="section-block">
+        <h2 class="tier-title star">★ Star <span class="tier-sub">the ones you care about most</span>
+          <span class="count" id="star-count"></span></h2>
+        <div class="table-wrap"><table id="star-table" class="grid"></table></div>
+      </div>
+
+      <div class="section-block">
+        <h2 class="tier-title fav">Favorites <span class="count" id="fav-count"></span></h2>
+        <div class="table-wrap"><table id="fav-table" class="grid"></table></div>
+      </div>
+    </section>
   </main>
 </div>
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>

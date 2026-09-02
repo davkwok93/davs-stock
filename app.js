@@ -21,8 +21,21 @@ function tierPill(t) { return `<span class="pill ${t}">${t}</span>`; }
 function tickerLink(t, url) {
   return `<a href="${url}" target="_blank" rel="noopener">${t}<span class="ext">↗</span></a>`;
 }
-function tickerCell(r) { return tickerLink(r.ticker, r.yahoo_url); }
-function histTickerCell(r) { return tickerLink(r.ticker, "https://finance.yahoo.com/quote/" + r.ticker); }
+function yUrl(r) { return r.yahoo_url || ("https://finance.yahoo.com/quote/" + r.ticker); }
+// ＋ add-to-favorites button (Dashboard + History)
+function favBtn(t) {
+  const on = FAV.fav.has(t);
+  return `<button type="button" class="fav-btn${on ? " on" : ""}" data-act="fav" data-ticker="${t}" title="${on ? "Remove from favorites" : "Add to favorites"}" aria-label="favorite">${on ? "✓" : "＋"}</button>`;
+}
+// ★ star-toggle + ✕ remove buttons (Favorites page)
+function favActions(t) {
+  const s = FAV.star.has(t);
+  return `<button type="button" class="star-btn${s ? " on" : ""}" data-act="star" data-ticker="${t}" title="${s ? "Unstar" : "Star (care more)"}" aria-label="star">${s ? "★" : "☆"}</button>`
+       + `<button type="button" class="rm-btn" data-act="rm" data-ticker="${t}" title="Remove from favorites" aria-label="remove">✕</button>`;
+}
+function tickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker, yUrl(r)); }
+function histTickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker, yUrl(r)); }
+function favTickerCell(r) { return favActions(r.ticker) + tickerLink(r.ticker, yUrl(r)); }
 
 // ---------- single "you-are-here" row highlight ----------
 // One highlighted row across the whole app; clicking any row moves it here.
@@ -80,8 +93,11 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey)
       render();
     });
   }
-  // click anywhere on a data row -> make it the single highlighted "current" row
-  if (rowKey) tableEl.onclick = e => {
+  tableEl.onclick = e => {
+    const act = e.target.closest("[data-act]");
+    if (act) { handleFavAction(act.dataset.act, act.dataset.ticker); return; }  // ＋/★/✕ — no highlight
+    if (!rowKey) return;
+    // click anywhere else on a data row -> make it the single highlighted "current" row
     const tr = e.target.closest("tr[data-rk]");
     if (!tr || !tableEl.contains(tr)) return;
     selectedRowKey = tr.dataset.rk;
@@ -113,17 +129,161 @@ const HIST_COLS = [
   { key: "sig180_before", label: "#Signals prior 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180_before), sortVal: r => r.sig180_before },
 ];
 
+// Favorites page columns = the ★/✕ actions cell + the Dashboard data columns
+const FAV_COLS = [
+  { key: "ticker", label: "Ticker", tdClass: "ticker", cell: favTickerCell, sortVal: r => r.ticker },
+  ...DASH_COLS.slice(1),
+];
+
+// ---------- favorites + Supabase sync ----------
+const SB_URL = "https://xgntwwynbqgrfjtzarda.supabase.co";
+const SB_KEY = "sb_publishable_0Q5YPRHw88ZdGUAEHblnAA_hJloliAs";
+const SB_HEAD = { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json" };
+
+let FAV = { fav: new Set(), star: new Set() };
+let syncCode = null;
+let HOME_MAP = {};   // ticker -> latest home.json row (for Favorites page data)
+
+function loadLocal() {
+  try {
+    const j = JSON.parse(localStorage.getItem("davs_fav") || "{}");
+    FAV.fav = new Set(j.fav || []); FAV.star = new Set(j.star || []);
+  } catch (e) { /* ignore */ }
+  syncCode = localStorage.getItem("davs_sync_code") || null;
+}
+function saveLocal() {
+  localStorage.setItem("davs_fav", JSON.stringify({ fav: [...FAV.fav], star: [...FAV.star] }));
+  if (syncCode) localStorage.setItem("davs_sync_code", syncCode);
+  else localStorage.removeItem("davs_sync_code");
+}
+async function cloudGet(code) {
+  const r = await fetch(`${SB_URL}/rest/v1/favorites?code=eq.${encodeURIComponent(code)}&select=data`, { headers: SB_HEAD });
+  if (!r.ok) throw new Error("get " + r.status);
+  const rows = await r.json();
+  return rows.length ? rows[0].data : null;
+}
+async function cloudPut(code, data) {
+  const r = await fetch(`${SB_URL}/rest/v1/favorites?on_conflict=code`, {
+    method: "POST",
+    headers: { ...SB_HEAD, Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({ code, data }),
+  });
+  if (!r.ok) throw new Error("put " + r.status);
+}
+function setFrom(data) {
+  FAV.fav = new Set((data && data.fav) || []);
+  FAV.star = new Set((data && data.star) || []);
+}
+let pushT = null;
+function schedulePush() {
+  if (!syncCode) { setStatus("local"); return; }
+  clearTimeout(pushT);
+  setStatus("syncing");
+  pushT = setTimeout(async () => {
+    try { await cloudPut(syncCode, { fav: [...FAV.fav], star: [...FAV.star] }); setStatus("synced"); }
+    catch (e) { setStatus("error"); }
+  }, 600);
+}
+
+// mutations
+function toggleFav(t) {
+  if (FAV.fav.has(t)) { FAV.fav.delete(t); FAV.star.delete(t); }
+  else FAV.fav.add(t);
+  afterFavChange();
+}
+function toggleStar(t) {
+  if (FAV.star.has(t)) FAV.star.delete(t);
+  else { FAV.star.add(t); FAV.fav.add(t); }
+  afterFavChange();
+}
+function removeFav(t) { FAV.fav.delete(t); FAV.star.delete(t); afterFavChange(); }
+function handleFavAction(act, t) {
+  if (act === "fav") toggleFav(t);
+  else if (act === "star") toggleStar(t);
+  else if (act === "rm") removeFav(t);
+}
+function afterFavChange() { saveLocal(); schedulePush(); rerenderCurrent(); }
+
+// sync-bar status
+function setStatus(s) {
+  const el = document.getElementById("sync-status");
+  if (!el) return;
+  const map = {
+    local: ["This device only", "s-local"],
+    syncing: ["Syncing…", "s-syncing"],
+    synced: ["✓ Synced across devices", "s-synced"],
+    error: ["⚠ Sync error — saved locally", "s-error"],
+  };
+  const [txt, cls] = map[s] || map.local;
+  el.textContent = txt;
+  el.className = "sync-status " + cls;
+}
+function genCode() {
+  return (Math.random().toString(36).slice(2, 7) + Math.random().toString(36).slice(2, 7)).toUpperCase();
+}
+async function connectCode(code) {
+  code = (code || "").trim();
+  if (!code) return;
+  syncCode = code; saveLocal();
+  setStatus("syncing");
+  try {
+    const remote = await cloudGet(code);
+    if (remote) setFrom(remote);            // existing code -> load its list
+    else await cloudPut(code, { fav: [...FAV.fav], star: [...FAV.star] }); // new code -> seed with this device's list
+    saveLocal(); setStatus("synced");
+  } catch (e) { setStatus("error"); }
+  const inp = document.getElementById("sync-input"); if (inp) inp.value = syncCode;
+  rerenderCurrent();
+}
+async function newCode() {
+  syncCode = genCode(); saveLocal();
+  const inp = document.getElementById("sync-input"); if (inp) inp.value = syncCode;
+  setStatus("syncing");
+  try { await cloudPut(syncCode, { fav: [...FAV.fav], star: [...FAV.star] }); setStatus("synced"); }
+  catch (e) { setStatus("error"); }
+}
+
 // ---------- view switching ----------
 function setView(name) {
   document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === name));
   document.getElementById("view-dashboard").classList.toggle("hidden", name !== "dashboard");
   document.getElementById("view-history").classList.toggle("hidden", name !== "history");
+  document.getElementById("view-favorites").classList.toggle("hidden", name !== "favorites");
+  if (name === "favorites") renderFavorites();
 }
 document.querySelectorAll(".nav-item").forEach(b => b.onclick = () => setView(b.dataset.view));
 
+function currentView() {
+  return document.querySelector(".nav-item.active")?.dataset.view || "dashboard";
+}
+function rerenderCurrent() {
+  const v = currentView();
+  if (v === "dashboard") renderDash();
+  else if (v === "history") renderHistory();
+  else if (v === "favorites") renderFavorites();
+}
+
+// ---------- favorites page ----------
+function favRow(t) {
+  return HOME_MAP[t] || { ticker: t, sector: "", avg20: null, volume: null, vpct: null, market_cap: null, sig180: 0 };
+}
+function renderFavorites() {
+  const starred = [...FAV.star].map(favRow);
+  const plain = [...FAV.fav].filter(t => !FAV.star.has(t)).map(favRow);
+  const key = r => "d#" + r.ticker;
+  document.getElementById("star-count").textContent = starred.length ? `${starred.length}` : "";
+  document.getElementById("fav-count").textContent = plain.length ? `${plain.length}` : "";
+  makeTable(document.getElementById("star-table"), FAV_COLS, starred, { key: "vpct", dir: -1 },
+    "No starred stocks yet — tap ☆ on a favorite below to promote it here.", null, key);
+  makeTable(document.getElementById("fav-table"), FAV_COLS, plain, { key: "vpct", dir: -1 },
+    "No favorites yet — tap ＋ next to any stock on the Dashboard or History.", null, key);
+}
+
 // ---------- boot ----------
 let HOME_ROWS = [];
-function renderDash(f) {
+let dashFilter = "both";
+function renderDash() {
+  const f = dashFilter;
   const pass = f === "g200" ? (r => r.vpct >= 200)
              : f === "y100" ? (r => r.vpct >= 100 && r.vpct < 200)
              : (r => r.vpct >= 100);                      // both
@@ -174,12 +334,13 @@ async function boot() {
 
   // dashboard tables, driven by the Both / +200% / +100% filter
   HOME_ROWS = home.rows;
-  renderDash("both");
+  HOME_MAP = Object.fromEntries(home.rows.map(r => [r.ticker, r]));
+  renderDash();
   const dashChips = document.querySelectorAll(".dash-filters .chip");
   dashChips.forEach(c => c.onclick = () => {
-    const f = c.dataset.f;
-    dashChips.forEach(x => x.classList.toggle("active", x.dataset.f === f)); // sync both bars
-    renderDash(f);
+    dashFilter = c.dataset.f;
+    dashChips.forEach(x => x.classList.toggle("active", x.dataset.f === dashFilter)); // sync both bars
+    renderDash();
   });
 
   // history — two synced filter groups: tier (all/mega/large) and band (both/200/100)
@@ -203,6 +364,22 @@ async function boot() {
     rangeChips.forEach(x => x.classList.toggle("active", x === c));
     renderHistory();
   });
+
+  // favorites: load local first (instant), then pull the synced copy if a code is set
+  loadLocal();
+  const inp = document.getElementById("sync-input");
+  if (inp && syncCode) inp.value = syncCode;
+  setStatus(syncCode ? "syncing" : "local");
+  document.getElementById("sync-connect").onclick = () => connectCode(document.getElementById("sync-input").value);
+  document.getElementById("sync-new").onclick = newCode;
+  document.getElementById("sync-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") connectCode(e.target.value);
+  });
+  rerenderCurrent();  // reflect favorite states on whatever view is showing
+  if (syncCode) {
+    try { const remote = await cloudGet(syncCode); if (remote) { setFrom(remote); saveLocal(); rerenderCurrent(); } setStatus("synced"); }
+    catch (e) { setStatus("error"); }
+  }
 }
 boot().catch(e => {
   document.querySelector(".content").innerHTML =
