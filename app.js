@@ -141,7 +141,7 @@ const SB_KEY = "sb_publishable_0Q5YPRHw88ZdGUAEHblnAA_hJloliAs";
 const SB_HEAD = { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json" };
 
 let FAV = { fav: new Set(), star: new Set() };
-let syncCode = null;
+const SHARED_CODE = "davs-shared";   // one shared list everyone on the link sees
 let HOME_MAP = {};   // ticker -> latest home.json row (for Favorites page data)
 
 function loadLocal() {
@@ -149,12 +149,9 @@ function loadLocal() {
     const j = JSON.parse(localStorage.getItem("davs_fav") || "{}");
     FAV.fav = new Set(j.fav || []); FAV.star = new Set(j.star || []);
   } catch (e) { /* ignore */ }
-  syncCode = localStorage.getItem("davs_sync_code") || null;
 }
 function saveLocal() {
   localStorage.setItem("davs_fav", JSON.stringify({ fav: [...FAV.fav], star: [...FAV.star] }));
-  if (syncCode) localStorage.setItem("davs_sync_code", syncCode);
-  else localStorage.removeItem("davs_sync_code");
 }
 async function cloudGet(code) {
   const r = await fetch(`${SB_URL}/rest/v1/favorites?code=eq.${encodeURIComponent(code)}&select=data`, { headers: SB_HEAD });
@@ -176,11 +173,10 @@ function setFrom(data) {
 }
 let pushT = null;
 function schedulePush() {
-  if (!syncCode) { setStatus("local"); return; }
   clearTimeout(pushT);
   setStatus("syncing");
   pushT = setTimeout(async () => {
-    try { await cloudPut(syncCode, { fav: [...FAV.fav], star: [...FAV.star] }); setStatus("synced"); }
+    try { await cloudPut(SHARED_CODE, { fav: [...FAV.fav], star: [...FAV.star] }); setStatus("synced"); }
     catch (e) { setStatus("error"); }
   }, 600);
 }
@@ -218,31 +214,6 @@ function setStatus(s) {
   el.textContent = txt;
   el.className = "sync-status " + cls;
 }
-function genCode() {
-  return (Math.random().toString(36).slice(2, 7) + Math.random().toString(36).slice(2, 7)).toUpperCase();
-}
-async function connectCode(code) {
-  code = (code || "").trim();
-  if (!code) return;
-  syncCode = code; saveLocal();
-  setStatus("syncing");
-  try {
-    const remote = await cloudGet(code);
-    if (remote) setFrom(remote);            // existing code -> load its list
-    else await cloudPut(code, { fav: [...FAV.fav], star: [...FAV.star] }); // new code -> seed with this device's list
-    saveLocal(); setStatus("synced");
-  } catch (e) { setStatus("error"); }
-  const inp = document.getElementById("sync-input"); if (inp) inp.value = syncCode;
-  rerenderCurrent();
-}
-async function newCode() {
-  syncCode = genCode(); saveLocal();
-  const inp = document.getElementById("sync-input"); if (inp) inp.value = syncCode;
-  setStatus("syncing");
-  try { await cloudPut(syncCode, { fav: [...FAV.fav], star: [...FAV.star] }); setStatus("synced"); }
-  catch (e) { setStatus("error"); }
-}
-
 // ---------- view switching ----------
 function setView(name) {
   document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === name));
@@ -365,21 +336,15 @@ async function boot() {
     renderHistory();
   });
 
-  // favorites: load local first (instant), then pull the synced copy if a code is set
+  // favorites: load local cache first (instant), then pull the one shared list
   loadLocal();
-  const inp = document.getElementById("sync-input");
-  if (inp && syncCode) inp.value = syncCode;
-  setStatus(syncCode ? "syncing" : "local");
-  document.getElementById("sync-connect").onclick = () => connectCode(document.getElementById("sync-input").value);
-  document.getElementById("sync-new").onclick = newCode;
-  document.getElementById("sync-input").addEventListener("keydown", e => {
-    if (e.key === "Enter") connectCode(e.target.value);
-  });
-  rerenderCurrent();  // reflect favorite states on whatever view is showing
-  if (syncCode) {
-    try { const remote = await cloudGet(syncCode); if (remote) { setFrom(remote); saveLocal(); rerenderCurrent(); } setStatus("synced"); }
-    catch (e) { setStatus("error"); }
-  }
+  setStatus("syncing");
+  rerenderCurrent();
+  try {
+    const remote = await cloudGet(SHARED_CODE);
+    if (remote) { setFrom(remote); saveLocal(); rerenderCurrent(); }
+    setStatus("synced");
+  } catch (e) { setStatus("error"); }
 }
 boot().catch(e => {
   document.querySelector(".content").innerHTML =

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <div class="app">
@@ -86,12 +86,9 @@
       <header class="page-head">
         <h1>Favorites</h1>
         <div class="sync-bar">
-          <span class="sync-status s-local" id="sync-status">This device only</span>
-          <input id="sync-input" class="sync-input" placeholder="sync code" autocomplete="off" spellcheck="false">
-          <button class="sync-btn" id="sync-connect">Connect</button>
-          <button class="sync-btn" id="sync-new">New code</button>
+          <span class="sync-status s-syncing" id="sync-status">Syncing…</span>
         </div>
-        <div class="sync-help">Enter the same sync code on your other devices to share this list.</div>
+        <div class="sync-help">Shared list — the same favorites show on every device.</div>
       </header>
 
       <div class="section-block">
@@ -107,6 +104,6 @@
     </section>
   </main>
 </div>
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>
