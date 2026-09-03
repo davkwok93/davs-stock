@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
 <div class="app">
@@ -109,6 +109,15 @@
     </section>
   </main>
 </div>
-<script src="app.js?v=15"></script>
+
+<div id="signal-modal" class="modal hidden">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-box">
+    <div class="modal-head"><span id="sm-title"></span><button class="modal-x" data-close aria-label="close">✕</button></div>
+    <div id="sm-body" class="modal-body"></div>
+  </div>
+</div>
+
+<script src="app.js?v=16"></script>
 </body>
 </html>

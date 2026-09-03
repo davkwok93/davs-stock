@@ -16,7 +16,16 @@ const weekday = s => { const [y, m, d] = s.split("-").map(Number); return WD[new
 // dashboard color rule: yellow +100..200, green >=200
 function pctClass(p) { return p >= 200 ? "green" : "yellow"; }
 function vpctCell(p) { return `<span class="vpct ${pctClass(p)}">${fmtPct(p)}</span>`; }
-function sigBadge(n) { return `<span class="sig-badge ${n > 0 ? "on" : ""}">${n}</span>`; }
+function esc(s) { return String(s).replace(/"/g, "&quot;"); }
+function sigBadge(n, ticker) {
+  const clickable = n > 0 && ticker;
+  return `<span class="sig-badge${n > 0 ? " on" : ""}${clickable ? " clickable" : ""}"`
+       + `${clickable ? ` data-sig="${ticker}"` : ""}>${n}</span>`;
+}
+function indCell(s) {
+  if (!s) return "—";
+  return `<span class="ind-cell" data-ind title="${esc(s)}">${s}</span>`;
+}
 function tierPill(t) { return `<span class="pill ${t}">${t}</span>`; }
 function tickerLink(t, url) {
   return `<a href="${url}" target="_blank" rel="noopener">${t}<span class="ext">↗</span></a>`;
@@ -45,7 +54,8 @@ let selectedRowKey = null;
 // columns: {key,label,group,sepLeft,sortable,cell(row),sortVal(row),tdClass}
 // rowKey(row) -> unique string; enables the click-to-highlight "current row".
 // pager (optional) = { perPage, perPageOptions:[...], pagerEls:[el,...], onPerPage(n) }
-function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey, pager) {
+// groupBy (optional) = { key, value(row) } -> thicker divider between groups when sorted by key
+function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey, pager, groupBy) {
   let sortKey = initialSort.key, sortDir = initialSort.dir; // dir: -1 desc, 1 asc
   let page = 1;
 
@@ -59,12 +69,16 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
       return `<th data-key="${c.key}"${cls ? ` class="${cls}"` : ""}>${c.label}${arrow}</th>`;
     }).join("") + "</tr></thead>";
   }
-  function bodyHTML(view, note) {
+  function bodyHTML(view, note, grouping) {
     if (!view.length)
       return `<tbody><tr><td colspan="${columns.length}" class="empty">${emptyMsg}</td></tr></tbody>`;
+    let prevG = null;
     let body = "<tbody>" + view.map(r => {
       const rk = rowKey ? rowKey(r) : null;
-      const trAttr = rk ? ` data-rk="${rk}"${rk === selectedRowKey ? ' class="row-current"' : ""}` : "";
+      let sep = false;
+      if (grouping) { const g = groupBy.value(r); if (prevG !== null && g !== prevG) sep = true; prevG = g; }
+      const trCls = [rk === selectedRowKey ? "row-current" : "", sep ? "day-sep" : ""].filter(Boolean).join(" ");
+      const trAttr = (rk ? ` data-rk="${rk}"` : "") + (trCls ? ` class="${trCls}"` : "");
       return `<tr${trAttr}>` + columns.map(c => {
         const cls = [c.group ? "g-" + c.group : "", c.sepLeft ? "sep-left" : "", c.tdClass || ""]
           .filter(Boolean).join(" ");
@@ -105,8 +119,8 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
       + `<span class="pg-controls">`
       + `<button class="pg-btn" data-pg="prev"${page <= 1 ? " disabled" : ""}>‹ Prev</button>`
       + nums
-      + `<button class="pg-btn" data-pg="next"${page >= pages ? " disabled" : ""}>Next ›</button>`
-      + `<select class="pg-per">${opts}</select></span>`;
+      + `<button class="pg-btn" data-pg="next"${page >= pages ? " disabled" : ""}>Next ›</button></span>`
+      + `<select class="pg-per">${opts}</select>`;
   }
   function wirePager(el, total) {
     const pages = Math.max(1, Math.ceil(total / pager.perPage));
@@ -136,7 +150,8 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
       view = sorted.slice(0, limit);
       note = `Showing first ${limit} of ${sorted.length} — narrow with the filters above.`;
     }
-    tableEl.innerHTML = headHTML() + bodyHTML(view, note);
+    const grouping = groupBy && sortKey === groupBy.key;
+    tableEl.innerHTML = headHTML() + bodyHTML(view, note, grouping);
     tableEl.querySelectorAll("th.sortable").forEach(th => th.onclick = () => {
       const k = th.dataset.key;
       if (k === sortKey) sortDir = -sortDir;        // toggle
@@ -149,6 +164,10 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
   tableEl.onclick = e => {
     const act = e.target.closest("[data-act]");
     if (act) { handleFavAction(act.dataset.act, act.dataset.ticker); return; }  // ＋/★/✕ — no highlight
+    const sig = e.target.closest("[data-sig]");
+    if (sig) { openSignalModal(sig.dataset.sig); return; }                      // #Signals -> popup
+    const ind = e.target.closest("[data-ind]");
+    if (ind) { ind.classList.toggle("expanded"); return; }                      // Industry -> expand/collapse
     if (!rowKey) return;
     // click anywhere else on a data row -> make it the single highlighted "current" row
     const tr = e.target.closest("tr[data-rk]");
@@ -164,22 +183,24 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
 const DASH_COLS = [
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: tickerCell, sortVal: r => r.ticker },
   { key: "sector", label: "Sector", tdClass: "sector-cell", cell: r => r.sector || "—", sortVal: r => r.sector || "" },
+  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(r.industry), sortVal: r => r.industry || "" },
   { key: "avg20", label: "20d Avg", group: "vol", sepLeft: true, cell: r => fmtVol(r.avg20), sortVal: r => r.avg20 },
   { key: "volume", label: "Vol", group: "vol", cell: r => fmtVol(r.volume), sortVal: r => r.volume },
   { key: "vpct", label: "+V%", group: "vol", sortable: true, cell: r => vpctCell(r.vpct), sortVal: r => r.vpct },
   { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
-  { key: "sig180", label: "#Signals 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180), sortVal: r => r.sig180 },
+  { key: "sig180", label: "#Signals 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180, r.ticker), sortVal: r => r.sig180 },
 ];
 const HIST_COLS = [
   { key: "date", label: "Day", sortable: true, cell: r => fmtDate(r.date), sortVal: r => r.date },
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: histTickerCell, sortVal: r => r.ticker },
   { key: "sector", label: "Sector", tdClass: "sector-cell", cell: r => r.sector || "—", sortVal: r => r.sector || "" },
+  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(r.industry), sortVal: r => r.industry || "" },
   { key: "tier", label: "Tier", cell: r => tierPill(r.tier), sortVal: r => r.tier },
   { key: "avg20", label: "20d Avg", group: "vol", sepLeft: true, cell: r => fmtVol(r.avg20), sortVal: r => r.avg20 },
   { key: "volume", label: "Vol", group: "vol", cell: r => fmtVol(r.volume), sortVal: r => r.volume },
   { key: "vpct", label: "+V%", group: "vol", sortable: true, cell: r => vpctCell(r.vpct), sortVal: r => r.vpct },
   { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
-  { key: "sig180_before", label: "#Signals prior 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180_before), sortVal: r => r.sig180_before },
+  { key: "sig180_before", label: "#Signals prior 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180_before, r.ticker), sortVal: r => r.sig180_before },
 ];
 
 // Favorites page columns = the ★/✕ actions cell + the Dashboard data columns
@@ -305,6 +326,25 @@ function renderFavorites() {
     "No favorites yet — tap ＋ next to any stock on the Dashboard or History.", null, key);
 }
 
+// ---------- #Signals popup ----------
+function openSignalModal(t) {
+  const sigs = HIST_ROWS.filter(r => r.ticker === t && r.vpct >= 200)
+    .sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
+  document.getElementById("sm-title").textContent = `${t} — signals in 2026 (${sigs.length})`;
+  const body = document.getElementById("sm-body");
+  if (!sigs.length) {
+    body.innerHTML = `<div class="empty">No 2026 signals on record for ${t}.</div>`;
+  } else {
+    body.innerHTML = `<table class="grid"><thead><tr>`
+      + `<th class="sm-l">Day</th><th>+V%</th><th>Vol</th><th>Mkt Cap</th></tr></thead><tbody>`
+      + sigs.map(r => `<tr><td class="sm-l">${fmtDate(r.date)}</td><td>${vpctCell(r.vpct)}</td>`
+        + `<td>${fmtVol(r.volume)}</td><td>${fmtCap(r.market_cap)}</td></tr>`).join("")
+      + `</tbody></table>`;
+  }
+  document.getElementById("signal-modal").classList.remove("hidden");
+}
+function closeSignalModal() { document.getElementById("signal-modal").classList.add("hidden"); }
+
 // ---------- boot ----------
 let HOME_ROWS = [];
 let dashFilter = "both";
@@ -343,13 +383,15 @@ function renderHistory() {
     { key: "date", dir: -1 }, "No events.", null, r => r.date + "#" + r.ticker,
     { perPage: histPerPage, perPageOptions: [250, 500, 1000, 10000],
       onPerPage: n => histPerPage = n,
-      pagerEls: [document.getElementById("hist-pager-top"), document.getElementById("hist-pager-bot")] });
+      pagerEls: [document.getElementById("hist-pager-top"), document.getElementById("hist-pager-bot")] },
+    { key: "date", value: r => r.date });
 }
 
 async function boot() {
+  const bust = "?t=" + Date.now();   // always fetch the freshest data (after the daily refresh)
   const [home, hist] = await Promise.all([
-    fetch("data/home.json").then(r => r.json()),
-    fetch("data/history.json").then(r => r.json()),
+    fetch("data/home.json" + bust).then(r => r.json()),
+    fetch("data/history.json" + bust).then(r => r.json()),
   ]);
 
   // header rows: today's ACTUAL date (live from the viewer's clock),
@@ -404,6 +446,9 @@ async function boot() {
     favChips.forEach(x => x.classList.toggle("active", x === c));
     renderFavorites();
   });
+  // signal modal close handlers
+  document.querySelectorAll("#signal-modal [data-close]").forEach(el => el.onclick = closeSignalModal);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSignalModal(); });
   rerenderCurrent();
   try {
     const remote = await cloudGet(SHARED_CODE);
