@@ -548,10 +548,11 @@ function svgPerStock() {
     const col = gain ? "#4ad991" : "#ff5c5c";
     bars += `<rect x="${x}" y="${base - lo}" width="${bw}" height="${lo}" fill="#54657a" rx="2"/>`;
     bars += `<rect x="${x}" y="${base - hi}" width="${bw}" height="${hi - lo}" fill="${col}"${gain ? "" : ' opacity="0.5"'} rx="2"/>`;
-    bars += `<text x="${x + bw / 2}" y="${base - hi - 8}" class="c-pct" fill="${col}">${(pct >= 0 ? "+" : "") + pct.toFixed(0)}%</text>`;
+    const pctStr = Math.abs(pct) < 0.05 ? "0.0%" : (pct >= 0 ? "+" : "") + pct.toFixed(1) + "%";
+    bars += `<text x="${x + bw / 2}" y="${base - hi - 8}" class="c-pct" fill="${col}">${pctStr}</text>`;
     bars += `<text x="${x + bw / 2}" y="${base + 20}" class="c-ax">${d.ticker}</text>`;
   });
-  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" style="min-width:${Math.max(W, 280)}px">${bars}</svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg">${bars}</svg>`;
 }
 
 function renderWorthChart() {
