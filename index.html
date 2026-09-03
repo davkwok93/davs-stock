@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=21">
+<link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 <div class="app">
@@ -125,9 +125,11 @@
         <button id="pa-add" class="sync-btn">Add</button>
       </div>
 
+      <h2 class="tier-title fav port-summary-h">Summary</h2>
+
       <div class="port-charts">
         <div class="chart-box"><h3>Growth</h3><div id="chart-overall"></div></div>
-        <div class="chart-box"><h3>Portfolio</h3><div class="chart-scroll"><div id="chart-perstock"></div></div></div>
+        <div class="chart-box"><div class="chart-head"><h3>Portfolio</h3><button id="fit-toggle" class="fit-toggle" title="Toggle proportional vs fit-to-bar heights">Fit</button></div><div class="chart-scroll"><div id="chart-perstock"></div></div></div>
         <div class="chart-box chart-wide"><h3>Timeline</h3><div id="chart-worth"></div></div>
       </div>
 
@@ -159,6 +161,6 @@
   </div>
 </div>
 
-<script src="app.js?v=21"></script>
+<script src="app.js?v=22"></script>
 </body>
 </html>

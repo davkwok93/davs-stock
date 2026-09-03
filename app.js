@@ -357,6 +357,7 @@ function closeSignalModal() { document.getElementById("signal-modal").classList.
 let PORT = { original: 0, lots: [], sells: [] };
 let PRICES = null;           // lazy-loaded prices.json for the worth chart
 let pendingSellId = null;
+let portFit = false;         // false = bars proportional to Original/Now; true = fit each bar
 
 function loadPortLocal() {
   try {
@@ -401,7 +402,7 @@ function renderPortfolio() {
   renderClosed();
   // charts
   document.getElementById("chart-overall").innerHTML = svgOverall(PORT.original, c.worth);
-  document.getElementById("chart-perstock").innerHTML = svgPerStock(Math.max(PORT.original, c.worth, 1));
+  document.getElementById("chart-perstock").innerHTML = svgPerStock(portFit ? null : Math.max(PORT.original, c.worth, 1));
   renderWorthChart();
 }
 function statCard(label, val, extra) {
@@ -712,6 +713,11 @@ async function boot() {
   loadPortLocal();
   document.getElementById("pa-date").value = todayISO();
   document.getElementById("pa-add").onclick = addLot;
+  document.getElementById("fit-toggle").onclick = () => {
+    portFit = !portFit;
+    document.getElementById("fit-toggle").classList.toggle("on", portFit);
+    renderPortfolio();
+  };
   document.getElementById("sell-confirm").onclick = confirmSell;
   document.querySelectorAll("#sell-modal [data-sclose]").forEach(el => el.onclick = closeSellModal);
   cloudGet("davs-portfolio").then(d => { if (d) { PORT = { original: d.original || 0, lots: d.lots || [], sells: d.sells || [] }; savePortLocal(); if (currentView() === "portfolio") renderPortfolio(); } }).catch(() => {});
