@@ -583,7 +583,8 @@ function svgWorth() {
     return cash + hold;
   });
   if (series.length < 2) return `<div class="empty">Not enough history yet.</div>`;
-  const W = 640, H = 220, padL = 8, padR = 8, padT = 24, padB = 24;
+  const box = document.getElementById("chart-worth");
+  const W = Math.max(box ? box.clientWidth : 640, 300), H = 220, padL = 10, padR = 10, padT = 24, padB = 26;
   const lo = Math.min(...series, PORT.original), hi = Math.max(...series, PORT.original);
   const span = (hi - lo) || 1;
   const X = i => padL + i * (W - padL - padR) / (series.length - 1);
@@ -592,13 +593,14 @@ function svgWorth() {
   const last = series[series.length - 1], up = last >= series[0];
   const col = up ? "#4ad991" : "#ff5c5c";
   const yOrig = Y(PORT.original);
-  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="none">`
+  const valY = Math.min(Math.max(16, Y(last) - 10), H - 30);
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg">`
     + `<line x1="${padL}" y1="${yOrig}" x2="${W - padR}" y2="${yOrig}" stroke="#54657a" stroke-dasharray="3 3" stroke-width="1"/>`
     + `<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`
     + `<circle cx="${X(series.length - 1)}" cy="${Y(last)}" r="3" fill="${col}"/>`
-    + `<text x="${padL}" y="${H - 6}" class="c-ax" style="text-anchor:start">${fmtDate(wk[0])}</text>`
-    + `<text x="${W - padR}" y="${H - 6}" class="c-ax" style="text-anchor:end">${fmtDate(wk[wk.length - 1])}</text>`
-    + `<text x="${W - padR}" y="${Math.max(12, Y(last) - 8)}" class="c-lbl" style="text-anchor:end" fill="${col}">${fmtMoney(last)}</text></svg>`;
+    + `<text x="${padL}" y="${H - 8}" class="c-ax" style="text-anchor:start">${fmtDate(wk[0])}</text>`
+    + `<text x="${W - padR}" y="${H - 8}" class="c-ax" style="text-anchor:end">${fmtDate(wk[wk.length - 1])}</text>`
+    + `<text x="${W - padR}" y="${valY}" class="c-lbl" style="text-anchor:end" fill="${col}">${fmtMoney(last)}</text></svg>`;
 }
 
 // ---------- boot ----------
