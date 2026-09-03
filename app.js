@@ -341,7 +341,7 @@ function renderHistory() {
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
     { key: "date", dir: -1 }, "No events.", null, r => r.date + "#" + r.ticker,
-    { perPage: histPerPage, perPageOptions: [100, 250, 500],
+    { perPage: histPerPage, perPageOptions: [250, 500, 1000, 10000],
       onPerPage: n => histPerPage = n,
       pagerEls: [document.getElementById("hist-pager-top"), document.getElementById("hist-pager-bot")] });
 }
