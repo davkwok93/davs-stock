@@ -44,8 +44,10 @@ let selectedRowKey = null;
 // ---------- generic sortable table ----------
 // columns: {key,label,group,sepLeft,sortable,cell(row),sortVal(row),tdClass}
 // rowKey(row) -> unique string; enables the click-to-highlight "current row".
-function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey) {
+// pager (optional) = { perPage, perPageOptions:[...], pagerEls:[el,...], onPerPage(n) }
+function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey, pager) {
   let sortKey = initialSort.key, sortDir = initialSort.dir; // dir: -1 desc, 1 asc
+  let page = 1;
 
   function headHTML() {
     return "<thead><tr>" + columns.map(c => {
@@ -57,11 +59,10 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey)
       return `<th data-key="${c.key}"${cls ? ` class="${cls}"` : ""}>${c.label}${arrow}</th>`;
     }).join("") + "</tr></thead>";
   }
-  function bodyHTML(sorted) {
-    if (!sorted.length)
+  function bodyHTML(view, note) {
+    if (!view.length)
       return `<tbody><tr><td colspan="${columns.length}" class="empty">${emptyMsg}</td></tr></tbody>`;
-    const shown = (limit && sorted.length > limit) ? sorted.slice(0, limit) : sorted;
-    let body = "<tbody>" + shown.map(r => {
+    let body = "<tbody>" + view.map(r => {
       const rk = rowKey ? rowKey(r) : null;
       const trAttr = rk ? ` data-rk="${rk}"${rk === selectedRowKey ? ' class="row-current"' : ""}` : "";
       return `<tr${trAttr}>` + columns.map(c => {
@@ -70,9 +71,7 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey)
         return `<td${cls ? ` class="${cls}"` : ""}>${c.cell(r)}</td>`;
       }).join("") + "</tr>";
     }).join("");
-    if (limit && sorted.length > limit)
-      body += `<tr><td colspan="${columns.length}" class="empty">`
-            + `Showing first ${limit} of ${sorted.length} — narrow with the filters above.</td></tr>`;
+    if (note) body += `<tr><td colspan="${columns.length}" class="empty">${note}</td></tr>`;
     return body + "</tbody>";
   }
   function sortRows() {
@@ -84,14 +83,68 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey)
       return sortDir * (av - bv);
     });
   }
+  // ---- pagination controls ----
+  function pageNums(cur, pages) {
+    const set = new Set([1, pages, cur - 1, cur, cur + 1].filter(n => n >= 1 && n <= pages));
+    const arr = [...set].sort((a, b) => a - b);
+    const out = []; let prev = 0;
+    for (const n of arr) { if (n - prev > 1) out.push("…"); out.push(n); prev = n; }
+    return out;
+  }
+  function pagerHTML(total) {
+    const per = pager.perPage;
+    const pages = Math.max(1, Math.ceil(total / per));
+    const from = total ? (page - 1) * per + 1 : 0;
+    const to = Math.min(page * per, total);
+    const nums = pageNums(page, pages).map(n => n === "…"
+      ? `<span class="pg-ellip">…</span>`
+      : `<button class="pg-num${n === page ? " active" : ""}" data-pg="${n}">${n}</button>`).join("");
+    const opts = (pager.perPageOptions || [100, 250, 500]).map(o =>
+      `<option value="${o}"${o === per ? " selected" : ""}>${o} / page</option>`).join("");
+    return `<span class="pg-count">Showing ${from}–${to} of ${total}</span>`
+      + `<span class="pg-controls">`
+      + `<button class="pg-btn" data-pg="prev"${page <= 1 ? " disabled" : ""}>‹ Prev</button>`
+      + nums
+      + `<button class="pg-btn" data-pg="next"${page >= pages ? " disabled" : ""}>Next ›</button>`
+      + `<select class="pg-per">${opts}</select></span>`;
+  }
+  function wirePager(el, total) {
+    const pages = Math.max(1, Math.ceil(total / pager.perPage));
+    el.querySelectorAll("[data-pg]").forEach(b => b.onclick = () => {
+      const v = b.dataset.pg;
+      if (v === "prev") page = Math.max(1, page - 1);
+      else if (v === "next") page = Math.min(pages, page + 1);
+      else page = +v;
+      render();
+      tableEl.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+    const sel = el.querySelector(".pg-per");
+    if (sel) sel.onchange = () => {
+      pager.perPage = +sel.value; page = 1;
+      if (pager.onPerPage) pager.onPerPage(pager.perPage);
+      render();
+    };
+  }
   function render() {
-    tableEl.innerHTML = headHTML() + bodyHTML(sortRows());
+    const sorted = sortRows();
+    let view = sorted, note = "";
+    if (pager) {
+      const pages = Math.max(1, Math.ceil(sorted.length / pager.perPage));
+      if (page > pages) page = pages;
+      view = sorted.slice((page - 1) * pager.perPage, page * pager.perPage);
+    } else if (limit && sorted.length > limit) {
+      view = sorted.slice(0, limit);
+      note = `Showing first ${limit} of ${sorted.length} — narrow with the filters above.`;
+    }
+    tableEl.innerHTML = headHTML() + bodyHTML(view, note);
     tableEl.querySelectorAll("th.sortable").forEach(th => th.onclick = () => {
       const k = th.dataset.key;
       if (k === sortKey) sortDir = -sortDir;        // toggle
       else { sortKey = k; sortDir = -1; }           // new column -> big to small
+      page = 1;                                     // new sort -> back to page 1
       render();
     });
+    if (pager) pager.pagerEls.forEach(el => { if (el) { el.innerHTML = pagerHTML(sorted.length); wirePager(el, sorted.length); } });
   }
   tableEl.onclick = e => {
     const act = e.target.closest("[data-act]");
@@ -271,6 +324,7 @@ function renderDash() {
 
 let HIST_ROWS = [];
 let histTier = "all", histBand = "both", histRange = 90;  // range in days; 0 = all
+let histPerPage = 500;   // rows per page on History (user-changeable, persists)
 function isoDaysAgo(days) {
   const t = new Date();
   t.setDate(t.getDate() - days);
@@ -286,7 +340,10 @@ function renderHistory() {
   const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r));
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
-    { key: "date", dir: -1 }, "No events.", 400, r => r.date + "#" + r.ticker);
+    { key: "date", dir: -1 }, "No events.", null, r => r.date + "#" + r.ticker,
+    { perPage: histPerPage, perPageOptions: [100, 250, 500],
+      onPerPage: n => histPerPage = n,
+      pagerEls: [document.getElementById("hist-pager-top"), document.getElementById("hist-pager-bot")] });
 }
 
 async function boot() {
