@@ -89,7 +89,7 @@ td.ticker .ext { font-size: 10px; opacity: .6; margin-left: 4px; }
 td.sector-cell { text-align: left; color: var(--muted); font-size: 12.5px; }
 td.industry-cell { text-align: left; color: var(--muted); font-size: 12.5px; }
 .ind-cell {
-  max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   display: inline-block; vertical-align: middle; cursor: pointer;
 }
 .ind-cell.expanded { max-width: none; white-space: normal; }

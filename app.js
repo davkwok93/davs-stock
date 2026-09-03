@@ -26,6 +26,12 @@ function indCell(s) {
   if (!s) return "—";
   return `<span class="ind-cell" data-ind title="${esc(s)}">${s}</span>`;
 }
+// combined "Sector – Industry" (drops a side if the other is blank)
+function secInd(r) {
+  const s = r.sector || "", i = r.industry || "";
+  if (s && i) return `${s} – ${i}`;
+  return s || i || "";
+}
 function tierPill(t) { return `<span class="pill ${t}">${t}</span>`; }
 function tickerLink(t, url) {
   return `<a href="${url}" target="_blank" rel="noopener">${t}<span class="ext">↗</span></a>`;
@@ -182,8 +188,7 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
 // ---------- column definitions ----------
 const DASH_COLS = [
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: tickerCell, sortVal: r => r.ticker },
-  { key: "sector", label: "Sector", tdClass: "sector-cell", cell: r => r.sector || "—", sortVal: r => r.sector || "" },
-  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(r.industry), sortVal: r => r.industry || "" },
+  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(secInd(r)), sortVal: r => secInd(r) },
   { key: "avg20", label: "20d Avg", group: "vol", sepLeft: true, cell: r => fmtVol(r.avg20), sortVal: r => r.avg20 },
   { key: "volume", label: "Vol", group: "vol", cell: r => fmtVol(r.volume), sortVal: r => r.volume },
   { key: "vpct", label: "+V%", group: "vol", sortable: true, cell: r => vpctCell(r.vpct), sortVal: r => r.vpct },
@@ -193,8 +198,7 @@ const DASH_COLS = [
 const HIST_COLS = [
   { key: "date", label: "Day", sortable: true, cell: r => fmtDate(r.date), sortVal: r => r.date },
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: histTickerCell, sortVal: r => r.ticker },
-  { key: "sector", label: "Sector", tdClass: "sector-cell", cell: r => r.sector || "—", sortVal: r => r.sector || "" },
-  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(r.industry), sortVal: r => r.industry || "" },
+  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(secInd(r)), sortVal: r => secInd(r) },
   { key: "tier", label: "Tier", cell: r => tierPill(r.tier), sortVal: r => r.tier },
   { key: "avg20", label: "20d Avg", group: "vol", sepLeft: true, cell: r => fmtVol(r.avg20), sortVal: r => r.avg20 },
   { key: "volume", label: "Vol", group: "vol", cell: r => fmtVol(r.volume), sortVal: r => r.volume },
