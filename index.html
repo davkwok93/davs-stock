@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
 <div class="app">
@@ -14,6 +14,7 @@
       <button class="nav-item active" data-view="dashboard">Dashboard</button>
       <button class="nav-item" data-view="history">History</button>
       <button class="nav-item" data-view="favorites">Favorites</button>
+      <button class="nav-item" data-view="portfolio">Portfolio</button>
     </nav>
   </aside>
 
@@ -107,7 +108,47 @@
         <div class="table-wrap"><table id="fav-table" class="grid"></table></div>
       </div>
     </section>
+
+    <!-- PORTFOLIO VIEW -->
+    <section id="view-portfolio" class="view hidden">
+      <header class="page-head"><h1>Portfolio</h1></header>
+
+      <div class="port-stats" id="port-stats"></div>
+
+      <div class="port-add">
+        <input type="date" id="pa-date">
+        <input id="pa-ticker" placeholder="Ticker" autocomplete="off" spellcheck="false">
+        <input id="pa-cost" type="number" step="any" placeholder="Cost / share">
+        <input id="pa-shares" type="number" step="any" placeholder="# Shares">
+        <button id="pa-add" class="sync-btn">Add</button>
+      </div>
+
+      <div class="table-wrap"><table id="port-table" class="grid"></table></div>
+
+      <div class="port-charts">
+        <div class="chart-box"><h3>Original vs Now</h3><div id="chart-overall"></div></div>
+        <div class="chart-box"><h3>Per stock (cost + gain)</h3><div class="chart-scroll"><div id="chart-perstock"></div></div></div>
+        <div class="chart-box chart-wide"><h3>Worth over time</h3><div id="chart-worth"></div></div>
+      </div>
+
+      <div class="section-block">
+        <h2 class="tier-title fav">Closed <span class="count" id="closed-count"></span></h2>
+        <div class="table-wrap"><table id="closed-table" class="grid"></table></div>
+      </div>
+    </section>
   </main>
+</div>
+
+<div id="sell-modal" class="modal hidden">
+  <div class="modal-backdrop" data-sclose></div>
+  <div class="modal-box">
+    <div class="modal-head"><span id="sell-title"></span><button class="modal-x" data-sclose aria-label="close">✕</button></div>
+    <div class="modal-body sell-body">
+      <label class="sell-field">Sell price / share<input id="sell-price" type="number" step="any"></label>
+      <label class="sell-field">Sell date<input id="sell-date" type="date"></label>
+      <div class="sell-actions"><button class="sync-btn" data-sclose>Cancel</button><button class="sync-btn primary" id="sell-confirm">Confirm sell</button></div>
+    </div>
+  </div>
 </div>
 
 <div id="signal-modal" class="modal hidden">
@@ -118,6 +159,6 @@
   </div>
 </div>
 
-<script src="app.js?v=17"></script>
+<script src="app.js?v=18"></script>
 </body>
 </html>

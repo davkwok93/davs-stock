@@ -119,6 +119,47 @@ tbody tr.day-sep td { border-top: 2px solid var(--sep); }
 .modal-body table.grid { border: none; }
 .sm-l { text-align: left !important; }
 
+/* ---- portfolio ---- */
+.vpct.loss { color: var(--hot); font-weight: 700; }
+.port-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+.pstat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.pstat-l { font-size: 12.5px; color: var(--muted); }
+.pstat-v { font-size: 20px; font-weight: 700; margin-top: 2px; display: flex; align-items: center; gap: 8px; }
+.orig-edit { background: var(--panel-2); border: 1px solid var(--line); color: var(--accent); border-radius: 6px; cursor: pointer; font-size: 13px; line-height: 1; padding: 2px 7px; }
+.orig-edit:hover { border-color: var(--accent); }
+
+.port-add { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.port-add input {
+  background: var(--bg); border: 1px solid var(--line); color: var(--text);
+  padding: 7px 10px; border-radius: 8px; font-size: 13px; font-family: inherit;
+}
+.port-add input:focus { outline: none; border-color: var(--accent); }
+#pa-ticker { width: 90px; text-transform: uppercase; }
+#pa-cost, #pa-shares { width: 110px; }
+
+td.muted-col, th.muted-col { color: var(--muted); opacity: .8; }
+.sell-btn { background: var(--panel-2); border: 1px solid var(--line); color: var(--accent); border-radius: 6px; padding: 3px 9px; cursor: pointer; font-size: 12px; margin-right: 4px; }
+.sell-btn:hover { border-color: var(--accent); }
+tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
+
+.port-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.chart-box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.chart-box.chart-wide { grid-column: 1 / -1; }
+.chart-box h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.chart-svg { width: 100%; height: auto; display: block; }
+.chart-scroll { overflow-x: auto; }
+.c-lbl { fill: var(--text); font-size: 12px; font-weight: 600; text-anchor: middle; }
+.c-pct { font-size: 12px; font-weight: 700; text-anchor: middle; }
+.c-ax { fill: var(--muted); font-size: 11px; text-anchor: middle; }
+@media (max-width: 760px) { .port-charts { grid-template-columns: 1fr; } .port-stats { gap: 8px; } .pstat-v { font-size: 17px; } }
+
+/* sell modal fields */
+.sell-body { display: flex; flex-direction: column; gap: 14px; padding: 16px; }
+.sell-field { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--muted); }
+.sell-field input { background: var(--bg); border: 1px solid var(--line); color: var(--text); padding: 8px 10px; border-radius: 8px; font-size: 14px; font-family: inherit; }
+.sell-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.sync-btn.primary { background: var(--accent); color: #04121f; border-color: var(--accent); font-weight: 600; }
+
 /* favorite / star / remove buttons in the ticker cell */
 .fav-btn, .star-btn, .rm-btn {
   background: none; border: none; cursor: pointer; font-size: 14px; line-height: 1;

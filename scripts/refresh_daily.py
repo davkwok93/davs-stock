@@ -19,7 +19,7 @@ import pandas as pd
 import yfinance as yf
 
 from common import (
-    UNIVERSE_CSV, STOCK_CSV, HOME_JSON, HISTORY_JSON,
+    DATA, UNIVERSE_CSV, STOCK_CSV, HOME_JSON, HISTORY_JSON,
     WARMUP_START, DISPLAY_START, AVG_WINDOW, SIG_WINDOW, VOL_MULT,
     tier_of, yahoo_url, add_avg20,
 )
@@ -142,6 +142,7 @@ def build_home(panel, name, tier, sector, industry):
             "sector": sector.get(t, ""),
             "industry": industry.get(t, ""),
             "date": last["date"],
+            "price": None if pd.isna(last["close"]) else round(float(last["close"]), 2),
             "volume": None if pd.isna(last["volume"]) else int(last["volume"]),
             "avg20": None if pd.isna(last["avg20"]) else round(float(last["avg20"])),
             "vpct": round(float(last["volume"] / last["avg20"] - 1) * 100, 1),
@@ -188,6 +189,25 @@ def build_history(panel, tier, sector, industry):
     print(f"history.json: {len(events)} signal events")
 
 
+def build_prices(panel):
+    """Weekly (Fri) closes for the last ~52 weeks -> prices.json (portfolio worth chart)."""
+    p = panel.copy()
+    p["date"] = pd.to_datetime(p["date"])
+    wide = p.pivot_table(index="date", columns="ticker", values="close")
+    weekly = wide.resample("W-FRI").last().tail(52)
+    dates = [d.strftime("%Y-%m-%d") for d in weekly.index]
+    close = {}
+    for t in weekly.columns:
+        col = weekly[t]
+        if col.notna().sum() == 0:
+            continue
+        close[t] = [None if pd.isna(v) else round(float(v), 2) for v in col.values]
+    payload = {"generated": pd.Timestamp.now().isoformat(timespec="seconds"),
+               "dates": dates, "close": close}
+    (DATA / "prices.json").write_text(json.dumps(payload, indent=None))
+    print(f"prices.json: {len(close)} tickers x {len(dates)} weeks")
+
+
 def main():
     tickers, cap_now, name, tier, sector, industry = load_universe()
     print(f"Universe: {len(tickers)} tickers")
@@ -196,6 +216,7 @@ def main():
     save_panel(panel)
     build_home(panel, name, tier, sector, industry)
     build_history(panel, tier, sector, industry)
+    build_prices(panel)
     print("DONE.")
 
 

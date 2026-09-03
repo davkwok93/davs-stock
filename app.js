@@ -9,6 +9,7 @@ const fmtCap = c => c == null ? "—" :
   c >= 1e12 ? "$" + (c / 1e12).toFixed(2) + "T" :
   c >= 1e9 ? "$" + (c / 1e9).toFixed(1) + "B" : "$" + (c / 1e6).toFixed(0) + "M";
 const fmtPct = p => (p == null) ? "—" : (p >= 0 ? "+" : "") + p.toFixed(1) + "%";
+const fmtMoney = n => n == null ? "—" : (n < 0 ? "-" : "") + "$" + Math.abs(Math.round(n)).toLocaleString();
 const fmtDate = s => { const [y, m, d] = s.split("-"); return `${m}/${d}/${y}`; };
 const WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const weekday = s => { const [y, m, d] = s.split("-").map(Number); return WD[new Date(y, m - 1, d).getDay()]; };
@@ -298,7 +299,9 @@ function setView(name) {
   document.getElementById("view-dashboard").classList.toggle("hidden", name !== "dashboard");
   document.getElementById("view-history").classList.toggle("hidden", name !== "history");
   document.getElementById("view-favorites").classList.toggle("hidden", name !== "favorites");
+  document.getElementById("view-portfolio").classList.toggle("hidden", name !== "portfolio");
   if (name === "favorites") renderFavorites();
+  if (name === "portfolio") renderPortfolio();
 }
 document.querySelectorAll(".nav-item").forEach(b => b.onclick = () => setView(b.dataset.view));
 
@@ -310,6 +313,7 @@ function rerenderCurrent() {
   if (v === "dashboard") renderDash();
   else if (v === "history") renderHistory();
   else if (v === "favorites") renderFavorites();
+  else if (v === "portfolio") renderPortfolio();
 }
 
 // ---------- favorites page ----------
@@ -348,6 +352,253 @@ function openSignalModal(t) {
   document.getElementById("signal-modal").classList.remove("hidden");
 }
 function closeSignalModal() { document.getElementById("signal-modal").classList.add("hidden"); }
+
+// ================= PORTFOLIO =================
+let PORT = { original: 0, lots: [], sells: [] };
+let PRICES = null;           // lazy-loaded prices.json for the worth chart
+let pendingSellId = null;
+
+function loadPortLocal() {
+  try {
+    const j = JSON.parse(localStorage.getItem("davs_port") || "{}");
+    PORT = { original: j.original || 0, lots: j.lots || [], sells: j.sells || [] };
+  } catch (e) { /* ignore */ }
+}
+function savePortLocal() { localStorage.setItem("davs_port", JSON.stringify(PORT)); }
+let portPushT = null;
+function schedulePortPush() {
+  savePortLocal();
+  clearTimeout(portPushT);
+  portPushT = setTimeout(() => cloudPut("davs-portfolio", PORT).catch(() => {}), 600);
+}
+
+const priceOf = t => { const r = HOME_MAP[t]; return r && r.price != null ? r.price : null; };
+const secOf = t => { const r = HOME_MAP[t]; return r && r.sector ? r.sector : ""; };
+
+function portCalc() {
+  let invested = 0, holdingsValue = 0, buysAll = 0, sellsAll = 0;
+  for (const l of PORT.lots) {
+    invested += l.cost * l.shares; buysAll += l.cost * l.shares;
+    const p = priceOf(l.ticker);
+    holdingsValue += (p != null ? p : l.cost) * l.shares;
+  }
+  for (const x of PORT.sells) { buysAll += x.cost * x.shares; sellsAll += x.sellPrice * x.shares; }
+  const available = PORT.original - buysAll + sellsAll;
+  return { invested, holdingsValue, available, worth: available + holdingsValue };
+}
+
+function renderPortfolio() {
+  const c = portCalc();
+  // stat cards
+  document.getElementById("port-stats").innerHTML =
+    statCard("Original", fmtMoney(PORT.original), `<button class="orig-edit" id="orig-edit">＋</button>`)
+    + statCard("Invested", fmtMoney(c.invested))
+    + statCard("Available", fmtMoney(c.available));
+  document.getElementById("orig-edit").onclick = editOriginal;
+
+  // positions table
+  renderPositions(c);
+  renderClosed();
+  // charts
+  document.getElementById("chart-overall").innerHTML = svgOverall(PORT.original, c.worth);
+  document.getElementById("chart-perstock").innerHTML = svgPerStock();
+  renderWorthChart();
+}
+function statCard(label, val, extra) {
+  return `<div class="pstat"><div class="pstat-l">${label}</div><div class="pstat-v">${val}${extra || ""}</div></div>`;
+}
+function editOriginal() {
+  const v = prompt("Set your original / starting amount ($):", PORT.original || "");
+  if (v == null) return;
+  const n = parseFloat(String(v).replace(/[^0-9.\-]/g, ""));
+  if (!isNaN(n)) { PORT.original = n; schedulePortPush(); renderPortfolio(); }
+}
+
+function renderPositions(c) {
+  const t = document.getElementById("port-table");
+  const head = `<thead><tr><th class="l">Date</th><th class="l">Ticker</th><th class="l">Sector</th>`
+    + `<th>Cost/sh</th><th>Price</th><th>Change%</th><th>#Shares</th>`
+    + `<th class="muted-col">Total Cost</th><th class="muted-col">Total Value</th><th></th></tr></thead>`;
+  if (!PORT.lots.length) {
+    t.innerHTML = head + `<tbody><tr><td colspan="10" class="empty">No positions yet — add one below.</td></tr></tbody>`;
+    return;
+  }
+  const rows = PORT.lots.map(l => {
+    const p = priceOf(l.ticker), chg = p != null ? (p / l.cost - 1) * 100 : null;
+    const tc = l.cost * l.shares, tv = p != null ? p * l.shares : null;
+    return `<tr><td class="l">${fmtDate(l.date)}</td>`
+      + `<td class="l ticker">${tickerLink(l.ticker, "https://finance.yahoo.com/quote/" + l.ticker)}</td>`
+      + `<td class="l" style="color:var(--muted)">${secOf(l.ticker) || "—"}</td>`
+      + `<td>$${l.cost.toFixed(2)}</td><td>${p != null ? "$" + p.toFixed(2) : "—"}</td>`
+      + `<td>${chg == null ? "—" : `<span class="vpct ${chg >= 0 ? "green" : "loss"}">${fmtPct(chg)}</span>`}</td>`
+      + `<td>${l.shares}</td>`
+      + `<td class="muted-col">${fmtMoney(tc)}</td><td class="muted-col">${tv == null ? "—" : fmtMoney(tv)}</td>`
+      + `<td class="l"><button class="sell-btn" data-sell="${l.id}">Sell</button>`
+      + `<button class="rm-btn" data-dellot="${l.id}">✕</button></td></tr>`;
+  }).join("");
+  const totChg = c.invested > 0 ? (c.holdingsValue / c.invested - 1) * 100 : 0;
+  const totals = `<tr class="port-total"><td class="l" colspan="5">Total</td>`
+    + `<td><span class="vpct ${totChg >= 0 ? "green" : "loss"}">${fmtPct(totChg)}</span></td><td></td>`
+    + `<td class="muted-col">${fmtMoney(c.invested)}</td><td class="muted-col">${fmtMoney(c.holdingsValue)}</td><td></td></tr>`;
+  t.innerHTML = head + `<tbody>${rows}${totals}</tbody>`;
+  t.querySelectorAll("[data-sell]").forEach(b => b.onclick = () => openSellModal(b.dataset.sell));
+  t.querySelectorAll("[data-dellot]").forEach(b => b.onclick = () => deleteLot(b.dataset.dellot));
+}
+
+function renderClosed() {
+  const t = document.getElementById("closed-table");
+  document.getElementById("closed-count").textContent = PORT.sells.length ? PORT.sells.length : "";
+  if (!PORT.sells.length) { t.innerHTML = `<tbody><tr><td class="empty">No closed positions.</td></tr></tbody>`; return; }
+  const head = `<thead><tr><th class="l">Ticker</th><th class="l">Bought</th><th class="l">Sold</th>`
+    + `<th>#Sh</th><th>Cost/sh</th><th>Sell/sh</th><th>Realized $</th><th>Realized %</th><th></th></tr></thead>`;
+  const rows = [...PORT.sells].sort((a, b) => a.sellDate < b.sellDate ? 1 : -1).map(x => {
+    const gain = (x.sellPrice - x.cost) * x.shares, pct = (x.sellPrice / x.cost - 1) * 100;
+    return `<tr><td class="l">${x.ticker}</td><td class="l">${fmtDate(x.date)}</td><td class="l">${fmtDate(x.sellDate)}</td>`
+      + `<td>${x.shares}</td><td>$${x.cost.toFixed(2)}</td><td>$${x.sellPrice.toFixed(2)}</td>`
+      + `<td><span class="vpct ${gain >= 0 ? "green" : "loss"}">${fmtMoney(gain)}</span></td>`
+      + `<td><span class="vpct ${pct >= 0 ? "green" : "loss"}">${fmtPct(pct)}</span></td>`
+      + `<td class="l"><button class="rm-btn" data-delsell="${x.id}" title="Delete record">✕</button></td></tr>`;
+  }).join("");
+  t.innerHTML = head + `<tbody>${rows}</tbody>`;
+  t.querySelectorAll("[data-delsell]").forEach(b => b.onclick = () => {
+    PORT.sells = PORT.sells.filter(s => s.id !== b.dataset.delsell); schedulePortPush(); renderPortfolio();
+  });
+}
+
+// ---- add / sell / delete ----
+function addLot() {
+  const date = document.getElementById("pa-date").value;
+  const ticker = document.getElementById("pa-ticker").value.trim().toUpperCase();
+  const cost = parseFloat(document.getElementById("pa-cost").value);
+  const shares = parseFloat(document.getElementById("pa-shares").value);
+  if (!date || !ticker || !(cost > 0) || !(shares > 0)) { alert("Enter date, ticker, cost/share and #shares."); return; }
+  PORT.lots.push({ id: (crypto.randomUUID ? crypto.randomUUID() : String(Math.random())), ticker, date, cost, shares });
+  document.getElementById("pa-ticker").value = "";
+  document.getElementById("pa-cost").value = "";
+  document.getElementById("pa-shares").value = "";
+  schedulePortPush(); renderPortfolio();
+}
+function deleteLot(id) {
+  if (!confirm("Delete this position (no sale recorded)?")) return;
+  PORT.lots = PORT.lots.filter(l => l.id !== id); schedulePortPush(); renderPortfolio();
+}
+function openSellModal(id) {
+  const l = PORT.lots.find(x => x.id === id); if (!l) return;
+  pendingSellId = id;
+  document.getElementById("sell-title").textContent = `Sell ${l.ticker} (${l.shares} sh)`;
+  const p = priceOf(l.ticker);
+  document.getElementById("sell-price").value = p != null ? p : l.cost;
+  document.getElementById("sell-date").value = todayISO();
+  document.getElementById("sell-modal").classList.remove("hidden");
+}
+function closeSellModal() { document.getElementById("sell-modal").classList.add("hidden"); pendingSellId = null; }
+function confirmSell() {
+  const l = PORT.lots.find(x => x.id === pendingSellId); if (!l) return closeSellModal();
+  const price = parseFloat(document.getElementById("sell-price").value);
+  const sellDate = document.getElementById("sell-date").value;
+  if (!(price > 0) || !sellDate) { alert("Enter a sell price and date."); return; }
+  PORT.sells.push({ id: l.id, ticker: l.ticker, date: l.date, shares: l.shares, cost: l.cost, sellDate, sellPrice: price });
+  PORT.lots = PORT.lots.filter(x => x.id !== l.id);
+  closeSellModal(); schedulePortPush(); renderPortfolio();
+}
+function todayISO() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`;
+}
+
+// ---- charts (hand-rolled SVG) ----
+function svgOverall(orig, now) {
+  const max = Math.max(orig, now, 1);
+  const W = 360, H = 210, base = 165, top = 45, x1 = 105, x2 = 255, bw = 66;
+  const h = v => (v / max) * (base - top);
+  const y1 = base - h(orig), y2 = base - h(now);
+  const pct = orig > 0 ? (now / orig - 1) * 100 : 0;
+  const col = pct >= 0 ? "#4ad991" : "#ff5c5c";
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="xMidYMid meet">`
+    + `<rect x="${x1 - bw / 2}" y="${y1}" width="${bw}" height="${base - y1}" fill="#54657a" rx="3"/>`
+    + `<rect x="${x2 - bw / 2}" y="${y2}" width="${bw}" height="${base - y2}" fill="${col}" rx="3"/>`
+    + `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-dasharray="4 3" stroke-width="1.5"/>`
+    + `<text x="${x1}" y="${y1 - 8}" class="c-lbl">${fmtMoney(orig)}</text>`
+    + `<text x="${x2}" y="${y2 - 8}" class="c-lbl">${fmtMoney(now)}</text>`
+    + `<text x="${(x1 + x2) / 2}" y="${Math.min(y1, y2) - 22}" class="c-pct" fill="${col}">${(pct >= 0 ? "+" : "") + pct.toFixed(1)}%</text>`
+    + `<text x="${x1}" y="${base + 20}" class="c-ax">Original</text>`
+    + `<text x="${x2}" y="${base + 20}" class="c-ax">Now</text></svg>`;
+}
+function holdingsByTicker() {
+  const m = {};
+  for (const l of PORT.lots) {
+    const p = priceOf(l.ticker);
+    (m[l.ticker] = m[l.ticker] || { ticker: l.ticker, cost: 0, value: 0 });
+    m[l.ticker].cost += l.cost * l.shares;
+    m[l.ticker].value += (p != null ? p : l.cost) * l.shares;
+  }
+  return Object.values(m).sort((a, b) => b.value - a.value);
+}
+function svgPerStock() {
+  const hs = holdingsByTicker();
+  if (!hs.length) return `<div class="empty">No holdings.</div>`;
+  const max = Math.max(...hs.map(d => Math.max(d.cost, d.value)), 1);
+  const bw = 46, gap = 26, W = hs.length * (bw + gap) + gap, H = 210, base = 165, top = 45;
+  const h = v => (v / max) * (base - top);
+  let bars = "";
+  hs.forEach((d, i) => {
+    const x = gap + i * (bw + gap);
+    const lo = h(Math.min(d.cost, d.value)), hi = h(Math.max(d.cost, d.value));
+    const pct = d.cost > 0 ? (d.value / d.cost - 1) * 100 : 0, gain = d.value >= d.cost;
+    const col = gain ? "#4ad991" : "#ff5c5c";
+    bars += `<rect x="${x}" y="${base - lo}" width="${bw}" height="${lo}" fill="#54657a" rx="2"/>`;
+    bars += `<rect x="${x}" y="${base - hi}" width="${bw}" height="${hi - lo}" fill="${col}"${gain ? "" : ' opacity="0.5"'} rx="2"/>`;
+    bars += `<text x="${x + bw / 2}" y="${base - hi - 8}" class="c-pct" fill="${col}">${(pct >= 0 ? "+" : "") + pct.toFixed(0)}%</text>`;
+    bars += `<text x="${x + bw / 2}" y="${base + 20}" class="c-ax">${d.ticker}</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" style="min-width:${Math.max(W, 280)}px">${bars}</svg>`;
+}
+
+function renderWorthChart() {
+  const el = document.getElementById("chart-worth");
+  if (!PORT.lots.length && !PORT.sells.length) { el.innerHTML = `<div class="empty">Add a position to see your worth over time.</div>`; return; }
+  if (!PRICES) {
+    el.innerHTML = `<div class="empty">Loading price history…</div>`;
+    fetch("data/prices.json?t=" + Date.now()).then(r => r.json()).then(j => { PRICES = j; renderWorthChart(); }).catch(() => { el.innerHTML = `<div class="empty">Couldn't load price history.</div>`; });
+    return;
+  }
+  el.innerHTML = svgWorth();
+}
+function svgWorth() {
+  const dates = PRICES.dates, idxOf = {};
+  dates.forEach((d, i) => idxOf[d] = i);
+  const pxAt = (t, i) => { const a = PRICES.close[t]; return a && a[i] != null ? a[i] : null; };
+  const firstDate = [...PORT.lots, ...PORT.sells].map(x => x.date).sort()[0];
+  let start = dates.findIndex(d => d >= firstDate); if (start < 0) start = 0; start = Math.max(0, start - 1);
+  const wk = dates.slice(start);
+  const series = wk.map(d => {
+    const i = idxOf[d]; let cash = PORT.original, hold = 0;
+    for (const l of PORT.lots) if (l.date <= d) { cash -= l.cost * l.shares; const p = pxAt(l.ticker, i); hold += (p != null ? p : l.cost) * l.shares; }
+    for (const x of PORT.sells) {
+      if (x.date <= d) cash -= x.cost * x.shares;
+      if (x.sellDate <= d) cash += x.sellPrice * x.shares;
+      if (x.date <= d && x.sellDate > d) { const p = pxAt(x.ticker, i); hold += (p != null ? p : x.cost) * x.shares; }
+    }
+    return cash + hold;
+  });
+  if (series.length < 2) return `<div class="empty">Not enough history yet.</div>`;
+  const W = 640, H = 220, padL = 8, padR = 8, padT = 24, padB = 24;
+  const lo = Math.min(...series, PORT.original), hi = Math.max(...series, PORT.original);
+  const span = (hi - lo) || 1;
+  const X = i => padL + i * (W - padL - padR) / (series.length - 1);
+  const Y = v => padT + (1 - (v - lo) / span) * (H - padT - padB);
+  const pts = series.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+  const last = series[series.length - 1], up = last >= series[0];
+  const col = up ? "#4ad991" : "#ff5c5c";
+  const yOrig = Y(PORT.original);
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="none">`
+    + `<line x1="${padL}" y1="${yOrig}" x2="${W - padR}" y2="${yOrig}" stroke="#54657a" stroke-dasharray="3 3" stroke-width="1"/>`
+    + `<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`
+    + `<circle cx="${X(series.length - 1)}" cy="${Y(last)}" r="3" fill="${col}"/>`
+    + `<text x="${padL}" y="${H - 6}" class="c-ax" style="text-anchor:start">${fmtDate(wk[0])}</text>`
+    + `<text x="${W - padR}" y="${H - 6}" class="c-ax" style="text-anchor:end">${fmtDate(wk[wk.length - 1])}</text>`
+    + `<text x="${W - padR}" y="${Math.max(12, Y(last) - 8)}" class="c-lbl" style="text-anchor:end" fill="${col}">${fmtMoney(last)}</text></svg>`;
+}
 
 // ---------- boot ----------
 let HOME_ROWS = [];
@@ -452,7 +703,16 @@ async function boot() {
   });
   // signal modal close handlers
   document.querySelectorAll("#signal-modal [data-close]").forEach(el => el.onclick = closeSignalModal);
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeSignalModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeSignalModal(); closeSellModal(); } });
+
+  // portfolio: load local, wire form + sell modal, then pull the synced copy
+  loadPortLocal();
+  document.getElementById("pa-date").value = todayISO();
+  document.getElementById("pa-add").onclick = addLot;
+  document.getElementById("sell-confirm").onclick = confirmSell;
+  document.querySelectorAll("#sell-modal [data-sclose]").forEach(el => el.onclick = closeSellModal);
+  cloudGet("davs-portfolio").then(d => { if (d) { PORT = { original: d.original || 0, lots: d.lots || [], sells: d.sells || [] }; savePortLocal(); if (currentView() === "portfolio") renderPortfolio(); } }).catch(() => {});
+
   rerenderCurrent();
   try {
     const remote = await cloudGet(SHARED_CODE);
