@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=19">
+<link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 <div class="app">
@@ -115,6 +115,8 @@
 
       <div class="port-stats" id="port-stats"></div>
 
+      <div class="table-wrap"><table id="port-table" class="grid"></table></div>
+
       <div class="port-add">
         <input type="date" id="pa-date">
         <input id="pa-ticker" placeholder="Ticker" autocomplete="off" spellcheck="false">
@@ -122,8 +124,6 @@
         <input id="pa-shares" type="number" step="any" placeholder="# Shares">
         <button id="pa-add" class="sync-btn">Add</button>
       </div>
-
-      <div class="table-wrap"><table id="port-table" class="grid"></table></div>
 
       <div class="port-charts">
         <div class="chart-box"><h3>Original vs Now</h3><div id="chart-overall"></div></div>
@@ -159,6 +159,6 @@
   </div>
 </div>
 
-<script src="app.js?v=19"></script>
+<script src="app.js?v=20"></script>
 </body>
 </html>

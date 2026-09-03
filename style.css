@@ -149,9 +149,9 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 .chart-svg { height: 230px; display: block; }
 #chart-overall { text-align: center; }
 #chart-overall .chart-svg { width: auto; max-width: 100%; margin: 0 auto; }
-#chart-perstock .chart-svg { width: auto; }          /* natural width; scrolls if many */
+#chart-perstock .chart-svg { width: auto; margin: 0 auto; }   /* centered; scrolls if many */
 #chart-worth .chart-svg { width: 100%; }
-.chart-scroll { overflow-x: auto; }
+.chart-scroll { overflow-x: auto; text-align: center; }
 .c-lbl { fill: var(--text); font-size: 12px; font-weight: 600; text-anchor: middle; }
 .c-pct { font-size: 12px; font-weight: 700; text-anchor: middle; }
 .c-ax { fill: var(--muted); font-size: 11px; text-anchor: middle; }

@@ -401,7 +401,7 @@ function renderPortfolio() {
   renderClosed();
   // charts
   document.getElementById("chart-overall").innerHTML = svgOverall(PORT.original, c.worth);
-  document.getElementById("chart-perstock").innerHTML = svgPerStock();
+  document.getElementById("chart-perstock").innerHTML = svgPerStock(Math.max(PORT.original, c.worth, 1));
   renderWorthChart();
 }
 function statCard(label, val, extra) {
@@ -534,12 +534,12 @@ function holdingsByTicker() {
   }
   return Object.values(m).sort((a, b) => b.value - a.value);
 }
-function svgPerStock() {
+function svgPerStock(scale) {
   const hs = holdingsByTicker();
   if (!hs.length) return `<div class="empty">No holdings.</div>`;
-  const max = Math.max(...hs.map(d => Math.max(d.cost, d.value)), 1);
+  const max = scale || Math.max(...hs.map(d => Math.max(d.cost, d.value)), 1);
   const bw = 46, gap = 26, W = hs.length * (bw + gap) + gap, H = 210, base = 165, top = 45;
-  const h = v => (v / max) * (base - top);
+  const h = v => Math.min((v / max) * (base - top), base - top);   // clamp to chart height
   let bars = "";
   hs.forEach((d, i) => {
     const x = gap + i * (bw + gap);
