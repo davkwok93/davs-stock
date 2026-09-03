@@ -358,6 +358,7 @@ let PORT = { original: 0, lots: [], sells: [] };
 let PRICES = null;           // lazy-loaded prices.json for the worth chart
 let pendingSellId = null;
 let portFit = false;         // false = bars proportional to Original/Now; true = fit each bar
+let portSortDir = -1;        // positions Date sort: -1 newest first, 1 oldest first
 
 function loadPortLocal() {
   try {
@@ -417,14 +418,17 @@ function editOriginal() {
 
 function renderPositions(c) {
   const t = document.getElementById("port-table");
-  const head = `<thead><tr><th class="l">Date</th><th class="l">Ticker</th><th class="l">Sector</th>`
+  const arrow = `<span class="arrow">${portSortDir < 0 ? "▼" : "▲"}</span>`;
+  const head = `<thead><tr><th class="l sortable" id="port-date-sort">Date ${arrow}</th><th class="l">Ticker</th><th class="l">Sector</th>`
     + `<th>Cost/sh</th><th>Price</th><th>Change%</th><th>#Shares</th>`
     + `<th class="muted-col">Total Cost</th><th class="muted-col">Total Value</th><th></th></tr></thead>`;
   if (!PORT.lots.length) {
     t.innerHTML = head + `<tbody><tr><td colspan="10" class="empty">No positions yet — add one below.</td></tr></tbody>`;
+    t.querySelector("#port-date-sort").onclick = () => { portSortDir = -portSortDir; renderPositions(portCalc()); };
     return;
   }
-  const rows = PORT.lots.map(l => {
+  const lots = [...PORT.lots].sort((a, b) => portSortDir * (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  const rows = lots.map(l => {
     const p = priceOf(l.ticker), chg = p != null ? (p / l.cost - 1) * 100 : null;
     const tc = l.cost * l.shares, tv = p != null ? p * l.shares : null;
     return `<tr><td class="l">${fmtDate(l.date)}</td>`
@@ -442,6 +446,7 @@ function renderPositions(c) {
     + `<td><span class="vpct ${totChg >= 0 ? "green" : "loss"}">${fmtPct(totChg)}</span></td><td></td>`
     + `<td class="muted-col">${fmtMoney(c.invested)}</td><td class="muted-col">${fmtMoney(c.holdingsValue)}</td><td></td></tr>`;
   t.innerHTML = head + `<tbody>${rows}${totals}</tbody>`;
+  t.querySelector("#port-date-sort").onclick = () => { portSortDir = -portSortDir; renderPositions(portCalc()); };
   t.querySelectorAll("[data-sell]").forEach(b => b.onclick = () => openSellModal(b.dataset.sell));
   t.querySelectorAll("[data-dellot]").forEach(b => b.onclick = () => deleteLot(b.dataset.dellot));
 }

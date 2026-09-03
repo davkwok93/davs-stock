@@ -12,6 +12,7 @@
   --mega: #f5a623;
   --large: #56c596;
   --green: #4ad991;   /* >= +200% */
+  --hot: #ff5c5c;     /* negative / losses / errors */
   --yellow: #ffc84a;  /* +100% .. +200% */
   --grp-vol: rgba(79,156,249,0.04);
   --grp-cap: rgba(245,166,35,0.05);
