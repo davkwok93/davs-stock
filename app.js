@@ -34,10 +34,18 @@ function secInd(r) {
   return s || i || "";
 }
 function tierPill(t) { return `<span class="pill ${t}">${t}</span>`; }
-function tickerLink(t, url) {
-  return `<a href="${url}" target="_blank" rel="noopener">${t}<span class="ext">↗</span></a>`;
+// Yahoo chart layout (1-yr daily mountain + volume underlay). INTC appears only in
+// the 3 symbol fields; swap it for the ticker and re-encode to get the same view.
+const CHART_TPL_B64 = "eyJsYXlvdXQiOnsiaW50ZXJ2YWwiOiJkYXkiLCJwZXJpb2RpY2l0eSI6MSwidGltZVVuaXQiOm51bGwsImNhbmRsZVdpZHRoIjo0Ljk4NDE4OTcyMzMyMDE1OCwiZmxpcHBlZCI6ZmFsc2UsInZvbHVtZVVuZGVybGF5Ijp0cnVlLCJhZGoiOnRydWUsImNyb3NzaGFpciI6dHJ1ZSwiY2hhcnRUeXBlIjoibW91bnRhaW4iLCJleHRlbmRlZCI6ZmFsc2UsIm1hcmtldFNlc3Npb25zIjp7fSwiYWdncmVnYXRpb25UeXBlIjoib2hsYyIsImNoYXJ0U2NhbGUiOiJsaW5lYXIiLCJzdHVkaWVzIjp7IuKAjHZvbCB1bmRy4oCMIjp7InR5cGUiOiJ2b2wgdW5kciIsImlucHV0cyI6eyJTZXJpZXMiOiJzZXJpZXMiLCJpZCI6IuKAjHZvbCB1bmRy4oCMIiwiZGlzcGxheSI6IuKAjHZvbCB1bmRy4oCMIn0sIm91dHB1dHMiOnsiVXAgVm9sdW1lIjoiIzBkYmQ2ZWVlIiwiRG93biBWb2x1bWUiOiIjZmY1NTQ3ZWUifSwicGFuZWwiOiJjaGFydCIsInBhcmFtZXRlcnMiOnsiY2hhcnROYW1lIjoiY2hhcnQiLCJlZGl0TW9kZSI6dHJ1ZSwicGFuZWxOYW1lIjoiY2hhcnQifSwiZGlzYWJsZWQiOmZhbHNlfX0sInBhbmVscyI6eyJjaGFydCI6eyJwZXJjZW50IjoxLCJkaXNwbGF5IjoiSU5UQyIsImNoYXJ0TmFtZSI6ImNoYXJ0IiwiaW5kZXgiOjAsInlBeGlzIjp7Im5hbWUiOiJjaGFydCIsInBvc2l0aW9uIjpudWxsfSwieWF4aXNMSFMiOltdLCJ5YXhpc1JIUyI6WyJjaGFydCIsIuKAjHZvbCB1bmRy4oCMIl19fSwic2V0U3BhbiI6eyJtdWx0aXBsaWVyIjoxLCJiYXNlIjoieWVhciIsInBlcmlvZGljaXR5Ijp7InBlcmlvZCI6MSwidGltZVVuaXQiOiJkYXkifSwic2hvd0V2ZW50c1F1b3RlIjp0cnVlLCJmb3JjZUxvYWQiOnRydWV9LCJvdXRsaWVycyI6ZmFsc2UsImFuaW1hdGlvbiI6dHJ1ZSwiaGVhZHNVcCI6eyJzdGF0aWMiOnRydWUsImR5bmFtaWMiOmZhbHNlLCJmbG9hdGluZyI6ZmFsc2V9LCJsaW5lV2lkdGgiOjIsImZ1bGxTY3JlZW4iOnRydWUsInN0cmlwZWRCYWNrZ3JvdW5kIjp0cnVlLCJjb2xvciI6IiMwMDgxZjIiLCJjcm9zc2hhaXJTdGlja3kiOmZhbHNlLCJkb250U2F2ZVJhbmdlVG9MYXlvdXQiOnRydWUsInN5bWJvbHMiOlt7InN5bWJvbCI6IklOVEMiLCJzeW1ib2xPYmplY3QiOnsic3ltYm9sIjoiSU5UQyIsIm1hcmtldCI6InVzX21hcmtldCIsInF1b3RlVHlwZSI6IkVRVUlUWSIsImV4Y2hhbmdlVGltZVpvbmUiOiJBbWVyaWNhL05ld19Zb3JrIiwicGVyaW9kMSI6MTY2MTQwMDAwMCwicGVyaW9kMiI6MTc4ODU0NDgwMH0sInBlcmlvZGljaXR5IjoxLCJpbnRlcnZhbCI6ImRheSIsInRpbWVVbml0IjpudWxsLCJzZXRTcGFuIjp7Im11bHRpcGxpZXIiOjEsImJhc2UiOiJ5ZWFyIiwicGVyaW9kaWNpdHkiOnsicGVyaW9kIjoxLCJ0aW1lVW5pdCI6ImRheSJ9LCJzaG93RXZlbnRzUXVvdGUiOnRydWUsImZvcmNlTG9hZCI6dHJ1ZX19XSwicmVuZGVyZXJzIjpbXX0sImV2ZW50cyI6eyJkaXZzIjp0cnVlLCJzcGxpdHMiOnRydWUsInRyYWRpbmdIb3Jpem9uIjoibm9uZSIsInNpZ0RldkV2ZW50cyI6W119LCJkcmF3aW5ncyI6bnVsbCwicHJlZmVyZW5jZXMiOnt9fQ==";
+function buildChartUrl(t) {
+  try {
+    const j = decodeURIComponent(escape(atob(CHART_TPL_B64))).split("INTC").join(t);
+    return "https://finance.yahoo.com/chart/" + t + "#" + btoa(unescape(encodeURIComponent(j)));
+  } catch (e) { return "https://finance.yahoo.com/chart/" + t; }
 }
-function yUrl(r) { return r.yahoo_url || ("https://finance.yahoo.com/quote/" + r.ticker); }
+function tickerLink(t) {
+  return `<a href="https://finance.yahoo.com/chart/${t}" data-chart="${t}" target="_blank" rel="noopener">${t}<span class="ext">↗</span></a>`;
+}
 // ＋ add-to-favorites button (Dashboard + History)
 function favBtn(t) {
   const on = FAV.fav.has(t);
@@ -49,9 +57,9 @@ function favActions(t) {
   return `<button type="button" class="star-btn${s ? " on" : ""}" data-act="star" data-ticker="${t}" title="${s ? "Unstar" : "Star (care more)"}" aria-label="star">${s ? "★" : "☆"}</button>`
        + `<button type="button" class="rm-btn" data-act="rm" data-ticker="${t}" title="Remove from favorites" aria-label="remove">✕</button>`;
 }
-function tickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker, yUrl(r)); }
-function histTickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker, yUrl(r)); }
-function favTickerCell(r) { return favActions(r.ticker) + tickerLink(r.ticker, yUrl(r)); }
+function tickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
+function histTickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
+function favTickerCell(r) { return favActions(r.ticker) + tickerLink(r.ticker); }
 
 // ---------- single "you-are-here" row highlight ----------
 // One highlighted row across the whole app; clicking any row moves it here.
@@ -433,7 +441,7 @@ function renderPositions(c) {
     const p = priceOf(l.ticker), chg = p != null ? (p / l.cost - 1) * 100 : null;
     const tc = l.cost * l.shares, tv = p != null ? p * l.shares : null;
     return `<tr><td class="l">${fmtDate(l.date)}</td>`
-      + `<td class="l ticker">${tickerLink(l.ticker, "https://finance.yahoo.com/quote/" + l.ticker)}</td>`
+      + `<td class="l ticker">${tickerLink(l.ticker)}</td>`
       + `<td class="l" style="color:var(--muted)">${secOf(l.ticker) || "—"}</td>`
       + `<td>$${l.cost.toFixed(2)}</td><td>${p != null ? "$" + p.toFixed(2) : "—"}</td>`
       + `<td>${chg == null ? "—" : `<span class="vpct ${chg >= 0 ? "green" : "loss"}">${fmtPct(chg)}</span>`}</td>`
@@ -715,6 +723,13 @@ async function boot() {
     favChips.forEach(x => x.classList.toggle("active", x === c));
     renderFavorites();
   });
+  // build the full Yahoo chart URL only when a ticker link is actually clicked
+  // (keeps hundreds of row links tiny; falls back to /chart/TICKER if this doesn't run)
+  document.addEventListener("click", e => {
+    const a = e.target.closest && e.target.closest("a[data-chart]");
+    if (a) a.href = buildChartUrl(a.dataset.chart);
+  }, true);
+
   // signal modal close handlers
   document.querySelectorAll("#signal-modal [data-close]").forEach(el => el.onclick = closeSignalModal);
   document.addEventListener("keydown", e => { if (e.key === "Escape") { closeSignalModal(); closeSellModal(); } });
