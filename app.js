@@ -628,6 +628,7 @@ function renderDash() {
 
 let HIST_ROWS = [];
 let histTier = "all", histBand = "both", histRange = 90;  // range in days; 0 = all
+let histSearch = "";     // ticker search filter (History)
 let histPerPage = 500;   // rows per page on History (user-changeable, persists)
 function isoDaysAgo(days) {
   const t = new Date();
@@ -641,7 +642,8 @@ function renderHistory() {
                  : (r => r.vpct >= 100);
   const cutoff = histRange > 0 ? isoDaysAgo(histRange) : null;
   const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
-  const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r));
+  const searchPass = histSearch ? (r => r.ticker.toLowerCase().includes(histSearch)) : (() => true);
+  const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r) && searchPass(r));
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
     { key: "date", dir: -1 }, "No events.", null, r => r.date + "#" + r.ticker,
@@ -700,6 +702,8 @@ async function boot() {
     rangeChips.forEach(x => x.classList.toggle("active", x === c));
     renderHistory();
   });
+  const histSearchEl = document.getElementById("hist-search");
+  histSearchEl.addEventListener("input", () => { histSearch = histSearchEl.value.trim().toLowerCase(); renderHistory(); });
 
   // favorites: load local cache first (instant), then pull the one shared list
   loadLocal();
