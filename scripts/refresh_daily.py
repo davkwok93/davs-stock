@@ -125,16 +125,22 @@ def save_panel(panel):
 
 
 def build_home(panel, name, tier, sector, industry):
-    """Latest-day snapshot per ticker."""
-    disp = panel[panel["date"] >= DISPLAY_START]
-    global_date = disp["date"].max()
+    """Latest-COMPLETE-day snapshot per ticker (robust to partial/NaN-close pulls)."""
+    disp = panel[panel["date"] >= DISPLAY_START].copy()
+    # latest trading day where the majority of tickers actually have a close
+    complete = disp.groupby("date")["close"].apply(lambda s: s.notna().mean() > 0.5)
+    ok = complete[complete].index
+    global_date = max(ok) if len(ok) else disp["date"].max()
     rows = []
     for t, g in disp.groupby("ticker", sort=False):
         g = g.sort_values("date")
-        last = g.iloc[-1]
+        gc = g[(g["close"].notna()) & (g["date"] <= global_date)]
+        if gc.empty:
+            continue
+        last = gc.iloc[-1]                       # last row WITH a real close
         if pd.isna(last["avg20"]) or last["avg20"] <= 0:
             continue
-        sig180 = int(g["signal"].tail(SIG_WINDOW).sum())
+        sig180 = int(g[g["date"] <= global_date]["signal"].tail(SIG_WINDOW).sum())
         rows.append({
             "ticker": t,
             "name": name.get(t, ""),
