@@ -643,7 +643,7 @@ function renderHistory() {
                  : (r => r.vpct >= 100);
   const cutoff = histRange > 0 ? isoDaysAgo(histRange) : null;
   const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
-  const searchPass = histSearch ? (r => r.ticker.toLowerCase().includes(histSearch)) : (() => true);
+  const searchPass = histSearch ? (r => r.ticker.toLowerCase() === histSearch) : (() => true);
   const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r) && searchPass(r));
   document.getElementById("hist-count").textContent = `${rows.length} events`;
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
