@@ -197,22 +197,22 @@ def build_history(panel, tier, sector, industry):
 
 
 def build_prices(panel):
-    """Weekly (Fri) closes for the last ~52 weeks -> prices.json (portfolio worth chart)."""
+    """Daily closes from DISPLAY_START -> prices.json (portfolio worth chart, per-day)."""
     p = panel.copy()
     p["date"] = pd.to_datetime(p["date"])
     wide = p.pivot_table(index="date", columns="ticker", values="close")
-    weekly = wide.resample("W-FRI").last().tail(52)
-    dates = [d.strftime("%Y-%m-%d") for d in weekly.index]
+    daily = wide[wide.index >= DISPLAY_START]
+    dates = [d.strftime("%Y-%m-%d") for d in daily.index]
     close = {}
-    for t in weekly.columns:
-        col = weekly[t]
+    for t in daily.columns:
+        col = daily[t]
         if col.notna().sum() == 0:
             continue
         close[t] = [None if pd.isna(v) else round(float(v), 2) for v in col.values]
     payload = {"generated": pd.Timestamp.now().isoformat(timespec="seconds"),
                "dates": dates, "close": close}
     (DATA / "prices.json").write_text(json.dumps(payload, indent=None))
-    print(f"prices.json: {len(close)} tickers x {len(dates)} weeks")
+    print(f"prices.json: {len(close)} tickers x {len(dates)} days")
 
 
 def main():

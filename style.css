@@ -143,6 +143,11 @@ tbody tr.day-sep td { border-top: 2px solid var(--sep); }
 .port-add input:focus { outline: none; border-color: var(--accent); }
 #pa-ticker { width: 90px; text-transform: uppercase; }
 #pa-cost, #pa-shares { width: 110px; }
+/* no spinner arrows on number inputs — type freely */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+.port-open-h { margin-bottom: 6px; }
 
 td.muted-col, th.muted-col { color: var(--muted); opacity: .8; }
 .sell-btn { background: var(--panel-2); border: 1px solid var(--line); color: var(--accent); border-radius: 6px; padding: 3px 9px; cursor: pointer; font-size: 12px; margin-right: 4px; }

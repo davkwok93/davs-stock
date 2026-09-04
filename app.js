@@ -418,6 +418,7 @@ function editOriginal() {
 
 function renderPositions(c) {
   const t = document.getElementById("port-table");
+  document.getElementById("open-count").textContent = PORT.lots.length ? PORT.lots.length : "";
   const arrow = `<span class="arrow">${portSortDir < 0 ? "▼" : "▲"}</span>`;
   const head = `<thead><tr><th class="l sortable" id="port-date-sort">Date ${arrow}</th><th class="l">Ticker</th><th class="l">Sector</th>`
     + `<th>Cost/sh</th><th>Price</th><th>Change%</th><th>#Shares</th>`
