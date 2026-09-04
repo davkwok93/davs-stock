@@ -127,10 +127,11 @@ def save_panel(panel):
 def build_home(panel, name, tier, sector, industry):
     """Latest-COMPLETE-day snapshot per ticker (robust to partial/NaN-close pulls)."""
     disp = panel[panel["date"] >= DISPLAY_START].copy()
-    # latest trading day where the majority of tickers actually have a close
+    # latest FINALIZED trading day: majority of tickers have a close, and it's not today
+    today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
     complete = disp.groupby("date")["close"].apply(lambda s: s.notna().mean() > 0.5)
-    ok = complete[complete].index
-    global_date = max(ok) if len(ok) else disp["date"].max()
+    ok = [d for d in complete[complete].index if d < today]
+    global_date = max(ok) if ok else disp["date"].max()
     rows = []
     for t, g in disp.groupby("ticker", sort=False):
         g = g.sort_values("date")
