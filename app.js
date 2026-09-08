@@ -380,7 +380,7 @@ function schedulePredictPush() {
 let pmTicker = null;
 function openPredictModal(t) {
   pmTicker = t;
-  document.getElementById("pm-title").textContent = t + " — prediction";
+  document.getElementById("pm-title").textContent = "Prediction";
   document.getElementById("pm-text").value = PREDICT[t] || "";
   document.getElementById("predict-modal").classList.remove("hidden");
   document.getElementById("pm-text").focus();
