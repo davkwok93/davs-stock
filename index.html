@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=28">
 </head>
 <body>
 <div class="app">
@@ -156,6 +156,17 @@
   </div>
 </div>
 
+<div id="predict-modal" class="modal hidden">
+  <div class="modal-backdrop" data-pclose></div>
+  <div class="modal-box">
+    <div class="modal-head"><span id="pm-title"></span><button class="modal-x" data-pclose aria-label="close">✕</button></div>
+    <div class="modal-body sell-body">
+      <textarea id="pm-text" class="predict-text" placeholder="Your prediction / notes for this stock…"></textarea>
+      <div class="sell-actions"><button class="sync-btn" data-pclose>Cancel</button><button class="sync-btn primary" id="pm-save">Save</button></div>
+    </div>
+  </div>
+</div>
+
 <div id="signal-modal" class="modal hidden">
   <div class="modal-backdrop" data-close></div>
   <div class="modal-box">
@@ -164,6 +175,6 @@
   </div>
 </div>
 
-<script src="app.js?v=27"></script>
+<script src="app.js?v=28"></script>
 </body>
 </html>

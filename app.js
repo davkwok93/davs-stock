@@ -57,9 +57,14 @@ function favActions(t) {
   return `<button type="button" class="star-btn${s ? " on" : ""}" data-act="star" data-ticker="${t}" title="${s ? "Unstar" : "Star (care more)"}" aria-label="star">${s ? "★" : "☆"}</button>`
        + `<button type="button" class="rm-btn" data-act="rm" data-ticker="${t}" title="Remove from favorites" aria-label="remove">✕</button>`;
 }
+let PREDICT = {};   // ticker -> prediction note text
+function predictBtn(t) {
+  const has = PREDICT[t] && PREDICT[t].trim();
+  return `<button type="button" class="predict-btn${has ? " on" : ""}" data-predict="${t}" title="${has ? "Edit prediction" : "Add prediction"}" aria-label="prediction">✎</button>`;
+}
 function tickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
 function histTickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
-function favTickerCell(r) { return favActions(r.ticker) + tickerLink(r.ticker); }
+function favTickerCell(r) { return favActions(r.ticker) + tickerLink(r.ticker) + predictBtn(r.ticker); }
 
 // ---------- single "you-are-here" row highlight ----------
 // One highlighted row across the whole app; clicking any row moves it here.
@@ -181,6 +186,8 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
     if (act) { handleFavAction(act.dataset.act, act.dataset.ticker); return; }  // ＋/★/✕ — no highlight
     const sig = e.target.closest("[data-sig]");
     if (sig) { openSignalModal(sig.dataset.sig); return; }                      // #Signals -> popup
+    const pred = e.target.closest("[data-predict]");
+    if (pred) { openPredictModal(pred.dataset.predict); return; }               // ✎ -> prediction note
     const ind = e.target.closest("[data-ind]");
     if (ind) { ind.classList.toggle("expanded"); return; }                      // Industry -> expand/collapse
     if (!rowKey) return;
@@ -360,6 +367,33 @@ function openSignalModal(t) {
   document.getElementById("signal-modal").classList.remove("hidden");
 }
 function closeSignalModal() { document.getElementById("signal-modal").classList.add("hidden"); }
+
+// ---------- prediction notes (Favorites) ----------
+function loadPredictLocal() { try { PREDICT = JSON.parse(localStorage.getItem("davs_predict") || "{}"); } catch (e) { PREDICT = {}; } }
+function savePredictLocal() { localStorage.setItem("davs_predict", JSON.stringify(PREDICT)); }
+let predictPushT = null;
+function schedulePredictPush() {
+  savePredictLocal();
+  clearTimeout(predictPushT);
+  predictPushT = setTimeout(() => cloudPut("davs-predictions", PREDICT).catch(() => {}), 600);
+}
+let pmTicker = null;
+function openPredictModal(t) {
+  pmTicker = t;
+  document.getElementById("pm-title").textContent = t + " — prediction";
+  document.getElementById("pm-text").value = PREDICT[t] || "";
+  document.getElementById("predict-modal").classList.remove("hidden");
+  document.getElementById("pm-text").focus();
+}
+function closePredictModal() { document.getElementById("predict-modal").classList.add("hidden"); pmTicker = null; }
+function savePrediction() {
+  if (!pmTicker) return;
+  const v = document.getElementById("pm-text").value.trim();
+  if (v) PREDICT[pmTicker] = v; else delete PREDICT[pmTicker];
+  schedulePredictPush();
+  closePredictModal();
+  if (currentView() === "favorites") renderFavorites();
+}
 
 // ================= PORTFOLIO =================
 let PORT = { original: 0, lots: [], sells: [] };
@@ -732,7 +766,13 @@ async function boot() {
 
   // signal modal close handlers
   document.querySelectorAll("#signal-modal [data-close]").forEach(el => el.onclick = closeSignalModal);
-  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeSignalModal(); closeSellModal(); } });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeSignalModal(); closeSellModal(); closePredictModal(); } });
+
+  // prediction notes: load local, wire modal, pull synced copy
+  loadPredictLocal();
+  document.getElementById("pm-save").onclick = savePrediction;
+  document.querySelectorAll("#predict-modal [data-pclose]").forEach(el => el.onclick = closePredictModal);
+  cloudGet("davs-predictions").then(d => { if (d && typeof d === "object") { PREDICT = d; savePredictLocal(); if (currentView() === "favorites") renderFavorites(); } }).catch(() => {});
 
   // portfolio: load local, wire form + sell modal, then pull the synced copy
   loadPortLocal();
