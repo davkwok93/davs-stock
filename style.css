@@ -198,8 +198,9 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 .pm-body { font-size: 14px; color: var(--text); line-height: 1.5; white-space: pre-wrap; margin-top: 2px; }
 .pm-empty { font-size: 13px; color: var(--muted); font-style: italic; padding: 6px 0; }
 
-/* nav icons */
-.nav-ico { margin-right: 6px; font-size: 13px; }
+/* nav icons (monotone line icons, inherit text color) */
+.nav-ico { width: 16px; height: 16px; margin-right: 7px; vertical-align: -3px; flex-shrink: 0; }
+.nav-item { display: inline-flex; align-items: center; }
 
 /* dashboard head row + Finviz button */
 .head-row { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px; }
