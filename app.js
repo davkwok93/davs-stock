@@ -57,10 +57,11 @@ function favActions(t) {
   return `<button type="button" class="star-btn${s ? " on" : ""}" data-act="star" data-ticker="${t}" title="${s ? "Unstar" : "Star (care more)"}" aria-label="star">${s ? "★" : "☆"}</button>`
        + `<button type="button" class="rm-btn" data-act="rm" data-ticker="${t}" title="Remove from favorites" aria-label="remove">✕</button>`;
 }
-let PREDICT = {};   // ticker -> prediction note text
+let PREDICT = {};   // ticker -> [ {date:"YYYY-MM-DD", text} ]  (newest first)
+function escHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function predictBtn(t) {
-  const has = PREDICT[t] && PREDICT[t].trim();
-  return `<button type="button" class="predict-btn${has ? " on" : ""}" data-predict="${t}" title="${has ? "Edit prediction" : "Add prediction"}" aria-label="prediction">✎</button>`;
+  const has = Array.isArray(PREDICT[t]) && PREDICT[t].length;
+  return `<button type="button" class="predict-btn${has ? " on" : ""}" data-predict="${t}" title="${has ? "Prediction notes" : "Add prediction"}" aria-label="prediction">✎</button>`;
 }
 function tickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
 function histTickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
@@ -368,8 +369,17 @@ function openSignalModal(t) {
 }
 function closeSignalModal() { document.getElementById("signal-modal").classList.add("hidden"); }
 
-// ---------- prediction notes (Favorites) ----------
-function loadPredictLocal() { try { PREDICT = JSON.parse(localStorage.getItem("davs_predict") || "{}"); } catch (e) { PREDICT = {}; } }
+// ---------- prediction notes (Favorites) — dated log ----------
+function migratePredict() {   // normalize legacy string values -> [{date,text}]
+  for (const k in PREDICT) {
+    if (typeof PREDICT[k] === "string") PREDICT[k] = PREDICT[k].trim() ? [{ date: "", text: PREDICT[k] }] : [];
+    if (!Array.isArray(PREDICT[k]) || !PREDICT[k].length) delete PREDICT[k];
+  }
+}
+function loadPredictLocal() {
+  try { PREDICT = JSON.parse(localStorage.getItem("davs_predict") || "{}"); } catch (e) { PREDICT = {}; }
+  migratePredict();
+}
 function savePredictLocal() { localStorage.setItem("davs_predict", JSON.stringify(PREDICT)); }
 let predictPushT = null;
 function schedulePredictPush() {
@@ -378,20 +388,45 @@ function schedulePredictPush() {
   predictPushT = setTimeout(() => cloudPut("davs-predictions", PREDICT).catch(() => {}), 600);
 }
 let pmTicker = null;
+function renderPredictHistory(t) {
+  const el = document.getElementById("pm-history");
+  const list = PREDICT[t] || [];
+  if (!list.length) { el.innerHTML = `<div class="pm-empty">No notes yet.</div>`; return; }
+  el.innerHTML = `<div class="pm-h-title">Past notes</div>` + list.map((e, i) =>
+    `<div class="pm-entry"><div class="pm-entry-head">`
+    + `<span class="pm-date">${e.date ? fmtDate(e.date) : "—"}</span>`
+    + `<button class="rm-btn" data-delnote="${i}" title="Delete note">✕</button></div>`
+    + `<div class="pm-body">${escHtml(e.text)}</div></div>`).join("");
+  el.querySelectorAll("[data-delnote]").forEach(b => b.onclick = () => deleteNote(+b.dataset.delnote));
+}
 function openPredictModal(t) {
   pmTicker = t;
   document.getElementById("pm-title").textContent = "Prediction";
-  document.getElementById("pm-text").value = PREDICT[t] || "";
+  document.getElementById("pm-text").value = "";
+  renderPredictHistory(t);
   document.getElementById("predict-modal").classList.remove("hidden");
   document.getElementById("pm-text").focus();
 }
 function closePredictModal() { document.getElementById("predict-modal").classList.add("hidden"); pmTicker = null; }
 function savePrediction() {
   if (!pmTicker) return;
-  const v = document.getElementById("pm-text").value.trim();
-  if (v) PREDICT[pmTicker] = v; else delete PREDICT[pmTicker];
+  const ta = document.getElementById("pm-text");
+  const v = ta.value.trim();
+  if (!v) return;
+  (PREDICT[pmTicker] = PREDICT[pmTicker] || []).unshift({ date: todayISO(), text: v });
   schedulePredictPush();
-  closePredictModal();
+  ta.value = "";
+  renderPredictHistory(pmTicker);
+  if (currentView() === "favorites") renderFavorites();
+  ta.focus();
+}
+function deleteNote(i) {
+  if (!pmTicker) return;
+  const list = PREDICT[pmTicker] || [];
+  list.splice(i, 1);
+  if (!list.length) delete PREDICT[pmTicker];
+  schedulePredictPush();
+  renderPredictHistory(pmTicker);
   if (currentView() === "favorites") renderFavorites();
 }
 
@@ -772,7 +807,7 @@ async function boot() {
   loadPredictLocal();
   document.getElementById("pm-save").onclick = savePrediction;
   document.querySelectorAll("#predict-modal [data-pclose]").forEach(el => el.onclick = closePredictModal);
-  cloudGet("davs-predictions").then(d => { if (d && typeof d === "object") { PREDICT = d; savePredictLocal(); if (currentView() === "favorites") renderFavorites(); } }).catch(() => {});
+  cloudGet("davs-predictions").then(d => { if (d && typeof d === "object") { PREDICT = d; migratePredict(); savePredictLocal(); if (currentView() === "favorites") renderFavorites(); } }).catch(() => {});
 
   // portfolio: load local, wire form + sell modal, then pull the synced copy
   loadPortLocal();

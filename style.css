@@ -190,6 +190,21 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 .predict-btn.on { color: var(--accent); }
 .predict-text { width: 100%; min-height: 150px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: inherit; line-height: 1.5; resize: vertical; box-sizing: border-box; }
 .predict-text:focus { outline: none; border-color: var(--accent); }
+.pm-history { margin-top: 8px; }
+.pm-h-title { font-size: 12px; color: var(--muted); margin: 4px 0 8px; }
+.pm-entry { border-top: 1px solid var(--line); padding: 8px 0; }
+.pm-entry-head { display: flex; align-items: center; justify-content: space-between; }
+.pm-date { font-size: 12px; color: var(--accent); font-weight: 600; }
+.pm-body { font-size: 14px; color: var(--text); line-height: 1.5; white-space: pre-wrap; margin-top: 2px; }
+.pm-empty { font-size: 13px; color: var(--muted); font-style: italic; padding: 6px 0; }
+
+/* nav icons */
+.nav-ico { margin-right: 6px; font-size: 13px; }
+
+/* dashboard head row + Finviz button */
+.head-row { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px; }
+.finviz-btn { background: var(--panel-2); border: 1px solid var(--line); color: var(--accent); padding: 6px 12px; border-radius: 8px; font-size: 13px; text-decoration: none; white-space: nowrap; }
+.finviz-btn:hover { border-color: var(--accent); }
 
 /* favorites page section headings */
 .tier-title.star { color: #ffc84a; font-size: 20px; font-weight: 400; }

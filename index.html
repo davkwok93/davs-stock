@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=29">
+<link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
     <div class="brand">Dav's Stock</div>
     <nav>
-      <button class="nav-item active" data-view="dashboard">Dashboard</button>
-      <button class="nav-item" data-view="history">History</button>
-      <button class="nav-item" data-view="favorites">Favorites</button>
-      <button class="nav-item" data-view="portfolio">Portfolio</button>
+      <button class="nav-item active" data-view="dashboard"><span class="nav-ico">📊</span>Dashboard</button>
+      <button class="nav-item" data-view="history"><span class="nav-ico">🕑</span>History</button>
+      <button class="nav-item" data-view="favorites"><span class="nav-ico">⭐</span>Favorites</button>
+      <button class="nav-item" data-view="portfolio"><span class="nav-ico">💼</span>Portfolio</button>
     </nav>
   </aside>
 
@@ -22,7 +22,7 @@
     <!-- DASHBOARD VIEW -->
     <section id="view-dashboard" class="view">
       <header class="page-head">
-        <h1>Dashboard</h1>
+        <div class="head-row"><h1>Dashboard</h1><a class="finviz-btn" href="https://finviz.com/screener?v=141&f=cap_mega" target="_blank" rel="noopener">Finviz ↗</a></div>
         <div class="today" id="today">—</div>
         <div class="asof" id="asof">—</div>
       </header>
@@ -163,6 +163,7 @@
     <div class="modal-body sell-body">
       <textarea id="pm-text" class="predict-text" placeholder="Your prediction / notes for this stock…"></textarea>
       <div class="sell-actions"><button class="sync-btn" data-pclose>Cancel</button><button class="sync-btn primary" id="pm-save">Save</button></div>
+      <div id="pm-history" class="pm-history"></div>
     </div>
   </div>
 </div>
@@ -175,6 +176,6 @@
   </div>
 </div>
 
-<script src="app.js?v=29"></script>
+<script src="app.js?v=30"></script>
 </body>
 </html>
