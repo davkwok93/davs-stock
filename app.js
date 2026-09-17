@@ -417,7 +417,7 @@ function savePrediction() {
   schedulePredictPush();
   ta.value = "";
   renderPredictHistory(pmTicker);
-  if (currentView() === "favorites") renderFavorites();
+  rerenderCurrent();   // refresh ✎ state on Favorites or Portfolio
   ta.focus();
 }
 function deleteNote(i) {
@@ -427,7 +427,7 @@ function deleteNote(i) {
   if (!list.length) delete PREDICT[pmTicker];
   schedulePredictPush();
   renderPredictHistory(pmTicker);
-  if (currentView() === "favorites") renderFavorites();
+  rerenderCurrent();
 }
 
 // ================= PORTFOLIO =================
@@ -510,7 +510,7 @@ function renderPositions(c) {
     const p = priceOf(l.ticker), chg = p != null ? (p / l.cost - 1) * 100 : null;
     const tc = l.cost * l.shares, tv = p != null ? p * l.shares : null;
     return `<tr><td class="l">${fmtDate(l.date)}</td>`
-      + `<td class="l ticker">${tickerLink(l.ticker)}</td>`
+      + `<td class="l ticker">${tickerLink(l.ticker)}${predictBtn(l.ticker)}</td>`
       + `<td class="l" style="color:var(--muted)">${secOf(l.ticker) || "—"}</td>`
       + `<td>$${l.cost.toFixed(2)}</td><td>${p != null ? "$" + p.toFixed(2) : "—"}</td>`
       + `<td>${chg == null ? "—" : `<span class="vpct ${chg >= 0 ? "green" : "loss"}">${fmtPct(chg)}</span>`}</td>`
@@ -527,6 +527,7 @@ function renderPositions(c) {
   t.querySelector("#port-date-sort").onclick = () => { portSortDir = -portSortDir; renderPositions(portCalc()); };
   t.querySelectorAll("[data-sell]").forEach(b => b.onclick = () => openSellModal(b.dataset.sell));
   t.querySelectorAll("[data-dellot]").forEach(b => b.onclick = () => deleteLot(b.dataset.dellot));
+  t.querySelectorAll("[data-predict]").forEach(b => b.onclick = () => openPredictModal(b.dataset.predict));
 }
 
 function renderClosed() {
