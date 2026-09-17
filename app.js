@@ -66,6 +66,7 @@ function predictBtn(t) {
 function tickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
 function histTickerCell(r) { return favBtn(r.ticker) + tickerLink(r.ticker); }
 function favTickerCell(r) { return favActions(r.ticker) + tickerLink(r.ticker) + predictBtn(r.ticker); }
+function portfavTickerCell(r) { return tickerLink(r.ticker) + predictBtn(r.ticker); }
 
 // ---------- single "you-are-here" row highlight ----------
 // One highlighted row across the whole app; clicking any row moves it here.
@@ -229,6 +230,10 @@ const FAV_COLS = [
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: favTickerCell, sortVal: r => r.ticker },
   ...DASH_COLS.slice(1),
 ];
+const PORTFAV_COLS = [
+  { key: "ticker", label: "Ticker", tdClass: "ticker", cell: portfavTickerCell, sortVal: r => r.ticker },
+  ...DASH_COLS.slice(1),
+];
 
 // ---------- favorites + Supabase sync ----------
 const SB_URL = "https://xgntwwynbqgrfjtzarda.supabase.co";
@@ -348,6 +353,12 @@ function renderFavorites() {
     "No starred stocks yet — tap ☆ on a favorite below to promote it here.", null, key);
   makeTable(document.getElementById("fav-table"), FAV_COLS, plain, { key: "vpct", dir: -1 },
     "No favorites yet — tap ＋ next to any stock on the Dashboard or History.", null, key);
+
+  // your holdings at the bottom (from the Portfolio page), filtered by the same tier chip
+  const held = [...new Set(PORT.lots.map(l => l.ticker))].map(favRow).filter(tp);
+  document.getElementById("portfav-count").textContent = held.length ? held.length : "";
+  makeTable(document.getElementById("portfav-table"), PORTFAV_COLS, held, { key: "vpct", dir: -1 },
+    "No holdings yet — add them on the Portfolio page.", null, key);
 }
 
 // ---------- #Signals popup ----------
@@ -821,7 +832,7 @@ async function boot() {
   };
   document.getElementById("sell-confirm").onclick = confirmSell;
   document.querySelectorAll("#sell-modal [data-sclose]").forEach(el => el.onclick = closeSellModal);
-  cloudGet("davs-portfolio").then(d => { if (d) { PORT = { original: d.original || 0, lots: d.lots || [], sells: d.sells || [] }; savePortLocal(); if (currentView() === "portfolio") renderPortfolio(); } }).catch(() => {});
+  cloudGet("davs-portfolio").then(d => { if (d) { PORT = { original: d.original || 0, lots: d.lots || [], sells: d.sells || [] }; savePortLocal(); rerenderCurrent(); } }).catch(() => {});
 
   rerenderCurrent();
   try {
