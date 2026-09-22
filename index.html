@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=39">
+<link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
 <div class="app">
@@ -25,9 +25,9 @@
         <div class="head-row"><h1>Dashboard</h1><a class="finviz-btn" href="https://finviz.com/screener?v=141&f=cap_mega" target="_blank" rel="noopener">Finviz ↗</a></div>
         <div class="today" id="today">—</div>
         <div class="asof" id="asof">—</div>
-        <div class="mode-row chip-group" id="dash-mode">
-          <button class="chip active" data-mode="vol">Vol</button>
-          <button class="chip" data-mode="bb">BB</button>
+        <div class="mode-toggle" id="dash-mode">
+          <button class="seg-btn active" data-mode="vol">Vol</button>
+          <button class="seg-btn" data-mode="bb">BB</button>
         </div>
       </header>
 
@@ -62,14 +62,13 @@
       <div id="dash-bb" class="hidden">
         <div class="filters bb-filters">
           <div class="chip-group" id="bb-side">
-            <button class="chip" data-side="low">Oversold ↓</button>
+            <button class="chip active" data-side="low">Oversold ↓</button>
             <button class="chip" data-side="high">Overbought ↑</button>
-            <button class="chip active" data-side="both">Both</button>
           </div>
           <span class="filter-sep"></span>
           <div class="chip-group" id="bb-prox">
-            <button class="chip" data-prox="0">0%</button>
-            <button class="chip active" data-prox="2">2%</button>
+            <button class="chip active" data-prox="0">0%</button>
+            <button class="chip" data-prox="2">2%</button>
             <button class="chip" data-prox="5">5%</button>
           </div>
         </div>
@@ -88,9 +87,9 @@
     <section id="view-history" class="view hidden">
       <header class="page-head">
         <div class="head-row"><h1>History</h1>
-          <div class="mode-row chip-group" id="hist-mode">
-            <button class="chip active" data-mode="vol">Vol</button>
-            <button class="chip" data-mode="bb">BB</button>
+          <div class="mode-toggle" id="hist-mode">
+            <button class="seg-btn active" data-mode="vol">Vol</button>
+            <button class="seg-btn" data-mode="bb">BB</button>
           </div>
         </div>
       </header>
@@ -136,9 +135,8 @@
           </div>
           <span class="filter-sep"></span>
           <div class="chip-group" id="bbh-side">
-            <button class="chip" data-side="low">Oversold ↓</button>
+            <button class="chip active" data-side="low">Oversold ↓</button>
             <button class="chip" data-side="high">Overbought ↑</button>
-            <button class="chip active" data-side="both">Both</button>
           </div>
           <span class="filter-sep"></span>
           <div class="chip-group" id="bbh-range">
@@ -258,6 +256,6 @@
   </div>
 </div>
 
-<script src="app.js?v=39"></script>
+<script src="app.js?v=40"></script>
 </body>
 </html>

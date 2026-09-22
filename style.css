@@ -293,8 +293,18 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 }
 
 /* ---- Vol / BB mode toggle + Bollinger proximity ---- */
-.mode-row { margin-top: 12px; }
-.head-row .mode-row { margin-top: 0; }
+.mode-toggle {
+  display: inline-flex; margin-top: 12px; padding: 3px; gap: 2px;
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px;
+}
+.head-row .mode-toggle { margin-top: 0; }
+.seg-btn {
+  background: none; border: none; color: var(--muted); font-family: inherit;
+  font-size: 14px; font-weight: 600; padding: 6px 22px; border-radius: 8px; cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.seg-btn:hover { color: var(--text); }
+.seg-btn.active { background: var(--accent); color: #04121f; }
 .bb-filters { margin-bottom: 16px; }
 .bbpct { font-weight: 600; white-space: nowrap; }
 .bbpct.fired { color: var(--hot); }        /* closed at/through the band */

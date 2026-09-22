@@ -407,14 +407,14 @@ function rerenderCurrent() {
 // Vol / BB sub-view toggles (Dashboard + History)
 function applyDashMode(m) {
   dashMode = m;
-  document.querySelectorAll("#dash-mode .chip").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  document.querySelectorAll("#dash-mode .seg-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
   document.getElementById("dash-vol").classList.toggle("hidden", m !== "vol");
   document.getElementById("dash-bb").classList.toggle("hidden", m !== "bb");
   renderDash();
 }
 function applyHistMode(m) {
   histMode = m;
-  document.querySelectorAll("#hist-mode .chip").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  document.querySelectorAll("#hist-mode .seg-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
   document.getElementById("hist-vol").classList.toggle("hidden", m !== "vol");
   document.getElementById("hist-bb").classList.toggle("hidden", m !== "bb");
   renderHistory();
@@ -790,8 +790,8 @@ function svgWorth() {
 let HOME_ROWS = [];
 let dashFilter = "both";
 let dashMode = "vol";              // "vol" | "bb"
-let bbSide = "both";               // "low" | "high" | "both"  (Dashboard BB)
-let bbProx = 2;                    // proximity net %: 0 | 2 | 5  (Dashboard BB)
+let bbSide = "low";                // "low" | "high"  (Dashboard BB)
+let bbProx = 0;                    // proximity net %: 0 | 2 | 5  (Dashboard BB)
 function renderDash() {
   if (dashMode === "bb") return renderDashBB();
   const f = dashFilter;
@@ -826,7 +826,7 @@ let histPerPage = 500;   // rows per page on History (user-changeable, persists)
 let histMode = "vol";    // "vol" | "bb"
 // History BB filter state
 let BB_HIST_ROWS = [];
-let bbHistTier = "all", bbHistSide = "both", bbHistRange = 90, bbHistSearch = "", bbHistPerPage = 500;
+let bbHistTier = "all", bbHistSide = "low", bbHistRange = 90, bbHistSearch = "", bbHistPerPage = 500;
 function isoDaysAgo(days) {
   const t = new Date();
   t.setDate(t.getDate() - days);
@@ -895,7 +895,7 @@ async function boot() {
     renderDash();
   });
   // Dashboard Vol / BB mode toggle + BB side/proximity chips
-  document.querySelectorAll("#dash-mode .chip").forEach(c => c.onclick = () => applyDashMode(c.dataset.mode));
+  document.querySelectorAll("#dash-mode .seg-btn").forEach(c => c.onclick = () => applyDashMode(c.dataset.mode));
   const bbSideChips = document.querySelectorAll("#bb-side .chip");
   bbSideChips.forEach(c => c.onclick = () => {
     bbSide = c.dataset.side;
@@ -935,7 +935,7 @@ async function boot() {
   histSearchEl.addEventListener("input", () => { histSearch = histSearchEl.value.trim().toLowerCase(); renderHistory(); });
 
   // history Vol / BB mode toggle + BB-history filter groups
-  document.querySelectorAll("#hist-mode .chip").forEach(c => c.onclick = () => applyHistMode(c.dataset.mode));
+  document.querySelectorAll("#hist-mode .seg-btn").forEach(c => c.onclick = () => applyHistMode(c.dataset.mode));
   const bbhTierChips = document.querySelectorAll("#bbh-tier .chip");
   bbhTierChips.forEach(c => c.onclick = () => {
     bbHistTier = c.dataset.filter;
