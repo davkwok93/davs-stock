@@ -34,6 +34,35 @@ function secInd(r) {
   return s || i || "";
 }
 function tierPill(t) { return `<span class="pill ${t}">${t}</span>`; }
+
+// ---------- Bollinger Band proximity helpers ----------
+// gap % is signed: >0 = still that far from the band, <=0 = closed at/through it.
+function bbPctClass(g) { return g == null ? "far" : g <= 0 ? "fired" : g <= 2 ? "near" : "far"; }
+function priceCell(p) { return p == null ? "—" : "$" + p.toFixed(2); }
+// which band a row is playing against, given the side chip ("low"/"high"/"both")
+function bbSideGap(r, side) {
+  const low = { gap: r.gap_low, band: r.bb_lower, side: "low", count: r.bb_low180 };
+  const high = { gap: r.gap_high, band: r.bb_upper, side: "high", count: r.bb_high180 };
+  if (side === "low") return low;
+  if (side === "high") return high;
+  if (low.gap == null) return high;
+  if (high.gap == null) return low;
+  return low.gap <= high.gap ? low : high;      // "both" -> the nearer band
+}
+function bbGapCell(gap, side) {
+  if (gap == null) return "—";
+  const arrow = side === "low" ? "↓" : "↑";
+  return `<span class="bbpct ${bbPctClass(gap)}">${arrow} ${fmtPct(gap)}</span>`;
+}
+function bbBandCell(band, side) {
+  if (band == null) return "—";
+  return `<span class="bb-band ${side}">$${band.toFixed(2)}</span>`;
+}
+function bbSideLabel(side) {
+  return side === "low"
+    ? `<span class="bb-band low">↓ Lower</span>`
+    : `<span class="bb-band high">↑ Upper</span>`;
+}
 // Yahoo chart layout (1-yr daily mountain + volume underlay + On-Balance-Volume). INTC appears only in
 // the 3 symbol fields; swap it for the ticker and re-encode to get the same view.
 const CHART_TPL_B64 = "eyJsYXlvdXQiOnsiaW50ZXJ2YWwiOiJkYXkiLCJwZXJpb2RpY2l0eSI6MSwidGltZVVuaXQiOm51bGwsImNhbmRsZVdpZHRoIjo2LjcyNTA5OTYwMTU5MzYyNiwiZmxpcHBlZCI6ZmFsc2UsInZvbHVtZVVuZGVybGF5Ijp0cnVlLCJhZGoiOnRydWUsImNyb3NzaGFpciI6dHJ1ZSwiY2hhcnRUeXBlIjoibW91bnRhaW4iLCJleHRlbmRlZCI6ZmFsc2UsIm1hcmtldFNlc3Npb25zIjp7fSwiYWdncmVnYXRpb25UeXBlIjoib2hsYyIsImNoYXJ0U2NhbGUiOiJsaW5lYXIiLCJzdHVkaWVzIjp7IuKAjHZvbCB1bmRy4oCMIjp7InR5cGUiOiJ2b2wgdW5kciIsImlucHV0cyI6eyJTZXJpZXMiOiJzZXJpZXMiLCJpZCI6IuKAjHZvbCB1bmRy4oCMIiwiZGlzcGxheSI6IuKAjHZvbCB1bmRy4oCMIn0sIm91dHB1dHMiOnsiVXAgVm9sdW1lIjoiIzBkYmQ2ZWVlIiwiRG93biBWb2x1bWUiOiIjZmY1NTQ3ZWUifSwicGFuZWwiOiJjaGFydCIsInBhcmFtZXRlcnMiOnsiY2hhcnROYW1lIjoiY2hhcnQiLCJlZGl0TW9kZSI6dHJ1ZSwicGFuZWxOYW1lIjoiY2hhcnQifSwiZGlzYWJsZWQiOmZhbHNlfSwi4oCMcnNp4oCMICgxNCkiOnsidHlwZSI6InJzaSIsImlucHV0cyI6eyJQZXJpb2QiOjE0LCJGaWVsZCI6ImZpZWxkIiwiaWQiOiLigIxyc2nigIwgKDE0KSIsImRpc3BsYXkiOiLigIxyc2nigIwgKDE0KSJ9LCJvdXRwdXRzIjp7IlJTSSI6eyJjb2xvciI6IiM4NTYxYTdmZiJ9fSwicGFuZWwiOiLigIxyc2nigIwgKDE0KSIsInBhcmFtZXRlcnMiOnsic3R1ZHlPdmVyWm9uZXNFbmFibGVkIjp0cnVlLCJzdHVkeU92ZXJCb3VnaHRWYWx1ZSI6ODAsInN0dWR5T3ZlckJvdWdodENvbG9yIjoiYXV0byIsInN0dWR5T3ZlclNvbGRWYWx1ZSI6MjAsInN0dWR5T3ZlclNvbGRDb2xvciI6ImF1dG8iLCJjaGFydE5hbWUiOiJjaGFydCIsImVkaXRNb2RlIjp0cnVlLCJwYW5lbE5hbWUiOiLigIxyc2nigIwgKDE0KSJ9LCJkaXNhYmxlZCI6ZmFsc2V9LCLigIxtYWNk4oCMICgxMiwyNiw5KSI6eyJ0eXBlIjoibWFjZCIsImlucHV0cyI6eyJGYXN0IE1BIFBlcmlvZCI6MTIsIlNsb3cgTUEgUGVyaW9kIjoyNiwiU2lnbmFsIFBlcmlvZCI6OSwiaWQiOiLigIxtYWNk4oCMICgxMiwyNiw5KSIsImRpc3BsYXkiOiLigIxtYWNk4oCMICgxMiwyNiw5KSJ9LCJvdXRwdXRzIjp7Ik1BQ0QiOiJhdXRvIiwiU2lnbmFsIjp7ImNvbG9yIjoiI2ZmZjEyNmZmIn0sIkluY3JlYXNpbmcgQmFyIjoiIzAwREQwMCIsIkRlY3JlYXNpbmcgQmFyIjoiI0ZGMDAwMCJ9LCJwYW5lbCI6IuKAjG1hY2TigIwgKDEyLDI2LDkpIiwicGFyYW1ldGVycyI6eyJjaGFydE5hbWUiOiJjaGFydCIsImVkaXRNb2RlIjp0cnVlLCJwYW5lbE5hbWUiOiLigIxtYWNk4oCMICgxMiwyNiw5KSJ9LCJkaXNhYmxlZCI6ZmFsc2V9LCLigIxCb2xsaW5nZXIgQmFuZHPigIwgKDIwLDIsbWEseSkiOnsidHlwZSI6IkJvbGxpbmdlciBCYW5kcyIsImlucHV0cyI6eyJQZXJpb2QiOjIwLCJGaWVsZCI6ImZpZWxkIiwiU3RhbmRhcmQgRGV2aWF0aW9ucyI6MiwiTW92aW5nIEF2ZXJhZ2UgVHlwZSI6Im1hIiwiQ2hhbm5lbCBGaWxsIjp0cnVlLCJpZCI6IuKAjEJvbGxpbmdlciBCYW5kc+KAjCAoMjAsMixtYSx5KSIsImRpc3BsYXkiOiLigIxCb2xsaW5nZXIgQmFuZHPigIwgKDIwLDIsbWEseSkifSwib3V0cHV0cyI6eyJCb2xsaW5nZXIgQmFuZHMgVG9wIjp7ImNvbG9yIjoiI2ZmZjY5ZTNjIn0sIkJvbGxpbmdlciBCYW5kcyBNZWRpYW4iOnsiY29sb3IiOiIjZmZmNjllM2MifSwiQm9sbGluZ2VyIEJhbmRzIEJvdHRvbSI6eyJjb2xvciI6IiNmZmY2OWU0NCJ9fSwicGFuZWwiOiJjaGFydCIsInBhcmFtZXRlcnMiOnsiY2hhcnROYW1lIjoiY2hhcnQiLCJlZGl0TW9kZSI6dHJ1ZSwicGFuZWxOYW1lIjoiY2hhcnQifSwiZGlzYWJsZWQiOmZhbHNlfX0sInBhbmVscyI6eyJjaGFydCI6eyJwZXJjZW50IjowLjYwOTUyMzgwOTUyMzgwOTYsImRpc3BsYXkiOiJJTlRDIiwiY2hhcnROYW1lIjoiY2hhcnQiLCJpbmRleCI6MCwieUF4aXMiOnsibmFtZSI6ImNoYXJ0IiwicG9zaXRpb24iOm51bGx9LCJ5YXhpc0xIUyI6W10sInlheGlzUkhTIjpbImNoYXJ0Iiwi4oCMdm9sIHVuZHLigIwiXX0sIuKAjHJzaeKAjCAoMTQpIjp7InBlcmNlbnQiOjAuMTkwNDc2MTkwNDc2MTkwNDcsImRpc3BsYXkiOiLigIxyc2nigIwgKDE0KSIsImNoYXJ0TmFtZSI6ImNoYXJ0IiwiaW5kZXgiOjEsInlBeGlzIjp7Im5hbWUiOiLigIxyc2nigIwgKDE0KSIsInBvc2l0aW9uIjpudWxsfSwieWF4aXNMSFMiOltdLCJ5YXhpc1JIUyI6WyLigIxyc2nigIwgKDE0KSJdfSwi4oCMbWFjZOKAjCAoMTIsMjYsOSkiOnsicGVyY2VudCI6MC4yLCJkaXNwbGF5Ijoi4oCMbWFjZOKAjCAoMTIsMjYsOSkiLCJjaGFydE5hbWUiOiJjaGFydCIsImluZGV4IjoyLCJ5QXhpcyI6eyJuYW1lIjoi4oCMbWFjZOKAjCAoMTIsMjYsOSkiLCJwb3NpdGlvbiI6bnVsbH0sInlheGlzTEhTIjpbXSwieWF4aXNSSFMiOlsi4oCMbWFjZOKAjCAoMTIsMjYsOSkiXX19LCJzZXRTcGFuIjp7Im11bHRpcGxpZXIiOjEsImJhc2UiOiJ5ZWFyIiwicGVyaW9kaWNpdHkiOnsicGVyaW9kIjoxLCJ0aW1lVW5pdCI6ImRheSJ9LCJzaG93RXZlbnRzUXVvdGUiOnRydWUsImZvcmNlTG9hZCI6dHJ1ZX0sIm91dGxpZXJzIjpmYWxzZSwiYW5pbWF0aW9uIjp0cnVlLCJoZWFkc1VwIjp7InN0YXRpYyI6dHJ1ZSwiZHluYW1pYyI6ZmFsc2UsImZsb2F0aW5nIjpmYWxzZX0sImxpbmVXaWR0aCI6MiwiZnVsbFNjcmVlbiI6dHJ1ZSwic3RyaXBlZEJhY2tncm91bmQiOnRydWUsImNvbG9yIjoiIzAwODFmMiIsImNyb3NzaGFpclN0aWNreSI6ZmFsc2UsImRvbnRTYXZlUmFuZ2VUb0xheW91dCI6dHJ1ZSwic3ltYm9scyI6W3sic3ltYm9sIjoiSU5UQyIsInN5bWJvbE9iamVjdCI6eyJzeW1ib2wiOiJJTlRDIiwibWFya2V0IjoidXNfbWFya2V0IiwicXVvdGVUeXBlIjoiRVFVSVRZIiwiZXhjaGFuZ2VUaW1lWm9uZSI6IkFtZXJpY2EvTmV3X1lvcmsiLCJwZXJpb2QxIjoxNjYzNTYwMDAwLCJwZXJpb2QyIjoxNzkwMDEwMDAwfSwicGVyaW9kaWNpdHkiOjEsImludGVydmFsIjoiZGF5IiwidGltZVVuaXQiOm51bGwsInNldFNwYW4iOnsibXVsdGlwbGllciI6MSwiYmFzZSI6InllYXIiLCJwZXJpb2RpY2l0eSI6eyJwZXJpb2QiOjEsInRpbWVVbml0IjoiZGF5In0sInNob3dFdmVudHNRdW90ZSI6dHJ1ZSwiZm9yY2VMb2FkIjp0cnVlfX1dLCJyZW5kZXJlcnMiOltdfSwiZXZlbnRzIjp7ImRpdnMiOnRydWUsInNwbGl0cyI6dHJ1ZSwidHJhZGluZ0hvcml6b24iOiJub25lIiwic2lnRGV2RXZlbnRzIjpbXX0sImRyYXdpbmdzIjpudWxsLCJwcmVmZXJlbmNlcyI6e319";
@@ -227,14 +256,44 @@ const HIST_COLS = [
   { key: "sig180_before", label: "#Signals prior 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180_before, r.ticker), sortVal: r => r.sig180_before },
 ];
 
-// Favorites page columns = the ★/✕ actions cell + the Dashboard data columns
+// "% to Lower" band column, appended to the Favorites tables (their buy focus)
+const BB_LOWER_COL = {
+  key: "gap_low", label: "% to Lower", group: "sig", sepLeft: true, sortable: true,
+  cell: r => bbGapCell(r.gap_low, "low"), sortVal: r => r.gap_low,
+};
+// Favorites page columns = the ★/✕ actions cell + the Dashboard data columns + % to Lower
 const FAV_COLS = [
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: favTickerCell, sortVal: r => r.ticker },
   ...DASH_COLS.slice(1),
+  BB_LOWER_COL,
 ];
 const PORTFAV_COLS = [
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: portfavTickerCell, sortVal: r => r.ticker },
   ...DASH_COLS.slice(1),
+  BB_LOWER_COL,
+];
+
+// Dashboard BB sub-view: proximity ladder (the band it's playing is chosen per side chip)
+const DASH_BB_COLS = [
+  { key: "ticker", label: "Ticker", tdClass: "ticker", cell: tickerCell, sortVal: r => r.ticker },
+  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(secInd(r)), sortVal: r => secInd(r) },
+  { key: "price", label: "Price", group: "vol", sepLeft: true, sortable: true, cell: r => priceCell(r.price), sortVal: r => r.price },
+  { key: "_band", label: "Band", group: "vol", cell: r => bbBandCell(r._band, r._side), sortVal: r => r._band },
+  { key: "_gap", label: "% to band", group: "vol", sortable: true, cell: r => bbGapCell(r._gap, r._side), sortVal: r => r._gap },
+  { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
+  { key: "_count", label: "#Cross 180d", group: "sig", sepLeft: true, sortable: true, cell: r => `<span class="bbcount">${r._count || 0}</span>`, sortVal: r => r._count },
+];
+
+// History BB sub-view: log of past band crossings
+const BB_HIST_COLS = [
+  { key: "date", label: "Day", sortable: true, cell: r => fmtDate(r.date), sortVal: r => r.date },
+  { key: "ticker", label: "Ticker", tdClass: "ticker", cell: histTickerCell, sortVal: r => r.ticker },
+  { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(secInd(r)), sortVal: r => secInd(r) },
+  { key: "side", label: "Band", cell: r => bbSideLabel(r.side), sortVal: r => r.side },
+  { key: "tier", label: "Tier", cell: r => tierPill(r.tier), sortVal: r => r.tier },
+  { key: "price", label: "Price", group: "vol", sepLeft: true, sortable: true, cell: r => priceCell(r.price), sortVal: r => r.price },
+  { key: "pct", label: "% beyond", group: "vol", sortable: true, cell: r => bbGapCell(r.pct, r.side), sortVal: r => r.pct },
+  { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
 ];
 
 // ---------- favorites + Supabase sync ----------
@@ -344,6 +403,21 @@ function rerenderCurrent() {
   else if (v === "history") renderHistory();
   else if (v === "favorites") renderFavorites();
   else if (v === "portfolio") renderPortfolio();
+}
+// Vol / BB sub-view toggles (Dashboard + History)
+function applyDashMode(m) {
+  dashMode = m;
+  document.querySelectorAll("#dash-mode .chip").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  document.getElementById("dash-vol").classList.toggle("hidden", m !== "vol");
+  document.getElementById("dash-bb").classList.toggle("hidden", m !== "bb");
+  renderDash();
+}
+function applyHistMode(m) {
+  histMode = m;
+  document.querySelectorAll("#hist-mode .chip").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  document.getElementById("hist-vol").classList.toggle("hidden", m !== "vol");
+  document.getElementById("hist-bb").classList.toggle("hidden", m !== "bb");
+  renderHistory();
 }
 
 // ---------- favorites page ----------
@@ -715,7 +789,11 @@ function svgWorth() {
 // ---------- boot ----------
 let HOME_ROWS = [];
 let dashFilter = "both";
+let dashMode = "vol";              // "vol" | "bb"
+let bbSide = "both";               // "low" | "high" | "both"  (Dashboard BB)
+let bbProx = 2;                    // proximity net %: 0 | 2 | 5  (Dashboard BB)
 function renderDash() {
+  if (dashMode === "bb") return renderDashBB();
   const f = dashFilter;
   const pass = f === "g200" ? (r => r.vpct >= 200)
              : f === "y100" ? (r => r.vpct >= 100 && r.vpct < 200)
@@ -728,17 +806,34 @@ function renderDash() {
   makeTable(document.getElementById("mega-table"), DASH_COLS, mega, { key: "vpct", dir: -1 }, empty, null, dashKey);
   makeTable(document.getElementById("large-table"), DASH_COLS, large, { key: "vpct", dir: -1 }, empty, null, dashKey);
 }
+function renderDashBB() {
+  const derive = r => { const d = bbSideGap(r, bbSide); return Object.assign({}, r, { _gap: d.gap, _band: d.band, _side: d.side, _count: d.count }); };
+  const rows = HOME_ROWS.map(derive).filter(r => r._gap != null && r._gap <= bbProx);
+  const mega = rows.filter(r => r.tier === "mega");
+  const large = rows.filter(r => r.tier === "large");
+  const which = bbSide === "high" ? "upper band" : bbSide === "low" ? "lower band" : "a band";
+  const empty = bbProx === 0 ? `Nothing has crossed ${which} at last close.`
+                             : `Nothing within ${bbProx}% of ${which} at last close.`;
+  const dashKey = r => "d#" + r.ticker;
+  makeTable(document.getElementById("bb-mega-table"), DASH_BB_COLS, mega, { key: "_gap", dir: 1 }, empty, null, dashKey);
+  makeTable(document.getElementById("bb-large-table"), DASH_BB_COLS, large, { key: "_gap", dir: 1 }, empty, null, dashKey);
+}
 
 let HIST_ROWS = [];
 let histTier = "all", histBand = "both", histRange = 90;  // range in days; 0 = all
 let histSearch = "";     // ticker search filter (History)
 let histPerPage = 500;   // rows per page on History (user-changeable, persists)
+let histMode = "vol";    // "vol" | "bb"
+// History BB filter state
+let BB_HIST_ROWS = [];
+let bbHistTier = "all", bbHistSide = "both", bbHistRange = 90, bbHistSearch = "", bbHistPerPage = 500;
 function isoDaysAgo(days) {
   const t = new Date();
   t.setDate(t.getDate() - days);
   return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
 }
 function renderHistory() {
+  if (histMode === "bb") return renderBBHistory();
   const tierPass = histTier === "all" ? (() => true) : (r => r.tier === histTier);
   const bandPass = histBand === "g200" ? (r => r.vpct >= 200)
                  : histBand === "y100" ? (r => r.vpct >= 100 && r.vpct < 200)
@@ -755,12 +850,28 @@ function renderHistory() {
       pagerEls: [document.getElementById("hist-pager-top"), document.getElementById("hist-pager-bot")] },
     { key: "date", value: r => r.date });
 }
+function renderBBHistory() {
+  const tierPass = bbHistTier === "all" ? (() => true) : (r => r.tier === bbHistTier);
+  const sidePass = bbHistSide === "both" ? (() => true) : (r => r.side === bbHistSide);
+  const cutoff = bbHistRange > 0 ? isoDaysAgo(bbHistRange) : null;
+  const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
+  const searchPass = bbHistSearch ? (r => r.ticker.toLowerCase() === bbHistSearch) : (() => true);
+  const rows = BB_HIST_ROWS.filter(r => tierPass(r) && sidePass(r) && rangePass(r) && searchPass(r));
+  document.getElementById("bb-hist-count").textContent = `${rows.length} events`;
+  makeTable(document.getElementById("bb-hist-table"), BB_HIST_COLS, rows,
+    { key: "date", dir: -1 }, "No band touches in range.", null, r => r.date + "#" + r.ticker + "#" + r.side,
+    { perPage: bbHistPerPage, perPageOptions: [250, 500, 1000, 10000],
+      onPerPage: n => bbHistPerPage = n,
+      pagerEls: [document.getElementById("bb-hist-pager-top"), document.getElementById("bb-hist-pager-bot")] },
+    { key: "date", value: r => r.date });
+}
 
 async function boot() {
   const bust = "?t=" + Date.now();   // always fetch the freshest data (after the daily refresh)
-  const [home, hist] = await Promise.all([
+  const [home, hist, bbhist] = await Promise.all([
     fetch("data/home.json" + bust).then(r => r.json()),
     fetch("data/history.json" + bust).then(r => r.json()),
+    fetch("data/bb_history.json" + bust).then(r => r.json()).catch(() => ({ rows: [] })),
   ]);
 
   // header rows: today's ACTUAL date (live from the viewer's clock),
@@ -783,9 +894,24 @@ async function boot() {
     dashChips.forEach(x => x.classList.toggle("active", x.dataset.f === dashFilter)); // sync both bars
     renderDash();
   });
+  // Dashboard Vol / BB mode toggle + BB side/proximity chips
+  document.querySelectorAll("#dash-mode .chip").forEach(c => c.onclick = () => applyDashMode(c.dataset.mode));
+  const bbSideChips = document.querySelectorAll("#bb-side .chip");
+  bbSideChips.forEach(c => c.onclick = () => {
+    bbSide = c.dataset.side;
+    bbSideChips.forEach(x => x.classList.toggle("active", x === c));
+    renderDashBB();
+  });
+  const bbProxChips = document.querySelectorAll("#bb-prox .chip");
+  bbProxChips.forEach(c => c.onclick = () => {
+    bbProx = +c.dataset.prox;
+    bbProxChips.forEach(x => x.classList.toggle("active", x === c));
+    renderDashBB();
+  });
 
   // history — two synced filter groups: tier (all/mega/large) and band (both/200/100)
   HIST_ROWS = hist.rows;
+  BB_HIST_ROWS = (bbhist && bbhist.rows) || [];
   renderHistory();
   const tierChips = document.querySelectorAll("#hist-tier .chip");
   tierChips.forEach(c => c.onclick = () => {
@@ -807,6 +933,29 @@ async function boot() {
   });
   const histSearchEl = document.getElementById("hist-search");
   histSearchEl.addEventListener("input", () => { histSearch = histSearchEl.value.trim().toLowerCase(); renderHistory(); });
+
+  // history Vol / BB mode toggle + BB-history filter groups
+  document.querySelectorAll("#hist-mode .chip").forEach(c => c.onclick = () => applyHistMode(c.dataset.mode));
+  const bbhTierChips = document.querySelectorAll("#bbh-tier .chip");
+  bbhTierChips.forEach(c => c.onclick = () => {
+    bbHistTier = c.dataset.filter;
+    bbhTierChips.forEach(x => x.classList.toggle("active", x === c));
+    renderBBHistory();
+  });
+  const bbhSideChips = document.querySelectorAll("#bbh-side .chip");
+  bbhSideChips.forEach(c => c.onclick = () => {
+    bbHistSide = c.dataset.side;
+    bbhSideChips.forEach(x => x.classList.toggle("active", x === c));
+    renderBBHistory();
+  });
+  const bbhRangeChips = document.querySelectorAll("#bbh-range .chip");
+  bbhRangeChips.forEach(c => c.onclick = () => {
+    bbHistRange = +c.dataset.days;
+    bbhRangeChips.forEach(x => x.classList.toggle("active", x === c));
+    renderBBHistory();
+  });
+  const bbhSearchEl = document.getElementById("bbh-search");
+  bbhSearchEl.addEventListener("input", () => { bbHistSearch = bbhSearchEl.value.trim().toLowerCase(); renderBBHistory(); });
 
   // favorites: load local cache first (instant), then pull the one shared list
   loadLocal();

@@ -15,6 +15,7 @@ UNIVERSE_CSV = DATA / "universe.csv"
 STOCK_CSV = DATA / "stock_data.csv"
 HOME_JSON = DATA / "home.json"
 HISTORY_JSON = DATA / "history.json"
+BB_HISTORY_JSON = DATA / "bb_history.json"
 
 # ---- thresholds ----------------------------------------------------------
 MIN_CAP = 10_000_000_000          # $10B  -> in the universe at all
@@ -22,6 +23,10 @@ MEGA_CAP = 200_000_000_000        # $200B -> "mega" tier, else "large"
 VOL_MULT = 3.0                    # volume >= 3x avg20  == +200%
 AVG_WINDOW = 20                   # trailing days for the volume average
 SIG_WINDOW = 180                  # trading-day window for the signal count
+
+# ---- Bollinger Bands -----------------------------------------------------
+BB_WINDOW = 20                    # SMA / std window (matches the chart-link 20,2)
+BB_STD = 2.0                      # band width = SMA +/- 2 standard deviations
 
 # ---- backfill horizon ----------------------------------------------------
 WARMUP_START = "2025-11-01"       # pull from here so avg20 is warm for Jan 2026
@@ -53,3 +58,17 @@ def is_signal(volume, avg20) -> bool:
     if avg20 is None or avg20 != avg20 or avg20 <= 0:
         return False
     return volume >= VOL_MULT * avg20
+
+
+def add_bb(close_series):
+    """Bollinger Bands on the close: 20-period SMA +/- 2 population std.
+
+    Uses ddof=0 (population sigma) and a window that INCLUDES the current day,
+    matching Yahoo/TradingView's Bollinger Bands so these bands equal what the
+    ticker chart-link shows. Returns (mid, lower, upper) as pandas Series.
+    """
+    mid = close_series.rolling(BB_WINDOW).mean()
+    std = close_series.rolling(BB_WINDOW).std(ddof=0)
+    lower = mid - BB_STD * std
+    upper = mid + BB_STD * std
+    return mid, lower, upper

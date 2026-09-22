@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=37">
+<link rel="stylesheet" href="style.css?v=38">
 </head>
 <body>
 <div class="app">
@@ -25,37 +25,78 @@
         <div class="head-row"><h1>Dashboard</h1><a class="finviz-btn" href="https://finviz.com/screener?v=141&f=cap_mega" target="_blank" rel="noopener">Finviz ↗</a></div>
         <div class="today" id="today">—</div>
         <div class="asof" id="asof">—</div>
+        <div class="mode-row chip-group" id="dash-mode">
+          <button class="chip active" data-mode="vol">Vol</button>
+          <button class="chip" data-mode="bb">BB</button>
+        </div>
       </header>
 
-      <div class="section-block">
-        <div class="tier-row">
-          <h2 class="tier-title mega">Mega <span class="tier-sub">≥ $200B</span></h2>
-          <div class="filters dash-filters">
-            <button class="chip active" data-f="both">Both</button>
-            <button class="chip" data-f="g200">+200%</button>
-            <button class="chip" data-f="y100">+100%</button>
+      <!-- Dashboard: Vol (volume spikes) -->
+      <div id="dash-vol">
+        <div class="section-block">
+          <div class="tier-row">
+            <h2 class="tier-title mega">Mega <span class="tier-sub">≥ $200B</span></h2>
+            <div class="filters dash-filters">
+              <button class="chip active" data-f="both">Both</button>
+              <button class="chip" data-f="g200">+200%</button>
+              <button class="chip" data-f="y100">+100%</button>
+            </div>
           </div>
+          <div class="table-wrap"><table id="mega-table" class="grid"></table></div>
         </div>
-        <div class="table-wrap"><table id="mega-table" class="grid"></table></div>
+
+        <div class="section-block">
+          <div class="tier-row">
+            <h2 class="tier-title large">Large <span class="tier-sub">$10B – $200B</span></h2>
+            <div class="filters dash-filters">
+              <button class="chip active" data-f="both">Both</button>
+              <button class="chip" data-f="g200">+200%</button>
+              <button class="chip" data-f="y100">+100%</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="large-table" class="grid"></table></div>
+        </div>
       </div>
 
-      <div class="section-block">
-        <div class="tier-row">
-          <h2 class="tier-title large">Large <span class="tier-sub">$10B – $200B</span></h2>
-          <div class="filters dash-filters">
-            <button class="chip active" data-f="both">Both</button>
-            <button class="chip" data-f="g200">+200%</button>
-            <button class="chip" data-f="y100">+100%</button>
+      <!-- Dashboard: BB (Bollinger band proximity) -->
+      <div id="dash-bb" class="hidden">
+        <div class="filters bb-filters">
+          <div class="chip-group" id="bb-side">
+            <button class="chip" data-side="low">Oversold ↓</button>
+            <button class="chip" data-side="high">Overbought ↑</button>
+            <button class="chip active" data-side="both">Both</button>
+          </div>
+          <span class="filter-sep"></span>
+          <div class="chip-group" id="bb-prox">
+            <button class="chip" data-prox="0">0%</button>
+            <button class="chip active" data-prox="2">2%</button>
+            <button class="chip" data-prox="5">5%</button>
           </div>
         </div>
-        <div class="table-wrap"><table id="large-table" class="grid"></table></div>
+        <div class="section-block">
+          <h2 class="tier-title mega">Mega <span class="tier-sub">≥ $200B</span></h2>
+          <div class="table-wrap"><table id="bb-mega-table" class="grid"></table></div>
+        </div>
+        <div class="section-block">
+          <h2 class="tier-title large">Large <span class="tier-sub">$10B – $200B</span></h2>
+          <div class="table-wrap"><table id="bb-large-table" class="grid"></table></div>
+        </div>
       </div>
     </section>
 
     <!-- HISTORY VIEW -->
     <section id="view-history" class="view hidden">
       <header class="page-head">
-        <h1>Signal History</h1>
+        <div class="head-row"><h1>History</h1>
+          <div class="mode-row chip-group" id="hist-mode">
+            <button class="chip active" data-mode="vol">Vol</button>
+            <button class="chip" data-mode="bb">BB</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- History: Vol (volume spikes) -->
+      <div id="hist-vol">
         <div class="filters">
           <div class="chip-group" id="hist-tier">
             <button class="chip active" data-filter="all">All</button>
@@ -80,10 +121,41 @@
           <div class="search-box"><span class="search-ico">🔍</span><input type="search" id="hist-search" placeholder="Ticker" autocomplete="off" spellcheck="false"></div>
           <span class="count" id="hist-count"></span>
         </div>
-      </header>
-      <div class="pager" id="hist-pager-top"></div>
-      <div class="table-wrap"><table id="hist-table" class="grid"></table></div>
-      <div class="pager" id="hist-pager-bot"></div>
+        <div class="pager" id="hist-pager-top"></div>
+        <div class="table-wrap"><table id="hist-table" class="grid"></table></div>
+        <div class="pager" id="hist-pager-bot"></div>
+      </div>
+
+      <!-- History: BB (band crossings) -->
+      <div id="hist-bb" class="hidden">
+        <div class="filters">
+          <div class="chip-group" id="bbh-tier">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="mega">Mega</button>
+            <button class="chip" data-filter="large">Large</button>
+          </div>
+          <span class="filter-sep"></span>
+          <div class="chip-group" id="bbh-side">
+            <button class="chip" data-side="low">Oversold ↓</button>
+            <button class="chip" data-side="high">Overbought ↑</button>
+            <button class="chip active" data-side="both">Both</button>
+          </div>
+          <span class="filter-sep"></span>
+          <div class="chip-group" id="bbh-range">
+            <button class="chip" data-days="30">1M</button>
+            <button class="chip active" data-days="90">3M</button>
+            <button class="chip" data-days="180">6M</button>
+            <button class="chip" data-days="365">1Y</button>
+            <button class="chip" data-days="0">All</button>
+          </div>
+          <span class="filter-sep"></span>
+          <div class="search-box"><span class="search-ico">🔍</span><input type="search" id="bbh-search" placeholder="Ticker" autocomplete="off" spellcheck="false"></div>
+          <span class="count" id="bb-hist-count"></span>
+        </div>
+        <div class="pager" id="bb-hist-pager-top"></div>
+        <div class="table-wrap"><table id="bb-hist-table" class="grid"></table></div>
+        <div class="pager" id="bb-hist-pager-bot"></div>
+      </div>
     </section>
 
     <!-- FAVORITES VIEW -->
@@ -186,6 +258,6 @@
   </div>
 </div>
 
-<script src="app.js?v=37"></script>
+<script src="app.js?v=38"></script>
 </body>
 </html>

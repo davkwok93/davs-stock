@@ -44,6 +44,7 @@ nav { display: flex; flex-direction: column; gap: 4px; }
 /* ---- content ---- */
 .content { flex: 1; padding: 26px 30px; min-width: 0; }
 .view.hidden { display: none; }
+.hidden { display: none; }
 .page-head { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; margin-bottom: 20px; }
 h1 { font-size: 28px; margin: 0 0 4px; }
 .today { font-size: 20px; color: var(--text); font-weight: 700; }
@@ -290,6 +291,19 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
   background: var(--bg); border: 1px solid var(--line); color: var(--text);
   padding: 5px 8px; border-radius: 7px; font-size: 13px; cursor: pointer; margin-left: 4px; font-family: inherit;
 }
+
+/* ---- Vol / BB mode toggle + Bollinger proximity ---- */
+.mode-row { margin-top: 12px; }
+.head-row .mode-row { margin-top: 0; }
+.bb-filters { margin-bottom: 16px; }
+.bbpct { font-weight: 600; white-space: nowrap; }
+.bbpct.fired { color: var(--hot); }        /* closed at/through the band */
+.bbpct.near  { color: var(--yellow); }      /* within ~2% of the band */
+.bbpct.far   { color: var(--muted); }       /* further away */
+.bb-band { font-weight: 600; white-space: nowrap; }
+.bb-band.low  { color: var(--hot); }
+.bb-band.high { color: var(--green); }
+.bbcount { color: var(--muted); font-weight: 600; }
 
 /* ---- phone / narrow screens ---- */
 @media (max-width: 760px) {

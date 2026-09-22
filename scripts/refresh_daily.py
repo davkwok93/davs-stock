@@ -19,9 +19,9 @@ import pandas as pd
 import yfinance as yf
 
 from common import (
-    DATA, UNIVERSE_CSV, STOCK_CSV, HOME_JSON, HISTORY_JSON,
+    DATA, UNIVERSE_CSV, STOCK_CSV, HOME_JSON, HISTORY_JSON, BB_HISTORY_JSON,
     WARMUP_START, DISPLAY_START, AVG_WINDOW, SIG_WINDOW, VOL_MULT,
-    tier_of, yahoo_url, add_avg20,
+    tier_of, yahoo_url, add_avg20, add_bb,
 )
 
 BATCH = 200
@@ -113,6 +113,14 @@ def enrich(panel, cap_now):
         else:
             g["market_cap"] = pd.NA
         g["signal"] = (g["avg20"] > 0) & (g["volume"] >= VOL_MULT * g["avg20"])
+        # Bollinger Bands + signed proximity gaps (transient; not saved to CSV).
+        _mid, lower, upper = add_bb(g["close"])
+        g["bb_lower"] = lower
+        g["bb_upper"] = upper
+        g["gap_low"] = (g["close"] - lower) / lower * 100.0    # <=0 => closed at/below lower
+        g["gap_high"] = (upper - g["close"]) / upper * 100.0   # <=0 => closed at/above upper
+        g["bb_low"] = g["gap_low"] <= 0
+        g["bb_high"] = g["gap_high"] <= 0
         parts.append(g)
     return pd.concat(parts, ignore_index=True)
 
@@ -141,7 +149,10 @@ def build_home(panel, name, tier, sector, industry):
         last = gc.iloc[-1]                       # last row WITH a real close
         if pd.isna(last["avg20"]) or last["avg20"] <= 0:
             continue
-        sig180 = int(g[g["date"] <= global_date]["signal"].tail(SIG_WINDOW).sum())
+        upto = g[g["date"] <= global_date]
+        sig180 = int(upto["signal"].tail(SIG_WINDOW).sum())
+        bb_low180 = int(upto["bb_low"].tail(SIG_WINDOW).sum())
+        bb_high180 = int(upto["bb_high"].tail(SIG_WINDOW).sum())
         rows.append({
             "ticker": t,
             "name": name.get(t, ""),
@@ -155,6 +166,15 @@ def build_home(panel, name, tier, sector, industry):
             "vpct": round(float(last["volume"] / last["avg20"] - 1) * 100, 1),
             "market_cap": None if pd.isna(last["market_cap"]) else float(last["market_cap"]),
             "sig180": sig180,
+            # Bollinger Bands: band levels, signed proximity gaps, flags, 180d counts
+            "bb_lower": None if pd.isna(last["bb_lower"]) else round(float(last["bb_lower"]), 2),
+            "bb_upper": None if pd.isna(last["bb_upper"]) else round(float(last["bb_upper"]), 2),
+            "gap_low": None if pd.isna(last["gap_low"]) else round(float(last["gap_low"]), 1),
+            "gap_high": None if pd.isna(last["gap_high"]) else round(float(last["gap_high"]), 1),
+            "bb_low": bool(last["bb_low"]) if not pd.isna(last["bb_lower"]) else False,
+            "bb_high": bool(last["bb_high"]) if not pd.isna(last["bb_upper"]) else False,
+            "bb_low180": bb_low180,
+            "bb_high180": bb_high180,
             "yahoo_url": yahoo_url(t),
         })
     payload = {"date": global_date, "generated": pd.Timestamp.now().isoformat(timespec="seconds"),
@@ -196,6 +216,45 @@ def build_history(panel, tier, sector, industry):
     print(f"history.json: {len(events)} signal events")
 
 
+def build_bb_history(panel, tier, sector, industry):
+    """Every day from DISPLAY_START onward where the close finished at/below the
+    lower Bollinger Band (oversold) or at/above the upper band (overbought)."""
+    events = []
+    for t, g in panel.groupby("ticker", sort=False):
+        g = g.sort_values("date").reset_index(drop=True)
+        # prior-180d count of same-side crossings, per side, excluding the day itself
+        low_before = g["bb_low"].rolling(SIG_WINDOW, min_periods=1).sum().shift(1)
+        high_before = g["bb_high"].rolling(SIG_WINDOW, min_periods=1).sum().shift(1)
+        for i, r in g.iterrows():
+            if r["date"] < DISPLAY_START or pd.isna(r["bb_lower"]):
+                continue
+            for side, fired, gap, before in (
+                ("low", r["bb_low"], r["gap_low"], low_before.iloc[i]),
+                ("high", r["bb_high"], r["gap_high"], high_before.iloc[i]),
+            ):
+                if not bool(fired):
+                    continue
+                events.append({
+                    "date": r["date"],
+                    "ticker": t,
+                    "tier": tier.get(t, ""),
+                    "sector": sector.get(t, ""),
+                    "industry": industry.get(t, ""),
+                    "side": side,
+                    "price": None if pd.isna(r["close"]) else round(float(r["close"]), 2),
+                    "bb_lower": None if pd.isna(r["bb_lower"]) else round(float(r["bb_lower"]), 2),
+                    "bb_upper": None if pd.isna(r["bb_upper"]) else round(float(r["bb_upper"]), 2),
+                    "pct": round(float(gap), 1),           # signed gap at the crossing (<=0)
+                    "market_cap": None if pd.isna(r["market_cap"]) else float(r["market_cap"]),
+                    "bb180_before": int(0 if pd.isna(before) else before),
+                })
+    events.sort(key=lambda e: (e["date"], e["ticker"]), reverse=True)
+    payload = {"generated": pd.Timestamp.now().isoformat(timespec="seconds"),
+               "count": len(events), "rows": events}
+    BB_HISTORY_JSON.write_text(json.dumps(payload, indent=None))
+    print(f"bb_history.json: {len(events)} band-touch events")
+
+
 def build_prices(panel):
     """Daily closes from DISPLAY_START -> prices.json (portfolio worth chart, per-day)."""
     p = panel.copy()
@@ -223,6 +282,7 @@ def main():
     save_panel(panel)
     build_home(panel, name, tier, sector, industry)
     build_history(panel, tier, sector, industry)
+    build_bb_history(panel, tier, sector, industry)
     build_prices(panel)
     print("DONE.")
 
