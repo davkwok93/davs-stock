@@ -216,43 +216,39 @@ def build_history(panel, tier, sector, industry):
     print(f"history.json: {len(events)} signal events")
 
 
+BB_HIST_MAX_GAP = 5.0   # keep days within this % of a band (feeds the 0 / 2 / 5% chips)
+
+
 def build_bb_history(panel, tier, sector, industry):
-    """Every day from DISPLAY_START onward where the close finished at/below the
-    lower Bollinger Band (oversold) or at/above the upper band (overbought)."""
-    events = []
-    for t, g in panel.groupby("ticker", sort=False):
-        g = g.sort_values("date").reset_index(drop=True)
-        # prior-180d count of same-side crossings, per side, excluding the day itself
-        low_before = g["bb_low"].rolling(SIG_WINDOW, min_periods=1).sum().shift(1)
-        high_before = g["bb_high"].rolling(SIG_WINDOW, min_periods=1).sum().shift(1)
-        for i, r in g.iterrows():
-            if r["date"] < DISPLAY_START or pd.isna(r["bb_lower"]):
-                continue
-            for side, fired, gap, before in (
-                ("low", r["bb_low"], r["gap_low"], low_before.iloc[i]),
-                ("high", r["bb_high"], r["gap_high"], high_before.iloc[i]),
-            ):
-                if not bool(fired):
-                    continue
-                events.append({
-                    "date": r["date"],
-                    "ticker": t,
-                    "tier": tier.get(t, ""),
-                    "sector": sector.get(t, ""),
-                    "industry": industry.get(t, ""),
-                    "side": side,
-                    "price": None if pd.isna(r["close"]) else round(float(r["close"]), 2),
-                    "bb_lower": None if pd.isna(r["bb_lower"]) else round(float(r["bb_lower"]), 2),
-                    "bb_upper": None if pd.isna(r["bb_upper"]) else round(float(r["bb_upper"]), 2),
-                    "pct": round(float(gap), 1),           # signed gap at the crossing (<=0)
-                    "market_cap": None if pd.isna(r["market_cap"]) else float(r["market_cap"]),
-                    "bb180_before": int(0 if pd.isna(before) else before),
-                })
-    events.sort(key=lambda e: (e["date"], e["ticker"]), reverse=True)
+    """Every day from DISPLAY_START onward where the close finished within
+    BB_HIST_MAX_GAP % of the lower or upper Bollinger Band (gap <= 0 = touched).
+
+    Compact layout (this file is ~165k rows): per-ticker info lives once in
+    "tickers", and each row is an array in the order given by "fields"."""
+    p = panel[(panel["date"] >= DISPLAY_START) & panel["bb_lower"].notna()]
+    parts = []
+    for side, gap_col in (("low", "gap_low"), ("high", "gap_high")):
+        s = p[p[gap_col] <= BB_HIST_MAX_GAP]
+        parts.append(pd.DataFrame({
+            "date": s["date"], "ticker": s["ticker"], "side": side,
+            "price": s["close"].round(2), "bb_lower": s["bb_lower"].round(2),
+            "bb_upper": s["bb_upper"].round(2), "pct": s[gap_col].round(1),
+            "cap_m": (pd.to_numeric(s["market_cap"], errors="coerce") / 1e6).round(0),  # $M
+        }))
+    ev = pd.concat(parts).sort_values(["date", "ticker"], ascending=False)
+    ev = ev.astype(object).where(ev.notna(), None)
+    fields = ["date", "ticker", "side", "price", "bb_lower", "bb_upper", "pct", "cap_m"]
+    rows = ev[fields].values.tolist()
+    for r in rows:
+        if r[7] is not None:
+            r[7] = int(r[7])
+    tickers = {t: [tier.get(t, ""), sector.get(t, ""), industry.get(t, "")]
+               for t in ev["ticker"].unique()}
     payload = {"generated": pd.Timestamp.now().isoformat(timespec="seconds"),
-               "count": len(events), "rows": events}
-    BB_HISTORY_JSON.write_text(json.dumps(payload, indent=None))
-    print(f"bb_history.json: {len(events)} band-touch events")
+               "count": len(rows), "max_gap": BB_HIST_MAX_GAP,
+               "fields": fields, "tickers": tickers, "rows": rows}
+    BB_HISTORY_JSON.write_text(json.dumps(payload, indent=None, separators=(",", ":")))
+    print(f"bb_history.json: {len(rows)} band events (within {BB_HIST_MAX_GAP}%)")
 
 
 def build_prices(panel):

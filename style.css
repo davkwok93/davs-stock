@@ -260,8 +260,8 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 .search-box { display: flex; align-items: center; gap: 5px; background: var(--bg); border: 1px solid var(--line); border-radius: 20px; padding: 3px 12px; }
 .search-box:focus-within { border-color: var(--accent); }
 .search-ico { font-size: 12px; opacity: .7; }
-#hist-search { background: none; border: none; color: var(--text); font-size: 13px; width: 84px; outline: none; font-family: inherit; }
-#hist-search::placeholder { color: var(--muted); }
+#hist-search, #bbh-search { background: none; border: none; color: var(--text); font-size: 13px; width: 84px; outline: none; font-family: inherit; }
+#hist-search::placeholder, #bbh-search::placeholder { color: var(--muted); }
 .chip {
   background: var(--panel-2); border: 1px solid var(--line); color: var(--muted);
   padding: 5px 14px; border-radius: 20px; cursor: pointer; font-size: 13px;
@@ -304,7 +304,7 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
   transition: background .12s, color .12s;
 }
 .seg-btn:hover { color: var(--text); }
-.seg-btn.active { background: var(--accent); color: #04121f; }
+.seg-btn.active { background: var(--text); color: var(--bg); }
 .bb-filters { margin-bottom: 16px; }
 .bbpct { font-weight: 600; white-space: nowrap; }
 .bbpct.fired { color: var(--hot); }        /* closed at/through the band */

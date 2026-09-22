@@ -292,7 +292,7 @@ const BB_HIST_COLS = [
   { key: "side", label: "Band", cell: r => bbSideLabel(r.side), sortVal: r => r.side },
   { key: "tier", label: "Tier", cell: r => tierPill(r.tier), sortVal: r => r.tier },
   { key: "price", label: "Price", group: "vol", sepLeft: true, sortable: true, cell: r => priceCell(r.price), sortVal: r => r.price },
-  { key: "pct", label: "% beyond", group: "vol", sortable: true, cell: r => bbGapCell(r.pct, r.side), sortVal: r => r.pct },
+  { key: "pct", label: "% from band", group: "vol", sortable: true, cell: r => bbGapCell(r.pct, r.side), sortVal: r => r.pct },
   { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
 ];
 
@@ -820,13 +820,33 @@ function renderDashBB() {
 }
 
 let HIST_ROWS = [];
-let histTier = "all", histBand = "both", histRange = 90;  // range in days; 0 = all
+let histTier = "mega", histBand = "g200", histRange = 90;  // range in days; 0 = all
 let histSearch = "";     // ticker search filter (History)
 let histPerPage = 500;   // rows per page on History (user-changeable, persists)
 let histMode = "vol";    // "vol" | "bb"
 // History BB filter state
 let BB_HIST_ROWS = [];
-let bbHistTier = "all", bbHistSide = "low", bbHistRange = 90, bbHistSearch = "", bbHistPerPage = 500;
+let bbHistTier = "mega", bbHistSide = "low", bbHistProx = 0, bbHistRange = 90, bbHistSearch = "", bbHistPerPage = 500;
+// bb_history.json is compact: rows are arrays (order in "fields"), per-ticker info in "tickers"
+function expandBBHistory(d) {
+  if (!d || !d.rows) return [];
+  if (!d.fields) return d.rows;                       // old object-per-row layout
+  const ix = Object.fromEntries(d.fields.map((f, i) => [f, i]));
+  const info = d.tickers || {};
+  return d.rows.map(a => {
+    const t = a[ix.ticker], inf = info[t] || ["", "", ""];
+    return {
+      date: a[ix.date], ticker: t, tier: inf[0], sector: inf[1], industry: inf[2],
+      side: a[ix.side], price: a[ix.price], bb_lower: a[ix.bb_lower], bb_upper: a[ix.bb_upper],
+      pct: a[ix.pct], market_cap: a[ix.cap_m] == null ? null : a[ix.cap_m] * 1e6,
+    };
+  });
+}
+// "· data through MM/DD" so an empty day reads as "nothing fired", not "missing data"
+function dataThrough(all) {
+  const last = all.reduce((m, r) => r.date > m ? r.date : m, "");
+  return last ? ` · data through ${fmtDate(last)}` : "";
+}
 function isoDaysAgo(days) {
   const t = new Date();
   t.setDate(t.getDate() - days);
@@ -842,7 +862,7 @@ function renderHistory() {
   const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
   const searchPass = histSearch ? (r => r.ticker.toLowerCase() === histSearch) : (() => true);
   const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r) && searchPass(r));
-  document.getElementById("hist-count").textContent = `${rows.length} events`;
+  document.getElementById("hist-count").textContent = `${rows.length} events` + dataThrough(HIST_ROWS);
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
     { key: "date", dir: -1 }, "No events.", null, r => r.date + "#" + r.ticker,
     { perPage: histPerPage, perPageOptions: [250, 500, 1000, 10000],
@@ -853,13 +873,14 @@ function renderHistory() {
 function renderBBHistory() {
   const tierPass = bbHistTier === "all" ? (() => true) : (r => r.tier === bbHistTier);
   const sidePass = bbHistSide === "both" ? (() => true) : (r => r.side === bbHistSide);
+  const proxPass = r => r.pct != null && r.pct <= bbHistProx;
   const cutoff = bbHistRange > 0 ? isoDaysAgo(bbHistRange) : null;
   const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
   const searchPass = bbHistSearch ? (r => r.ticker.toLowerCase() === bbHistSearch) : (() => true);
-  const rows = BB_HIST_ROWS.filter(r => tierPass(r) && sidePass(r) && rangePass(r) && searchPass(r));
-  document.getElementById("bb-hist-count").textContent = `${rows.length} events`;
+  const rows = BB_HIST_ROWS.filter(r => tierPass(r) && sidePass(r) && proxPass(r) && rangePass(r) && searchPass(r));
+  document.getElementById("bb-hist-count").textContent = `${rows.length} events` + dataThrough(BB_HIST_ROWS);
   makeTable(document.getElementById("bb-hist-table"), BB_HIST_COLS, rows,
-    { key: "date", dir: -1 }, "No band touches in range.", null, r => r.date + "#" + r.ticker + "#" + r.side,
+    { key: "date", dir: -1 }, bbHistProx === 0 ? "No band touches in range." : `Nothing within ${bbHistProx}% of the band in range.`, null, r => r.date + "#" + r.ticker + "#" + r.side,
     { perPage: bbHistPerPage, perPageOptions: [250, 500, 1000, 10000],
       onPerPage: n => bbHistPerPage = n,
       pagerEls: [document.getElementById("bb-hist-pager-top"), document.getElementById("bb-hist-pager-bot")] },
@@ -911,7 +932,7 @@ async function boot() {
 
   // history — two synced filter groups: tier (all/mega/large) and band (both/200/100)
   HIST_ROWS = hist.rows;
-  BB_HIST_ROWS = (bbhist && bbhist.rows) || [];
+  BB_HIST_ROWS = expandBBHistory(bbhist);
   renderHistory();
   const tierChips = document.querySelectorAll("#hist-tier .chip");
   tierChips.forEach(c => c.onclick = () => {
@@ -946,6 +967,12 @@ async function boot() {
   bbhSideChips.forEach(c => c.onclick = () => {
     bbHistSide = c.dataset.side;
     bbhSideChips.forEach(x => x.classList.toggle("active", x === c));
+    renderBBHistory();
+  });
+  const bbhProxChips = document.querySelectorAll("#bbh-prox .chip");
+  bbhProxChips.forEach(c => c.onclick = () => {
+    bbHistProx = +c.dataset.prox;
+    bbhProxChips.forEach(x => x.classList.toggle("active", x === c));
     renderBBHistory();
   });
   const bbhRangeChips = document.querySelectorAll("#bbh-range .chip");

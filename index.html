@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=40">
+<link rel="stylesheet" href="style.css?v=42">
 </head>
 <body>
 <div class="app">
@@ -62,8 +62,8 @@
       <div id="dash-bb" class="hidden">
         <div class="filters bb-filters">
           <div class="chip-group" id="bb-side">
-            <button class="chip active" data-side="low">Oversold ↓</button>
-            <button class="chip" data-side="high">Overbought ↑</button>
+            <button class="chip active" data-side="low">Lower band ↓</button>
+            <button class="chip" data-side="high">Upper band ↑</button>
           </div>
           <span class="filter-sep"></span>
           <div class="chip-group" id="bb-prox">
@@ -86,11 +86,10 @@
     <!-- HISTORY VIEW -->
     <section id="view-history" class="view hidden">
       <header class="page-head">
-        <div class="head-row"><h1>History</h1>
-          <div class="mode-toggle" id="hist-mode">
-            <button class="seg-btn active" data-mode="vol">Vol</button>
-            <button class="seg-btn" data-mode="bb">BB</button>
-          </div>
+        <div class="head-row"><h1>History</h1></div>
+        <div class="mode-toggle" id="hist-mode">
+          <button class="seg-btn active" data-mode="vol">Vol</button>
+          <button class="seg-btn" data-mode="bb">BB</button>
         </div>
       </header>
 
@@ -98,14 +97,14 @@
       <div id="hist-vol">
         <div class="filters">
           <div class="chip-group" id="hist-tier">
-            <button class="chip active" data-filter="all">All</button>
-            <button class="chip" data-filter="mega">Mega</button>
+            <button class="chip" data-filter="all">All</button>
+            <button class="chip active" data-filter="mega">Mega</button>
             <button class="chip" data-filter="large">Large</button>
           </div>
           <span class="filter-sep"></span>
           <div class="chip-group" id="hist-band">
-            <button class="chip active" data-f="both">Both</button>
-            <button class="chip" data-f="g200">+200%</button>
+            <button class="chip" data-f="both">Both</button>
+            <button class="chip active" data-f="g200">+200%</button>
             <button class="chip" data-f="y100">+100%</button>
           </div>
           <span class="filter-sep"></span>
@@ -129,14 +128,20 @@
       <div id="hist-bb" class="hidden">
         <div class="filters">
           <div class="chip-group" id="bbh-tier">
-            <button class="chip active" data-filter="all">All</button>
-            <button class="chip" data-filter="mega">Mega</button>
+            <button class="chip" data-filter="all">All</button>
+            <button class="chip active" data-filter="mega">Mega</button>
             <button class="chip" data-filter="large">Large</button>
           </div>
           <span class="filter-sep"></span>
           <div class="chip-group" id="bbh-side">
-            <button class="chip active" data-side="low">Oversold ↓</button>
-            <button class="chip" data-side="high">Overbought ↑</button>
+            <button class="chip active" data-side="low">Lower band ↓</button>
+            <button class="chip" data-side="high">Upper band ↑</button>
+          </div>
+          <span class="filter-sep"></span>
+          <div class="chip-group" id="bbh-prox">
+            <button class="chip active" data-prox="0">0%</button>
+            <button class="chip" data-prox="2">2%</button>
+            <button class="chip" data-prox="5">5%</button>
           </div>
           <span class="filter-sep"></span>
           <div class="chip-group" id="bbh-range">
@@ -256,6 +261,6 @@
   </div>
 </div>
 
-<script src="app.js?v=40"></script>
+<script src="app.js?v=42"></script>
 </body>
 </html>
