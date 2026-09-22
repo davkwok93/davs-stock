@@ -37,7 +37,6 @@ function tierPill(t) { return `<span class="pill ${t}">${t}</span>`; }
 
 // ---------- Bollinger Band proximity helpers ----------
 // gap % is signed: >0 = still that far from the band, <=0 = closed at/through it.
-function bbPctClass(g) { return g == null ? "far" : g <= 0 ? "fired" : g <= 2 ? "near" : "far"; }
 function priceCell(p) { return p == null ? "—" : "$" + p.toFixed(2); }
 // which band a row is playing against, given the side chip ("low"/"high"/"both")
 function bbSideGap(r, side) {
@@ -49,19 +48,22 @@ function bbSideGap(r, side) {
   if (high.gap == null) return low;
   return low.gap <= high.gap ? low : high;      // "both" -> the nearer band
 }
+// red shades for the lower band, green for the upper; strongest = touched/through (0%)
+function bbShade(g) { return g == null ? "far" : g <= 0 ? "s0" : g <= 2 ? "s2" : g <= 5 ? "s5" : "far"; }
 function bbGapCell(gap, side) {
   if (gap == null) return "—";
-  const arrow = side === "low" ? "↓" : "↑";
-  return `<span class="bbpct ${bbPctClass(gap)}">${arrow} ${fmtPct(gap)}</span>`;
+  return `<span class="bbpct ${side} ${bbShade(gap)}">${fmtPct(gap)}</span>`;
 }
 function bbBandCell(band, side) {
   if (band == null) return "—";
   return `<span class="bb-band ${side}">$${band.toFixed(2)}</span>`;
 }
-function bbSideLabel(side) {
-  return side === "low"
-    ? `<span class="bb-band low">↓ Lower</span>`
-    : `<span class="bb-band high">↑ Upper</span>`;
+// clickable cross-signal count (Vol <-> BB); kind "bb-low" | "bb-high" | "vol", ends on the row's date
+function xBadge(n, kind, ticker, date) {
+  const cls = kind === "bb-low" ? " x-low" : kind === "bb-high" ? " x-high" : "";
+  return n > 0
+    ? `<span class="sig-badge on clickable${cls}" data-xsig="${kind}|${ticker}|${date}">${n}</span>`
+    : `<span class="sig-badge">0</span>`;
 }
 // Yahoo chart layout (1-yr daily mountain + volume underlay + On-Balance-Volume). INTC appears only in
 // the 3 symbol fields; swap it for the ticker and re-encode to get the same view.
@@ -219,6 +221,8 @@ function makeTable(tableEl, columns, rows, initialSort, emptyMsg, limit, rowKey,
     if (act) { handleFavAction(act.dataset.act, act.dataset.ticker); return; }  // ＋/★/✕ — no highlight
     const sig = e.target.closest("[data-sig]");
     if (sig) { openSignalModal(sig.dataset.sig); return; }                      // #Signals -> popup
+    const xs = e.target.closest("[data-xsig]");
+    if (xs) { openCrossModal(...xs.dataset.xsig.split("|")); return; }          // #BB / #Vol -> popup
     const pred = e.target.closest("[data-predict]");
     if (pred) { openPredictModal(pred.dataset.predict); return; }               // ✎ -> prediction note
     const ind = e.target.closest("[data-ind]");
@@ -254,6 +258,8 @@ const HIST_COLS = [
   { key: "vpct", label: "+V%", group: "vol", sortable: true, cell: r => vpctCell(r.vpct), sortVal: r => r.vpct },
   { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
   { key: "sig180_before", label: "#Signals prior 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180_before, r.ticker), sortVal: r => r.sig180_before },
+  { key: "_bbLow", label: "#BB Lower 180d", group: "sig", sortable: true, cell: r => xBadge(r._bbLow, "bb-low", r.ticker, r.date), sortVal: r => r._bbLow },
+  { key: "_bbHigh", label: "#BB Upper 180d", group: "sig", sortable: true, cell: r => xBadge(r._bbHigh, "bb-high", r.ticker, r.date), sortVal: r => r._bbHigh },
 ];
 
 // "% to Lower" band column, appended to the Favorites tables (their buy focus)
@@ -289,11 +295,11 @@ const BB_HIST_COLS = [
   { key: "date", label: "Day", sortable: true, cell: r => fmtDate(r.date), sortVal: r => r.date },
   { key: "ticker", label: "Ticker", tdClass: "ticker", cell: histTickerCell, sortVal: r => r.ticker },
   { key: "industry", label: "Industry", tdClass: "industry-cell", cell: r => indCell(secInd(r)), sortVal: r => secInd(r) },
-  { key: "side", label: "Band", cell: r => bbSideLabel(r.side), sortVal: r => r.side },
   { key: "tier", label: "Tier", cell: r => tierPill(r.tier), sortVal: r => r.tier },
   { key: "price", label: "Price", group: "vol", sepLeft: true, sortable: true, cell: r => priceCell(r.price), sortVal: r => r.price },
   { key: "pct", label: "% from band", group: "vol", sortable: true, cell: r => bbGapCell(r.pct, r.side), sortVal: r => r.pct },
   { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
+  { key: "_vol", label: "#Vol 180d", group: "sig", sepLeft: true, sortable: true, cell: r => xBadge(r._vol, "vol", r.ticker, r.date), sortVal: r => r._vol },
 ];
 
 // ---------- favorites + Supabase sync ----------
@@ -463,6 +469,45 @@ function openSignalModal(t) {
         + `<td>${fmtVol(r.volume)}</td><td>${fmtCap(r.market_cap)}</td></tr>`).join("")
       + `</tbody></table>`;
   }
+  document.getElementById("signal-modal").classList.remove("hidden");
+}
+// ---------- Vol <-> BB cross counts (180 trading days ending on the row's day, same day included) ----------
+const XWIN = 180;
+let TRADE_DATES = [], VOL_SIGS = {}, BB_SIGS = { low: {}, high: {} };
+function addTo(map, t, r) { (map[t] = map[t] || []).push(r); }
+function windowStart(date) {
+  let lo = 0, hi = TRADE_DATES.length;              // first index with TRADE_DATES[i] >= date
+  while (lo < hi) { const m = (lo + hi) >> 1; if (TRADE_DATES[m] < date) lo = m + 1; else hi = m; }
+  return TRADE_DATES[Math.max(0, lo - XWIN + 1)] || date;
+}
+function inWindow(list, date) {
+  if (!list) return [];
+  const from = windowStart(date);
+  return list.filter(r => r.date >= from && r.date <= date);
+}
+function buildCrossCounts() {
+  TRADE_DATES = [...new Set([...HIST_ROWS, ...BB_HIST_ROWS].map(r => r.date))].sort();
+  VOL_SIGS = {}; BB_SIGS = { low: {}, high: {} };
+  HIST_ROWS.forEach(r => { if (r.vpct >= 200) addTo(VOL_SIGS, r.ticker, r); });
+  BB_HIST_ROWS.forEach(r => { if (r.pct != null && r.pct <= 0 && BB_SIGS[r.side]) addTo(BB_SIGS[r.side], r.ticker, r); });
+  HIST_ROWS.forEach(r => {
+    r._bbLow = inWindow(BB_SIGS.low[r.ticker], r.date).length;
+    r._bbHigh = inWindow(BB_SIGS.high[r.ticker], r.date).length;
+  });
+  BB_HIST_ROWS.forEach(r => { r._vol = inWindow(VOL_SIGS[r.ticker], r.date).length; });
+}
+function openCrossModal(kind, t, date) {
+  const isVol = kind === "vol", side = kind === "bb-high" ? "high" : "low";
+  const sigs = inWindow(isVol ? VOL_SIGS[t] : BB_SIGS[side][t], date)
+    .slice().sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
+  const what = isVol ? "Vol signals (+200%)" : `BB ${side === "low" ? "Lower" : "Upper"} touches`;
+  document.getElementById("sm-title").textContent = `${t} — ${what}, 180d to ${fmtDate(date)} (${sigs.length})`;
+  const head = isVol ? `<th>+V%</th><th>Vol</th><th>Mkt Cap</th>` : `<th>Price</th><th>% from band</th><th>Mkt Cap</th>`;
+  const row = r => isVol
+    ? `<td>${vpctCell(r.vpct)}</td><td>${fmtVol(r.volume)}</td><td>${fmtCap(r.market_cap)}</td>`
+    : `<td>${priceCell(r.price)}</td><td>${bbGapCell(r.pct, r.side)}</td><td>${fmtCap(r.market_cap)}</td>`;
+  document.getElementById("sm-body").innerHTML = `<table class="grid"><thead><tr><th class="sm-l">Day</th>${head}</tr></thead><tbody>`
+    + sigs.map(r => `<tr><td class="sm-l">${fmtDate(r.date)}</td>${row(r)}</tr>`).join("") + `</tbody></table>`;
   document.getElementById("signal-modal").classList.remove("hidden");
 }
 function closeSignalModal() { document.getElementById("signal-modal").classList.add("hidden"); }
@@ -933,6 +978,7 @@ async function boot() {
   // history — two synced filter groups: tier (all/mega/large) and band (both/200/100)
   HIST_ROWS = hist.rows;
   BB_HIST_ROWS = expandBBHistory(bbhist);
+  buildCrossCounts();
   renderHistory();
   const tierChips = document.querySelectorAll("#hist-tier .chip");
   tierChips.forEach(c => c.onclick = () => {

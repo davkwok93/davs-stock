@@ -307,9 +307,16 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 .seg-btn.active { background: var(--text); color: var(--bg); }
 .bb-filters { margin-bottom: 16px; }
 .bbpct { font-weight: 600; white-space: nowrap; }
-.bbpct.fired { color: var(--hot); }        /* closed at/through the band */
-.bbpct.near  { color: var(--yellow); }      /* within ~2% of the band */
+/* lower band = reds, upper band = greens; strongest shade = touched/through (0%) */
+.bbpct.low.s0  { color: #ff4545; font-weight: 800; }
+.bbpct.low.s2  { color: #e0716c; }
+.bbpct.low.s5  { color: #a85a57; font-weight: 500; }
+.bbpct.high.s0 { color: #2ee88a; font-weight: 800; }
+.bbpct.high.s2 { color: #52bf88; }
+.bbpct.high.s5 { color: #4a8f6c; font-weight: 500; }
 .bbpct.far   { color: var(--muted); }       /* further away */
+.sig-badge.on.x-low  { background: rgba(255,92,92,0.15); color: var(--hot); }
+.sig-badge.on.x-high { background: rgba(74,217,145,0.15); color: var(--green); }
 .bb-band { font-weight: 600; white-space: nowrap; }
 .bb-band.low  { color: var(--hot); }
 .bb-band.high { color: var(--green); }
