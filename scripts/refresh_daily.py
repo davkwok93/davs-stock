@@ -92,10 +92,13 @@ def upsert_panel(tickers):
         print(f"First run: backfilling from {start}")
 
     fresh = download_long(tickers, start, end)
-    merged = pd.concat([old, fresh], ignore_index=True)
-    merged = merged.drop_duplicates(subset=["ticker", "date"], keep="last")
+    # fresh values win, but a blank from Yahoo (e.g. a NaN close) never wipes a value we already had
+    key = ["ticker", "date"]
+    fresh = fresh.drop_duplicates(subset=key, keep="last").set_index(key)
+    old = old.drop_duplicates(subset=key, keep="last").set_index(key)
+    merged = fresh.combine_first(old).reset_index()
     merged = merged.sort_values(["ticker", "date"]).reset_index(drop=True)
-    return merged
+    return merged[["ticker", "date", "open", "close", "volume"]]
 
 
 def enrich(panel, cap_now):
