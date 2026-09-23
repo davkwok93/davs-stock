@@ -143,17 +143,24 @@ def build_home(panel, name, tier, sector, industry):
     complete = disp.groupby("date")["close"].apply(lambda s: s.notna().mean() > 0.5)
     ok = [d for d in complete[complete].index if d < today]
     global_date = max(ok) if ok else disp["date"].max()
+    # volume can be ahead of prices (Yahoo sometimes ships a day's volume with blank closes);
+    # the Vol numbers only need volume, so they use the latest finalized day that HAS volume
+    has_vol = disp.groupby("date")["volume"].apply(lambda s: s.notna().mean() > 0.5)
+    vok = [d for d in has_vol[has_vol].index if d < today]
+    vol_date = max(max(vok), global_date) if vok else global_date
     rows = []
     for t, g in disp.groupby("ticker", sort=False):
         g = g.sort_values("date")
         gc = g[(g["close"].notna()) & (g["date"] <= global_date)]
         if gc.empty:
             continue
-        last = gc.iloc[-1]                       # last row WITH a real close
-        if pd.isna(last["avg20"]) or last["avg20"] <= 0:
+        last = gc.iloc[-1]                       # last row WITH a real close (price / BB)
+        gv = g[(g["volume"].notna()) & (g["date"] <= vol_date)]
+        vrow = gv.iloc[-1] if not gv.empty else last   # last row WITH volume (Vol numbers)
+        if pd.isna(vrow["avg20"]) or vrow["avg20"] <= 0:
             continue
         upto = g[g["date"] <= global_date]
-        sig180 = int(upto["signal"].tail(SIG_WINDOW).sum())
+        sig180 = int(g[g["date"] <= vrow["date"]]["signal"].tail(SIG_WINDOW).sum())
         bb_low180 = int(upto["bb_low"].tail(SIG_WINDOW).sum())
         bb_high180 = int(upto["bb_high"].tail(SIG_WINDOW).sum())
         rows.append({
@@ -163,10 +170,11 @@ def build_home(panel, name, tier, sector, industry):
             "sector": sector.get(t, ""),
             "industry": industry.get(t, ""),
             "date": last["date"],
+            "vol_date": vrow["date"],
             "price": None if pd.isna(last["close"]) else round(float(last["close"]), 2),
-            "volume": None if pd.isna(last["volume"]) else int(last["volume"]),
-            "avg20": None if pd.isna(last["avg20"]) else round(float(last["avg20"])),
-            "vpct": round(float(last["volume"] / last["avg20"] - 1) * 100, 1),
+            "volume": None if pd.isna(vrow["volume"]) else int(vrow["volume"]),
+            "avg20": None if pd.isna(vrow["avg20"]) else round(float(vrow["avg20"])),
+            "vpct": round(float(vrow["volume"] / vrow["avg20"] - 1) * 100, 1),
             "market_cap": None if pd.isna(last["market_cap"]) else float(last["market_cap"]),
             "sig180": sig180,
             # Bollinger Bands: band levels, signed proximity gaps, flags, 180d counts
@@ -180,10 +188,10 @@ def build_home(panel, name, tier, sector, industry):
             "bb_high180": bb_high180,
             "yahoo_url": yahoo_url(t),
         })
-    payload = {"date": global_date, "generated": pd.Timestamp.now().isoformat(timespec="seconds"),
+    payload = {"date": global_date, "vol_date": vol_date, "generated": pd.Timestamp.now().isoformat(timespec="seconds"),
                "rows": rows}
     HOME_JSON.write_text(json.dumps(payload, indent=None))
-    print(f"home.json: {len(rows)} names, as of {global_date}")
+    print(f"home.json: {len(rows)} names, prices as of {global_date}, volume as of {vol_date}")
 
 
 def build_history(panel, tier, sector, industry):

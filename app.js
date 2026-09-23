@@ -410,8 +410,19 @@ function rerenderCurrent() {
   else if (v === "portfolio") renderPortfolio();
 }
 // Vol / BB sub-view toggles (Dashboard + History)
+// Vol can be a day ahead of prices when Yahoo ships volume but no closes yet
+let HOME_DATE = "", HOME_VOL_DATE = "";
+function setAsof() {
+  if (!HOME_DATE) return;
+  const d = dashMode === "vol" ? HOME_VOL_DATE : HOME_DATE;
+  const note = HOME_VOL_DATE !== HOME_DATE
+    ? (dashMode === "vol" ? ` · prices & mkt cap from ${fmtDate(HOME_DATE)}` : ` · closes for ${fmtDate(HOME_VOL_DATE)} not in yet`)
+    : "";
+  document.getElementById("asof").textContent = `Last market close ${fmtDate(d)} (${weekday(d)})${note}`;
+}
 function applyDashMode(m) {
   dashMode = m;
+  setAsof();
   document.querySelectorAll("#dash-mode .seg-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
   document.getElementById("dash-vol").classList.toggle("hidden", m !== "vol");
   document.getElementById("dash-bb").classList.toggle("hidden", m !== "bb");
@@ -970,8 +981,8 @@ async function boot() {
   const today = `${n.getFullYear()}-${pad(n.getMonth() + 1)}-${pad(n.getDate())}`;
   document.getElementById("today").textContent =
     `Today ${fmtDate(today)} (${weekday(today)})`;
-  document.getElementById("asof").textContent =
-    `Last market close ${fmtDate(home.date)} (${weekday(home.date)})`;
+  HOME_DATE = home.date; HOME_VOL_DATE = home.vol_date || home.date;
+  setAsof();
 
   // dashboard tables, driven by the Both / +200% / +100% filter
   HOME_ROWS = home.rows;
