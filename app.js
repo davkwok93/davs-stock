@@ -415,10 +415,7 @@ let HOME_DATE = "", HOME_VOL_DATE = "";
 function setAsof() {
   if (!HOME_DATE) return;
   const d = dashMode === "vol" ? HOME_VOL_DATE : HOME_DATE;
-  const note = HOME_VOL_DATE !== HOME_DATE
-    ? (dashMode === "vol" ? ` · prices & mkt cap from ${fmtDate(HOME_DATE)}` : ` · closes for ${fmtDate(HOME_VOL_DATE)} not in yet`)
-    : "";
-  document.getElementById("asof").textContent = `Last market close ${fmtDate(d)} (${weekday(d)})${note}`;
+  document.getElementById("asof").textContent = `Last market close ${fmtDate(d)} (${weekday(d)})`;
 }
 function applyDashMode(m) {
   dashMode = m;
