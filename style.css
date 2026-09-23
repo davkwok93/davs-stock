@@ -346,3 +346,6 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
   table.grid { min-width: 620px; }
   table.grid th, table.grid td { padding: 8px 10px; font-size: 13px; }
 }
+.port-open-h .fit-toggle { margin-left: 10px; vertical-align: middle; }
+.lots-n { color: var(--muted); font-size: 11px; }
+.lots-hint { color: var(--muted); font-size: 11px; cursor: help; }

@@ -636,7 +636,27 @@ function editOriginal() {
   if (!isNaN(n)) { PORT.original = n; schedulePortPush(); renderPortfolio(); }
 }
 
+// Avg view: one row per ticker — share-weighted average cost, total shares, earliest buy date
+let portAvg = true;
+try { portAvg = localStorage.getItem("davs_port_avg") !== "0"; } catch (e) {}
+function avgLots(lots) {
+  const by = {};
+  for (const l of lots) {
+    const g = by[l.ticker];
+    if (!g) { by[l.ticker] = { ...l, n: 1, _tc: l.cost * l.shares }; continue; }
+    g.n++; g.shares += l.shares; g._tc += l.cost * l.shares;
+    if (l.date < g.date) g.date = l.date;
+  }
+  return Object.values(by).map(g => ({ ...g, cost: g.shares ? g._tc / g.shares : g.cost }));
+}
 function renderPositions(c) {
+  const avgBtn = document.getElementById("avg-toggle");
+  avgBtn.classList.toggle("on", portAvg);
+  avgBtn.onclick = () => {
+    portAvg = !portAvg;
+    try { localStorage.setItem("davs_port_avg", portAvg ? "1" : "0"); } catch (e) {}
+    renderPositions(portCalc());
+  };
   const t = document.getElementById("port-table");
   document.getElementById("open-count").textContent = PORT.lots.length ? PORT.lots.length : "";
   const arrow = `<span class="arrow">${portSortDir < 0 ? "▼" : "▲"}</span>`;
@@ -648,7 +668,8 @@ function renderPositions(c) {
     t.querySelector("#port-date-sort").onclick = () => { portSortDir = -portSortDir; renderPositions(portCalc()); };
     return;
   }
-  const lots = [...PORT.lots].sort((a, b) => portSortDir * (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  const lots = (portAvg ? avgLots(PORT.lots) : [...PORT.lots])
+    .sort((a, b) => portSortDir * (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
   const rows = lots.map(l => {
     const p = priceOf(l.ticker), chg = p != null ? (p / l.cost - 1) * 100 : null;
     const tc = l.cost * l.shares, tv = p != null ? p * l.shares : null;
@@ -657,10 +678,12 @@ function renderPositions(c) {
       + `<td class="l" style="color:var(--muted)">${secOf(l.ticker) || "—"}</td>`
       + `<td>$${l.cost.toFixed(2)}</td><td>${p != null ? "$" + p.toFixed(2) : "—"}</td>`
       + `<td>${chg == null ? "—" : `<span class="vpct ${chg >= 0 ? "green" : "loss"}">${fmtPct(chg)}</span>`}</td>`
-      + `<td>${l.shares}</td>`
+      + `<td>${+l.shares.toFixed(4)}${l.n > 1 ? ` <span class="lots-n">(${l.n} lots)</span>` : ""}</td>`
       + `<td class="muted-col">${fmtMoney(tc)}</td><td class="muted-col">${tv == null ? "—" : fmtMoney(tv)}</td>`
-      + `<td class="l"><button class="sell-btn" data-sell="${l.id}">Sell</button>`
-      + `<button class="rm-btn" data-dellot="${l.id}">✕</button></td></tr>`;
+      + (l.n > 1   // a merged Avg row: sell / delete individual lots with Avg off
+        ? `<td class="l"><span class="lots-hint" title="Turn Avg off to sell or remove a single lot">Avg</span></td></tr>`
+        : `<td class="l"><button class="sell-btn" data-sell="${l.id}">Sell</button>`
+          + `<button class="rm-btn" data-dellot="${l.id}">✕</button></td></tr>`);
   }).join("");
   const totChg = c.invested > 0 ? (c.holdingsValue / c.invested - 1) * 100 : 0;
   const totals = `<tr class="port-total"><td class="l" colspan="5">Total</td>`
