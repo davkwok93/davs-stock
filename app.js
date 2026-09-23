@@ -258,8 +258,7 @@ const HIST_COLS = [
   { key: "vpct", label: "+V%", group: "vol", sortable: true, cell: r => vpctCell(r.vpct), sortVal: r => r.vpct },
   { key: "market_cap", label: "Mkt Cap", group: "cap", sepLeft: true, sortable: true, cell: r => fmtCap(r.market_cap), sortVal: r => r.market_cap },
   { key: "sig180_before", label: "#Signals prior 180d", group: "sig", sepLeft: true, sortable: true, cell: r => sigBadge(r.sig180_before, r.ticker), sortVal: r => r.sig180_before },
-  { key: "_bbLow", label: "#BB Lower 180d", group: "sig", sortable: true, cell: r => xBadge(r._bbLow, "bb-low", r.ticker, r.date), sortVal: r => r._bbLow },
-  { key: "_bbHigh", label: "#BB Upper 180d", group: "sig", sortable: true, cell: r => xBadge(r._bbHigh, "bb-high", r.ticker, r.date), sortVal: r => r._bbHigh },
+  { key: "_bbLow", label: "#BB Lower 60d", group: "sig", sortable: true, cell: r => xBadge(r._bbLow, "bb-low", r.ticker, r.date), sortVal: r => r._bbLow },
 ];
 
 // "% to Lower" band column, appended to the Favorites tables (their buy focus)
@@ -471,18 +470,19 @@ function openSignalModal(t) {
   }
   document.getElementById("signal-modal").classList.remove("hidden");
 }
-// ---------- Vol <-> BB cross counts (180 trading days ending on the row's day, same day included) ----------
-const XWIN = 180;
+// ---------- Vol <-> BB cross counts (N trading days ending on the row's day, same day included) ----------
+const BB_XWIN = 60;    // BB Lower touches counted on the Vol history page
+const VOL_XWIN = 180;  // Vol signals counted on the BB history page
 let TRADE_DATES = [], VOL_SIGS = {}, BB_SIGS = { low: {}, high: {} };
 function addTo(map, t, r) { (map[t] = map[t] || []).push(r); }
-function windowStart(date) {
+function windowStart(date, win) {
   let lo = 0, hi = TRADE_DATES.length;              // first index with TRADE_DATES[i] >= date
   while (lo < hi) { const m = (lo + hi) >> 1; if (TRADE_DATES[m] < date) lo = m + 1; else hi = m; }
-  return TRADE_DATES[Math.max(0, lo - XWIN + 1)] || date;
+  return TRADE_DATES[Math.max(0, lo - win + 1)] || date;
 }
-function inWindow(list, date) {
+function inWindow(list, date, win) {
   if (!list) return [];
-  const from = windowStart(date);
+  const from = windowStart(date, win);
   return list.filter(r => r.date >= from && r.date <= date);
 }
 function buildCrossCounts() {
@@ -491,17 +491,17 @@ function buildCrossCounts() {
   HIST_ROWS.forEach(r => { if (r.vpct >= 200) addTo(VOL_SIGS, r.ticker, r); });
   BB_HIST_ROWS.forEach(r => { if (r.pct != null && r.pct <= 0 && BB_SIGS[r.side]) addTo(BB_SIGS[r.side], r.ticker, r); });
   HIST_ROWS.forEach(r => {
-    r._bbLow = inWindow(BB_SIGS.low[r.ticker], r.date).length;
-    r._bbHigh = inWindow(BB_SIGS.high[r.ticker], r.date).length;
+    r._bbLow = inWindow(BB_SIGS.low[r.ticker], r.date, BB_XWIN).length;
   });
-  BB_HIST_ROWS.forEach(r => { r._vol = inWindow(VOL_SIGS[r.ticker], r.date).length; });
+  BB_HIST_ROWS.forEach(r => { r._vol = inWindow(VOL_SIGS[r.ticker], r.date, VOL_XWIN).length; });
 }
 function openCrossModal(kind, t, date) {
   const isVol = kind === "vol", side = kind === "bb-high" ? "high" : "low";
-  const sigs = inWindow(isVol ? VOL_SIGS[t] : BB_SIGS[side][t], date)
+  const win = isVol ? VOL_XWIN : BB_XWIN;
+  const sigs = inWindow(isVol ? VOL_SIGS[t] : BB_SIGS[side][t], date, win)
     .slice().sort((a, b) => a.date < b.date ? 1 : (a.date > b.date ? -1 : 0));
   const what = isVol ? "Vol signals (+200%)" : `BB ${side === "low" ? "Lower" : "Upper"} touches`;
-  document.getElementById("sm-title").textContent = `${t} — ${what}, 180d to ${fmtDate(date)} (${sigs.length})`;
+  document.getElementById("sm-title").textContent = `${t} — ${what}, ${win}d to ${fmtDate(date)} (${sigs.length})`;
   const head = isVol ? `<th>+V%</th><th>Vol</th><th>Mkt Cap</th>` : `<th>Price</th><th>% from band</th><th>Mkt Cap</th>`;
   const row = r => isVol
     ? `<td>${vpctCell(r.vpct)}</td><td>${fmtVol(r.volume)}</td><td>${fmtCap(r.market_cap)}</td>`
