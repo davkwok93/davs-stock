@@ -14,6 +14,7 @@ Per-day market cap = shares x close, where shares = current_cap / latest_close
 (reuses the OHLCV already downloaded; no extra per-ticker API calls).
 """
 import json
+from concurrent.futures import ThreadPoolExecutor
 
 import pandas as pd
 import yfinance as yf
@@ -97,8 +98,59 @@ def upsert_panel(tickers):
     fresh = fresh.drop_duplicates(subset=key, keep="last").set_index(key)
     old = old.drop_duplicates(subset=key, keep="last").set_index(key)
     merged = fresh.combine_first(old).reset_index()
+    merged = fill_missing_closes(merged, start, today.strftime("%Y-%m-%d"))
     merged = merged.sort_values(["ticker", "date"]).reset_index(drop=True)
     return merged[["ticker", "date", "open", "close", "volume"]]
+
+
+def _one_ticker(t, start, end):
+    """Per-ticker re-pull: daily bars first, then hourly bars rolled up to a day
+    (a different Yahoo path) for any day whose daily close is still blank."""
+    out = {}
+    try:
+        h = yf.Ticker(t).history(start=start, end=end, interval="1d", auto_adjust=True)
+        for ts, r in h.iterrows():
+            if pd.notna(r["Close"]):
+                out[ts.strftime("%Y-%m-%d")] = (r["Open"], r["Close"])
+    except Exception as e:
+        print(f"  {t}: daily re-pull failed ({e})")
+    try:
+        h = yf.Ticker(t).history(start=start, end=end, interval="1h", auto_adjust=True)
+        h = h.dropna(subset=["Close"])
+        if not h.empty:
+            day = h.index.strftime("%Y-%m-%d")
+            for d, g in h.groupby(day):
+                if d not in out:
+                    out[d] = (g["Open"].iloc[0], g["Close"].iloc[-1])
+    except Exception as e:
+        print(f"  {t}: hourly re-pull failed ({e})")
+    return t, out
+
+
+def fill_missing_closes(merged, start, today):
+    """Yahoo's bulk download sometimes returns a day with volume but blank prices
+    (seen 2026-09-22). Re-pull just those tickers one at a time and fill the gaps."""
+    gap = merged[(merged["close"].isna()) & (merged["volume"].notna())
+                 & (merged["date"] >= start) & (merged["date"] < today)]
+    if gap.empty:
+        return merged
+    tickers = sorted(gap["ticker"].unique())
+    days = sorted(gap["date"].unique())
+    print(f"Blank closes on {len(days)} day(s) {days[:5]} for {len(tickers)} tickers; re-pulling one by one")
+    end = (pd.Timestamp(days[-1]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        got = dict(ex.map(lambda t: _one_ticker(t, days[0], end), tickers))
+    filled = 0
+    for i in gap.index:
+        t, d = merged.at[i, "ticker"], merged.at[i, "date"]
+        hit = got.get(t, {}).get(d)
+        if hit is not None:
+            if pd.isna(merged.at[i, "open"]):
+                merged.at[i, "open"] = hit[0]
+            merged.at[i, "close"] = hit[1]
+            filled += 1
+    print(f"  filled {filled}/{len(gap)} blank closes")
+    return merged
 
 
 def enrich(panel, cap_now):
