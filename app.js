@@ -402,6 +402,21 @@ document.querySelectorAll(".nav-item").forEach(b => b.onclick = () => setView(b.
 function currentView() {
   return document.querySelector(".nav-item.active")?.dataset.view || "dashboard";
 }
+// ---------- Sector filter (one choice shared by Dashboard, History and Favorites) ----------
+let SECTOR = "";
+const secOK = r => !SECTOR || r.sector === SECTOR;
+function initSectorFilter() {
+  const secs = [...new Set([...HOME_ROWS, ...HIST_ROWS, ...BB_HIST_ROWS].map(r => r.sector).filter(Boolean))].sort();
+  const sels = document.querySelectorAll(".sector-sel");
+  sels.forEach(sel => {
+    sel.innerHTML = `<option value="">All sectors</option>` + secs.map(s => `<option value="${esc(s)}">${escHtml(s)}</option>`).join("");
+    sel.onchange = () => {
+      SECTOR = sel.value;
+      sels.forEach(x => { x.value = SECTOR; x.classList.toggle("on", !!SECTOR); });
+      rerenderCurrent();
+    };
+  });
+}
 function rerenderCurrent() {
   const v = currentView();
   if (v === "dashboard") renderDash();
@@ -439,7 +454,7 @@ function favRow(t) {
 }
 let favTier = "all";
 function renderFavorites() {
-  const tp = favTier === "all" ? (() => true) : (r => r.tier === favTier);
+  const tp = r => (favTier === "all" || r.tier === favTier) && secOK(r);
   const ready = [...FAV.ready].map(favRow).filter(tp);
   const starred = [...FAV.star].filter(t => !FAV.ready.has(t)).map(favRow).filter(tp);
   const plain = [...FAV.fav].filter(t => !FAV.star.has(t) && !FAV.ready.has(t)).map(favRow).filter(tp);
@@ -874,7 +889,7 @@ function renderDash() {
   const pass = f === "g200" ? (r => r.vpct >= 200)
              : f === "y100" ? (r => r.vpct >= 100 && r.vpct < 200)
              : (r => r.vpct >= 100);                      // both
-  const rows = HOME_ROWS.filter(r => r.vpct != null && pass(r));
+  const rows = HOME_ROWS.filter(r => r.vpct != null && pass(r) && secOK(r));
   const mega = rows.filter(r => r.tier === "mega");
   const large = rows.filter(r => r.tier === "large");
   const empty = "Nothing to show at last close.";
@@ -884,7 +899,7 @@ function renderDash() {
 }
 function renderDashBB() {
   const derive = r => { const d = bbSideGap(r, bbSide); return Object.assign({}, r, { _gap: d.gap, _band: d.band, _side: d.side, _count: d.count }); };
-  const rows = HOME_ROWS.map(derive).filter(r => r._gap != null && r._gap <= bbProx);
+  const rows = HOME_ROWS.filter(secOK).map(derive).filter(r => r._gap != null && r._gap <= bbProx);
   const mega = rows.filter(r => r.tier === "mega");
   const large = rows.filter(r => r.tier === "large");
   const which = bbSide === "high" ? "upper band" : bbSide === "low" ? "lower band" : "a band";
@@ -937,7 +952,7 @@ function renderHistory() {
   const cutoff = histRange > 0 ? isoDaysAgo(histRange) : null;
   const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
   const searchPass = histSearch ? (r => r.ticker.toLowerCase() === histSearch) : (() => true);
-  const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r) && searchPass(r));
+  const rows = HIST_ROWS.filter(r => tierPass(r) && bandPass(r) && rangePass(r) && searchPass(r) && secOK(r));
   document.getElementById("hist-count").textContent = `${rows.length} events` + dataThrough(HIST_ROWS);
   makeTable(document.getElementById("hist-table"), HIST_COLS, rows,
     { key: "date", dir: -1 }, "No events.", null, r => r.date + "#" + r.ticker,
@@ -953,7 +968,7 @@ function renderBBHistory() {
   const cutoff = bbHistRange > 0 ? isoDaysAgo(bbHistRange) : null;
   const rangePass = cutoff ? (r => r.date >= cutoff) : (() => true);
   const searchPass = bbHistSearch ? (r => r.ticker.toLowerCase() === bbHistSearch) : (() => true);
-  const rows = BB_HIST_ROWS.filter(r => tierPass(r) && sidePass(r) && proxPass(r) && rangePass(r) && searchPass(r));
+  const rows = BB_HIST_ROWS.filter(r => tierPass(r) && sidePass(r) && proxPass(r) && rangePass(r) && searchPass(r) && secOK(r));
   document.getElementById("bb-hist-count").textContent = `${rows.length} events` + dataThrough(BB_HIST_ROWS);
   makeTable(document.getElementById("bb-hist-table"), BB_HIST_COLS, rows,
     { key: "date", dir: -1 }, bbHistProx === 0 ? "No band touches in range." : `Nothing within ${bbHistProx}% of the band in range.`, null, r => r.date + "#" + r.ticker + "#" + r.side,
@@ -1010,6 +1025,7 @@ async function boot() {
   HIST_ROWS = hist.rows;
   BB_HIST_ROWS = expandBBHistory(bbhist);
   buildCrossCounts();
+  initSectorFilter();
   renderHistory();
   const tierChips = document.querySelectorAll("#hist-tier .chip");
   tierChips.forEach(c => c.onclick = () => {

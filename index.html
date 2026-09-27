@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=47">
+<link rel="stylesheet" href="style.css?v=48">
 </head>
 <body>
 <div class="app">
@@ -25,9 +25,12 @@
         <div class="head-row"><h1>Dashboard</h1><a class="finviz-btn" href="https://finviz.com/screener?v=141&f=cap_mega" target="_blank" rel="noopener">Finviz ↗</a></div>
         <div class="today" id="today">—</div>
         <div class="asof" id="asof">—</div>
-        <div class="mode-toggle" id="dash-mode">
-          <button class="seg-btn active" data-mode="vol">Vol</button>
-          <button class="seg-btn" data-mode="bb">BB</button>
+        <div class="mode-row">
+          <div class="mode-toggle" id="dash-mode">
+            <button class="seg-btn active" data-mode="vol">Vol</button>
+            <button class="seg-btn" data-mode="bb">BB</button>
+          </div>
+          <select class="sector-sel" title="Filter by sector"><option value="">All sectors</option></select>
         </div>
       </header>
 
@@ -87,9 +90,12 @@
     <section id="view-history" class="view hidden">
       <header class="page-head">
         <div class="head-row"><h1>History</h1></div>
-        <div class="mode-toggle" id="hist-mode">
-          <button class="seg-btn active" data-mode="vol">Vol</button>
-          <button class="seg-btn" data-mode="bb">BB</button>
+        <div class="mode-row">
+          <div class="mode-toggle" id="hist-mode">
+            <button class="seg-btn active" data-mode="vol">Vol</button>
+            <button class="seg-btn" data-mode="bb">BB</button>
+          </div>
+          <select class="sector-sel" title="Filter by sector"><option value="">All sectors</option></select>
         </div>
       </header>
 
@@ -173,6 +179,8 @@
           <button class="chip" data-filter="mega">Mega</button>
           <button class="chip" data-filter="large">Large</button>
         </div>
+        <span class="filter-sep"></span>
+        <select class="sector-sel" title="Filter by sector"><option value="">All sectors</option></select>
       </div>
 
       <div class="section-block">
@@ -261,6 +269,6 @@
   </div>
 </div>
 
-<script src="app.js?v=47"></script>
+<script src="app.js?v=48"></script>
 </body>
 </html>

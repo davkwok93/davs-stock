@@ -349,3 +349,11 @@ tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 .port-open-h .fit-toggle { margin-left: 10px; vertical-align: middle; }
 .lots-n { color: var(--muted); font-size: 11px; }
 .lots-hint { color: var(--muted); font-size: 11px; cursor: help; }
+.mode-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.mode-row .mode-toggle { margin-top: 0; }
+.sector-sel {
+  background: var(--bg); border: 1px solid var(--line); color: var(--muted); font-family: inherit;
+  font-size: 13px; padding: 6px 10px; border-radius: 20px; cursor: pointer; max-width: 220px;
+}
+.sector-sel:hover { color: var(--text); }
+.sector-sel.on { border-color: var(--accent); color: var(--text); }
