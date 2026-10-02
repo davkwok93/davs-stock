@@ -72,3 +72,16 @@ def add_bb(close_series):
     lower = mid - BB_STD * std
     upper = mid + BB_STD * std
     return mid, lower, upper
+
+
+# ---- market-day timing -----------------------------------------------------
+CLOSE_SETTLE_ET = (16, 30)        # a day's bar counts as finished from 4:30pm ET
+
+
+def finalized_cutoff():
+    """First date (YYYY-MM-DD) that is NOT yet a finished trading day: today (ET)
+    before 4:30pm ET, tomorrow after. Bars with date < this are final."""
+    import pandas as pd
+    now = pd.Timestamp.now(tz="America/New_York")
+    done = (now.hour, now.minute) >= CLOSE_SETTLE_ET
+    return (now.normalize() + pd.Timedelta(days=1 if done else 0)).strftime("%Y-%m-%d")

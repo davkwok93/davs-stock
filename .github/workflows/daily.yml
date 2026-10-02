@@ -3,15 +3,23 @@ name: daily-refresh
 # Pulls the latest Yahoo data after each weekday US close, recomputes signals,
 # and commits the refreshed data/ files. GitHub Pages then redeploys on its own.
 #
-# Cron is in UTC. 01:00 UTC Tue-Sat  ==  ~8pm ET (EST) / 9pm ET (EDT) Mon-Fri,
-# i.e. a few hours after the 4pm ET close, once the daily volume has settled.
+# Fires every hour from ~6pm to ~2am ET (EDT; an hour earlier in EST) Mon-Fri.
+# scripts/should_refresh.py skips the rest of the evening once the day's data
+# is in from a pull at/after 8pm ET. GitHub often starts scheduled runs late,
+# so hourly tries get the day in as soon as a run actually starts.
+#   22,23 UTC Mon-Fri  +  00-06 UTC Tue-Sat
 on:
   schedule:
-    - cron: '0 1 * * 2-6'
-  workflow_dispatch:      # lets you run it by hand from the Actions tab
+    - cron: '0 22,23 * * 1-5'
+    - cron: '0 0-6 * * 2-6'
+  workflow_dispatch:      # run by hand from the Actions tab (always refreshes)
 
 permissions:
   contents: write         # so the job can commit the refreshed data back
+
+concurrency:
+  group: daily-refresh    # never two refreshes at once; a queued one waits
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -22,12 +30,23 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -r requirements.txt
+      - name: Already have today's data?
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "manual run: always refresh"; echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            python scripts/should_refresh.py
+          fi
       - name: Refresh daily data
+        if: steps.gate.outputs.go == 'true'
         run: python scripts/refresh_daily.py
       - name: Commit refreshed data
+        if: steps.gate.outputs.go == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/
           git diff --staged --quiet || git commit -m "daily data $(date -u +%Y-%m-%d)"
+          git pull --rebase -q origin main
           git push

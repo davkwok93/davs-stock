@@ -22,7 +22,7 @@ import yfinance as yf
 from common import (
     DATA, UNIVERSE_CSV, STOCK_CSV, HOME_JSON, HISTORY_JSON, BB_HISTORY_JSON,
     WARMUP_START, DISPLAY_START, AVG_WINDOW, SIG_WINDOW, VOL_MULT,
-    tier_of, yahoo_url, add_avg20, add_bb,
+    tier_of, yahoo_url, add_avg20, add_bb, finalized_cutoff,
 )
 
 BATCH = 200
@@ -98,7 +98,7 @@ def upsert_panel(tickers):
     fresh = fresh.drop_duplicates(subset=key, keep="last").set_index(key)
     old = old.drop_duplicates(subset=key, keep="last").set_index(key)
     merged = fresh.combine_first(old).reset_index()
-    merged = fill_missing_closes(merged, start, today.strftime("%Y-%m-%d"))
+    merged = fill_missing_closes(merged, start, finalized_cutoff())
     merged = merged.sort_values(["ticker", "date"]).reset_index(drop=True)
     return merged[["ticker", "date", "open", "close", "volume"]]
 
@@ -190,8 +190,8 @@ def save_panel(panel):
 def build_home(panel, name, tier, sector, industry):
     """Latest-COMPLETE-day snapshot per ticker (robust to partial/NaN-close pulls)."""
     disp = panel[panel["date"] >= DISPLAY_START].copy()
-    # latest FINALIZED trading day: majority of tickers have a close, and it's not today
-    today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
+    # latest FINALIZED trading day: majority of tickers have a close, and its session is over (ET)
+    today = finalized_cutoff()
     complete = disp.groupby("date")["close"].apply(lambda s: s.notna().mean() > 0.5)
     ok = [d for d in complete[complete].index if d < today]
     global_date = max(ok) if ok else disp["date"].max()
