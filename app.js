@@ -85,10 +85,11 @@ function favBtn(t) {
 // ◆ ready-to-buy + ★ star-toggle + ✕ remove buttons (Favorites page)
 function favActions(t) {
   const rdy = FAV.ready.has(t);
-  const s = FAV.star.has(t);
+  const s = FAV.star.has(t), sm = FAV.starm.has(t);
   const h = FAV.heart.has(t);
   return `<button type="button" class="ready-btn${rdy ? " on" : ""}" data-act="ready" data-ticker="${t}" title="${rdy ? "Not ready to buy" : "Ready to buy"}" aria-label="ready">${rdy ? "◆" : "◇"}</button>`
-       + `<button type="button" class="star-btn${s ? " on" : ""}" data-act="star" data-ticker="${t}" title="${s ? "Unstar" : "Star (care more)"}" aria-label="star">${s ? "★" : "☆"}</button>`
+       + `<button type="button" class="star-btn${s ? " on" : ""}" data-act="star" data-ticker="${t}" title="${s ? "Remove from Star +" : "Star + (want it, in an uptrend)"}" aria-label="star plus">${s ? "★" : "☆"}<sup>+</sup></button>`
+       + `<button type="button" class="starm-btn${sm ? " on" : ""}" data-act="starm" data-ticker="${t}" title="${sm ? "Remove from Star −" : "Star − (want it, not rising yet)"}" aria-label="star minus">${sm ? "★" : "☆"}<sup>−</sup></button>`
        + `<button type="button" class="heart-btn${h ? " on" : ""}" data-act="heart" data-ticker="${t}" title="${h ? "Back to watchlist" : "Favorite"}" aria-label="favorite">${h ? "♥" : "♡"}</button>`
        + `<button type="button" class="rm-btn" data-act="rm" data-ticker="${t}" title="Remove from list" aria-label="remove">✕</button>`;
 }
@@ -309,16 +310,17 @@ const SB_KEY = "sb_publishable_0Q5YPRHw88ZdGUAEHblnAA_hJloliAs";
 const SB_HEAD = { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json" };
 
 // fav = everything on the list (＋); heart ♥ / star ★ / ready ◆ promote a ticker within it.
-// Favorites page tiers (top wins): Ready > Star > Favorites (♥) > Watchlist (rest of fav)
-let FAV = { fav: new Set(), star: new Set(), ready: new Set(), heart: new Set() };
-const favData = () => ({ fav: [...FAV.fav], star: [...FAV.star], ready: [...FAV.ready], heart: [...FAV.heart] });
+// Favorites page tiers (top wins): Ready > Star + > Star − > Favorites (♥) > Watchlist (rest of fav)
+// star = Star + (want it, uptrend), starm = Star − (want it, not rising); a ticker is in at most one.
+let FAV = { fav: new Set(), star: new Set(), starm: new Set(), ready: new Set(), heart: new Set() };
+const favData = () => ({ fav: [...FAV.fav], star: [...FAV.star], starm: [...FAV.starm], ready: [...FAV.ready], heart: [...FAV.heart] });
 const SHARED_CODE = "davs-shared";   // one shared list everyone on the link sees
 let HOME_MAP = {};   // ticker -> latest home.json row (for Favorites page data)
 
 function loadLocal() {
   try {
     const j = JSON.parse(localStorage.getItem("davs_fav") || "{}");
-    FAV.fav = new Set(j.fav || []); FAV.star = new Set(j.star || []); FAV.ready = new Set(j.ready || []); FAV.heart = new Set(j.heart || []);
+    FAV.fav = new Set(j.fav || []); FAV.star = new Set(j.star || []); FAV.ready = new Set(j.ready || []); FAV.heart = new Set(j.heart || []); FAV.starm = new Set(j.starm || []);
   } catch (e) { /* ignore */ }
 }
 function saveLocal() {
@@ -343,6 +345,7 @@ function setFrom(data) {
   FAV.star = new Set((data && data.star) || []);
   FAV.ready = new Set((data && data.ready) || []);
   FAV.heart = new Set((data && data.heart) || []);
+  FAV.starm = new Set((data && data.starm) || []);
 }
 let pushT = null;
 function schedulePush() {
@@ -356,13 +359,13 @@ function schedulePush() {
 
 // mutations
 function toggleFav(t) {
-  if (FAV.fav.has(t)) { FAV.fav.delete(t); FAV.star.delete(t); FAV.ready.delete(t); FAV.heart.delete(t); }
+  if (FAV.fav.has(t)) { FAV.fav.delete(t); FAV.star.delete(t); FAV.starm.delete(t); FAV.ready.delete(t); FAV.heart.delete(t); }
   else FAV.fav.add(t);
   afterFavChange();
 }
 function toggleStar(t) {
   if (FAV.star.has(t)) FAV.star.delete(t);
-  else { FAV.star.add(t); FAV.fav.add(t); }
+  else { FAV.star.add(t); FAV.starm.delete(t); FAV.fav.add(t); }
   afterFavChange();
 }
 function toggleReady(t) {
@@ -375,10 +378,16 @@ function toggleHeart(t) {
   else { FAV.heart.add(t); FAV.fav.add(t); }
   afterFavChange();
 }
-function removeFav(t) { FAV.fav.delete(t); FAV.star.delete(t); FAV.ready.delete(t); FAV.heart.delete(t); afterFavChange(); }
+function toggleStarMinus(t) {
+  if (FAV.starm.has(t)) FAV.starm.delete(t);
+  else { FAV.starm.add(t); FAV.star.delete(t); FAV.fav.add(t); }
+  afterFavChange();
+}
+function removeFav(t) { FAV.fav.delete(t); FAV.star.delete(t); FAV.starm.delete(t); FAV.ready.delete(t); FAV.heart.delete(t); afterFavChange(); }
 function handleFavAction(act, t) {
   if (act === "fav") toggleFav(t);
   else if (act === "star") toggleStar(t);
+  else if (act === "starm") toggleStarMinus(t);
   else if (act === "ready") toggleReady(t);
   else if (act === "heart") toggleHeart(t);
   else if (act === "rm") removeFav(t);
@@ -469,17 +478,22 @@ function renderFavorites() {
   const tp = r => (favTier === "all" || r.tier === favTier) && secOK(r);
   const ready = [...FAV.ready].map(favRow).filter(tp);
   const starred = [...FAV.star].filter(t => !FAV.ready.has(t)).map(favRow).filter(tp);
-  const hearted = [...FAV.heart].filter(t => !FAV.star.has(t) && !FAV.ready.has(t)).map(favRow).filter(tp);
-  const plain = [...FAV.fav].filter(t => !FAV.heart.has(t) && !FAV.star.has(t) && !FAV.ready.has(t)).map(favRow).filter(tp);
+  const starredM = [...FAV.starm].filter(t => !FAV.ready.has(t) && !FAV.star.has(t)).map(favRow).filter(tp);
+  const anyStar = t => FAV.star.has(t) || FAV.starm.has(t);
+  const hearted = [...FAV.heart].filter(t => !anyStar(t) && !FAV.ready.has(t)).map(favRow).filter(tp);
+  const plain = [...FAV.fav].filter(t => !FAV.heart.has(t) && !anyStar(t) && !FAV.ready.has(t)).map(favRow).filter(tp);
   const key = r => "d#" + r.ticker;
   document.getElementById("ready-count").textContent = ready.length ? `${ready.length}` : "";
   document.getElementById("star-count").textContent = starred.length ? `${starred.length}` : "";
+  document.getElementById("starm-count").textContent = starredM.length ? `${starredM.length}` : "";
   document.getElementById("heart-count").textContent = hearted.length ? `${hearted.length}` : "";
   document.getElementById("fav-count").textContent = plain.length ? `${plain.length}` : "";
   makeTable(document.getElementById("ready-table"), FAV_COLS, ready, { key: "vpct", dir: -1 },
     "Nothing ready yet — tap ◇ on any stock below to mark it ready to buy.", null, key);
   makeTable(document.getElementById("star-table"), FAV_COLS, starred, { key: "vpct", dir: -1 },
-    "No starred stocks yet — tap ☆ on a stock below to promote it here.", null, key);
+    "No Star + stocks yet — tap ☆⁺ on a stock you want that's in an uptrend.", null, key);
+  makeTable(document.getElementById("starm-table"), FAV_COLS, starredM, { key: "vpct", dir: -1 },
+    "No Star − stocks yet — tap ☆⁻ on a stock you want that isn't rising yet.", null, key);
   makeTable(document.getElementById("heart-table"), FAV_COLS, hearted, { key: "vpct", dir: -1 },
     "No favorites yet — tap ♡ on a watchlist stock below to promote it here.", null, key);
   makeTable(document.getElementById("fav-table"), FAV_COLS, plain, { key: "vpct", dir: -1 },
