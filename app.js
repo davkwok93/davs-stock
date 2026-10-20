@@ -734,7 +734,8 @@ function renderPositions(c) {
       + `<td>${+l.shares.toFixed(4)}${l.n > 1 ? ` <span class="lots-n">(${l.n} lots)</span>` : ""}</td>`
       + `<td class="muted-col">${fmtMoney(tc)}</td><td class="muted-col">${tv == null ? "—" : fmtMoney(tv)}</td>`
       + (l.n > 1   // a merged Avg row: sell / delete individual lots with Avg off
-        ? `<td class="l"><span class="lots-hint" title="Turn Avg off to sell or remove a single lot">Avg</span></td></tr>`
+        ? `<td class="l"><button class="sell-btn" data-sellt="${l.ticker}" title="Sells from your oldest buy first">Sell</button>`
+          + `<span class="lots-hint" title="Turn Avg off to remove a single lot">Avg</span></td></tr>`
         : `<td class="l"><button class="sell-btn" data-sell="${l.id}">Sell</button>`
           + `<button class="rm-btn" data-dellot="${l.id}">✕</button></td></tr>`);
   }).join("");
@@ -744,7 +745,9 @@ function renderPositions(c) {
     + `<td class="muted-col">${fmtMoney(c.invested)}</td><td class="muted-col">${fmtMoney(c.holdingsValue)}</td><td></td></tr>`;
   t.innerHTML = head + `<tbody>${rows}${totals}</tbody>`;
   t.querySelector("#port-date-sort").onclick = () => { portSortDir = -portSortDir; renderPositions(portCalc()); };
-  t.querySelectorAll("[data-sell]").forEach(b => b.onclick = () => openSellModal(b.dataset.sell));
+  t.querySelectorAll("[data-sell]").forEach(b => b.onclick = () => openSellModal([b.dataset.sell]));
+  t.querySelectorAll("[data-sellt]").forEach(b => b.onclick = () =>
+    openSellModal(PORT.lots.filter(x => x.ticker === b.dataset.sellt).map(x => x.id)));
   t.querySelectorAll("[data-dellot]").forEach(b => b.onclick = () => deleteLot(b.dataset.dellot));
   t.querySelectorAll("[data-predict]").forEach(b => b.onclick = () => openPredictModal(b.dataset.predict));
 }
@@ -786,10 +789,16 @@ function deleteLot(id) {
   if (!confirm("Delete this position (no sale recorded)?")) return;
   PORT.lots = PORT.lots.filter(l => l.id !== id); schedulePortPush(); renderPortfolio();
 }
-function openSellModal(id) {
-  const l = PORT.lots.find(x => x.id === id); if (!l) return;
-  pendingSellId = id;
-  document.getElementById("sell-title").textContent = `Sell ${l.ticker} (${l.shares} sh)`;
+// sell any number of shares from one lot, or (Avg row) from all lots of a ticker, oldest buy first
+const sellLots = () => PORT.lots.filter(x => (pendingSellId || []).includes(x.id))
+  .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+function openSellModal(ids) {
+  pendingSellId = ids;
+  const lots = sellLots(); if (!lots.length) return;
+  const l = lots[0], total = +lots.reduce((s, x) => s + x.shares, 0).toFixed(6);
+  document.getElementById("sell-title").textContent = `Sell ${l.ticker} (you hold ${total} sh)`;
+  const sh = document.getElementById("sell-shares");
+  sh.value = total; sh.max = total;
   const p = priceOf(l.ticker);
   document.getElementById("sell-price").value = p != null ? p : l.cost;
   document.getElementById("sell-date").value = todayISO();
@@ -797,12 +806,24 @@ function openSellModal(id) {
 }
 function closeSellModal() { document.getElementById("sell-modal").classList.add("hidden"); pendingSellId = null; }
 function confirmSell() {
-  const l = PORT.lots.find(x => x.id === pendingSellId); if (!l) return closeSellModal();
+  const lots = sellLots(); if (!lots.length) return closeSellModal();
+  const total = lots.reduce((s, x) => s + x.shares, 0);
   const price = parseFloat(document.getElementById("sell-price").value);
+  const qty = parseFloat(document.getElementById("sell-shares").value);
   const sellDate = document.getElementById("sell-date").value;
   if (!(price > 0) || !sellDate) { alert("Enter a sell price and date."); return; }
-  PORT.sells.push({ id: l.id, ticker: l.ticker, date: l.date, shares: l.shares, cost: l.cost, sellDate, sellPrice: price });
-  PORT.lots = PORT.lots.filter(x => x.id !== l.id);
+  if (!(qty > 0) || qty > total + 1e-9) { alert(`Enter 0 < shares ≤ ${+total.toFixed(6)}.`); return; }
+  let left = qty;
+  for (const l of lots) {                      // oldest buy first
+    if (left <= 1e-9) break;
+    const take = Math.min(left, l.shares);
+    const whole = take >= l.shares - 1e-9;
+    PORT.sells.push({ id: whole ? l.id : l.id + "-" + Date.now().toString(36), ticker: l.ticker, date: l.date,
+                      shares: +take.toFixed(6), cost: l.cost, sellDate, sellPrice: price });
+    if (whole) PORT.lots = PORT.lots.filter(x => x.id !== l.id);
+    else l.shares = +(l.shares - take).toFixed(6);
+    left -= take;
+  }
   closeSellModal(); schedulePortPush(); renderPortfolio();
 }
 function todayISO() {

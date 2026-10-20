@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dav's Stock</title>
-<link rel="stylesheet" href="style.css?v=51">
+<link rel="stylesheet" href="style.css?v=52">
 </head>
 <body>
 <div class="app">
@@ -252,6 +252,7 @@
   <div class="modal-box">
     <div class="modal-head"><span id="sell-title"></span><button class="modal-x" data-sclose aria-label="close">✕</button></div>
     <div class="modal-body sell-body">
+      <label class="sell-field"># Shares to sell<input id="sell-shares" type="number" step="any" min="0"></label>
       <label class="sell-field">Sell price / share<input id="sell-price" type="number" step="any"></label>
       <label class="sell-field">Sell date<input id="sell-date" type="date"></label>
       <div class="sell-actions"><button class="sync-btn" data-sclose>Cancel</button><button class="sync-btn primary" id="sell-confirm">Confirm sell</button></div>
@@ -279,6 +280,6 @@
   </div>
 </div>
 
-<script src="app.js?v=51"></script>
+<script src="app.js?v=52"></script>
 </body>
 </html>

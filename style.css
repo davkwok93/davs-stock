@@ -155,13 +155,14 @@ td.muted-col, th.muted-col { color: var(--muted); opacity: .8; }
 .sell-btn:hover { border-color: var(--accent); }
 tr.port-total td { border-top: 2px solid var(--sep); font-weight: 600; }
 
-.port-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+/* Growth (left) gets 1/3 to 1/2 of the row; Portfolio bars take the rest and scroll if needed */
+.port-charts { display: grid; grid-template-columns: clamp(33.33%, 440px, 50%) minmax(0, 1fr); gap: 16px; margin: 20px 0; }
 .chart-box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
 .chart-box.chart-wide { grid-column: 1 / -1; }
 .chart-box h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--muted); }
 .chart-svg { height: 230px; display: block; }
 #chart-overall { text-align: center; }
-#chart-overall .chart-svg { width: auto; max-width: 100%; margin: 0 auto; }
+#chart-overall .chart-svg { width: 100%; max-width: 520px; margin: 0 auto; }
 #chart-perstock .chart-svg { width: auto; margin: 0 auto; }   /* centered; scrolls if many */
 #chart-worth .chart-svg { width: 100%; height: auto; }
 .chart-scroll { overflow-x: auto; text-align: center; }
